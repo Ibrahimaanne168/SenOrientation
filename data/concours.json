@@ -1,0 +1,537 @@
+[
+  {
+    "id": "ept_concours",
+    "nom_concours": "Concours d'entrée en première année du cycle ingénieur de l'EPT",
+    "organisme_organisateur": "École Polytechnique de Thiès (EPT)",
+    "domaine": "Ingénierie / Sciences / Technologie",
+    "niveau_requis": "Terminale scientifique ou technique / Baccalauréat scientifique ou technique",
+    "conditions_admission": "Être en Terminale S1, S2, S3, STIDD, T1 ou T2 ou être titulaire d'un Bac correspondant.",
+    "limite_age": "Moins de 22 ans au 1er octobre de l'année du concours.",
+    "pieces_a_fournir": [
+      "Fiche de candidature",
+      "Bulletins de Seconde",
+      "Bulletins de Première",
+      "Bulletin du premier semestre de Terminale",
+      "Pour les bacheliers : copie légalisée du Bac et relevé de notes"
+    ],
+    "date_ouverture": "02 février 2026",
+    "date_cloture": "15 avril 2026",
+    "date_ouverture_cloture": "Du 02 Février au 15 Avril 2026",
+    "date_epreuves": "13 juin 2026",
+    "lieu_epreuves": "Centres d'examen dans les régions du Sénégal",
+    "matieres_concours": [
+      "Mathématiques",
+      "Physique",
+      "Français",
+      "Anglais"
+    ],
+    "nombre_places": "Selon quota annuel",
+    "frais_inscription": "7 000 FCFA",
+    "debouches": "Ingénieur informatique, Ingénieur télécommunications, Ingénieur civil, Ingénieur électromécanique, Ingénieur industriel, Ingénieur aéronautique, Ingénieur en transport et mobilité.",
+    "documents_et_annales": "Communiqués officiels, programmes et anciens sujets du concours EPT disponibles sur ept.edu.sn.",
+    "resultats": "Listes d'admis et listes d'attente publiées par l'EPT."
+  },
+  {
+    "id": "esp_dut_concours",
+    "nom_concours": "Concours d'entrée en première année du premier cycle DUT — ESP",
+    "organisme_organisateur": "École Supérieure Polytechnique (ESP/UCAD)",
+    "domaine": "Ingénierie / Informatique / Gestion / Sciences",
+    "niveau_requis": "Terminale / Baccalauréat",
+    "conditions_admission": "Candidats sénégalais et étrangers résidant au Sénégal. Les séries et conditions varient selon l'option choisie.",
+    "limite_age": "Selon les conditions de la session",
+    "pieces_a_fournir": [
+      "Fiche de candidature",
+      "Bulletins scolaires",
+      "Pièces d'identité",
+      "Diplôme ou justificatif du Bac pour les candidats concernés"
+    ],
+    "date_ouverture": "02 février 2026",
+    "date_cloture": "30 avril 2026",
+    "date_ouverture_cloture": "Du 02 Février au 30 Avril 2026",
+    "date_epreuves": "06 juin 2026",
+    "lieu_epreuves": "Centres désignés au Sénégal (Dakar, Saint-Louis, Thiès, Kaolack, Ziguinchor)",
+    "matieres_concours": [
+      "Épreuves communes : Mathématiques, Français, Anglais",
+      "Selon la filière : Physique, Chimie, Biologie, Électricité, Logique, Économie"
+    ],
+    "options": [
+      "Analyses biologiques",
+      "Génie chimique",
+      "Industries alimentaires",
+      "Génie biomédical",
+      "Génie civil",
+      "Informatique",
+      "Télécommunications et réseaux",
+      "Génie mécanique",
+      "Gestion",
+      "EEAII-Télécommunication"
+    ],
+    "nombre_places": "Selon filière et quota",
+    "frais_inscription": "À vérifier selon la session (environ 10 000 FCFA)",
+    "debouches": "Informaticien, Technicien réseaux, Technicien télécoms, Technicien génie civil, Technicien industriel, Technicien laboratoire, Gestionnaire.",
+    "documents_et_annales": "Communiqué du concours, programme des épreuves, anciens sujets sur esp.sn.",
+    "resultats": "Listes principales et listes d'attente publiées par l'ESP."
+  },
+  {
+    "id": "esea_concours",
+    "nom_concours": "Concours direct d'entrée à l'ESEA",
+    "organisme_organisateur": "École Supérieure d'Économie Appliquée (ESEA/UCAD)",
+    "domaine": "Économie / Aménagement / Développement / Gestion",
+    "niveau_requis": "Baccalauréat (Séries L, S ou STEG)",
+    "conditions_admission": "Être titulaire du Bac correspondant aux conditions de la session (ATEGU, DECOF, PEGO).",
+    "limite_age": "Selon l'appel à candidature de la session (généralement max 24 ans)",
+    "pieces_a_fournir": [
+      "Dossier de candidature",
+      "Pièces scolaires",
+      "Pièce d'identité",
+      "Diplôme ou justificatif du Bac"
+    ],
+    "date_ouverture": "17 juillet 2026",
+    "date_cloture": "29 août 2026",
+    "date_ouverture_cloture": "Du 17 Juillet au 29 Août 2026",
+    "date_epreuves": "08 et 09 septembre 2026",
+    "lieu_epreuves": "Locaux de l'ESEA, Dakar",
+    "matieres_concours": [
+      "ATEGU : Culture générale, Spécialité, Mathématiques niveau Terminale L",
+      "DECOF : Culture générale, Spécialité, Mathématiques niveau Terminale L",
+      "PEGO : Culture générale, Spécialité, Mathématiques niveau Terminale S/STEG"
+    ],
+    "nombre_places": "Selon nombre de places disponibles",
+    "frais_inscription": "Selon communiqué de la session",
+    "debouches": "Aménagement du territoire, Développement communautaire, Gestion des organisations, Planification, Administration, Collectivités territoriales.",
+    "documents_et_annales": "Appel à candidature, programme des épreuves, sujets des années précédentes sur esea.ucad.sn.",
+    "resultats": "Listes d'admis après les épreuves écrites et orales."
+  },
+  {
+    "id": "ebad_concours",
+    "nom_concours": "Test de présélection / concours d'entrée en première année de Licence — EBAD",
+    "organisme_organisateur": "École de Bibliothécaires, Archivistes et Documentalistes (EBAD/UCAD)",
+    "domaine": "Bibliothéconomie / Archivistique / Documentation / Gestion de l'information",
+    "niveau_requis": "Baccalauréat",
+    "conditions_admission": "Être titulaire du Bac ou être en Terminale sous réserve d'obtention du Bac selon la session.",
+    "limite_age": "Selon l'appel à candidature",
+    "pieces_a_fournir": [
+      "Demande manuscrite",
+      "Copie légalisée du relevé de notes du Bac",
+      "Certificat de scolarité pour les élèves de Terminale",
+      "Copie légalisée de la CNI",
+      "Paiement des droits d'inscription"
+    ],
+    "date_ouverture": "26 mars 2026",
+    "date_cloture": "25 juillet 2026",
+    "date_ouverture_cloture": "Du 26 Mars au 25 Juillet 2026",
+    "date_epreuves": "29 juillet 2026",
+    "lieu_epreuves": "Dakar, Kaolack, Ziguinchor",
+    "matieres_concours": [
+      "Culture générale",
+      "Français & Épreuve de synthèse",
+      "Test de logique et gestion de l'information"
+    ],
+    "nombre_places": "Selon quota annuel",
+    "frais_inscription": "10 000 FCFA + frais Wave",
+    "debouches": "Bibliothécaire, Archiviste, Documentaliste, Gestionnaire de l'information, Gestionnaire de ressources documentaires et numériques.",
+    "documents_et_annales": "Formulaire de concours, communiqué, programme et anciens sujets sur ebad.ucad.sn.",
+    "resultats": "Listes des candidats admis publiées par l'EBAD."
+  },
+  {
+    "id": "cesti_concours",
+    "nom_concours": "Concours d'entrée au CESTI",
+    "organisme_organisateur": "Centre d'Études des Sciences et Techniques de l'Information (CESTI/UCAD)",
+    "domaine": "Journalisme / Communication / Production audiovisuelle",
+    "niveau_requis": "Baccalauréat pour L1 · Master ou diplôme supérieur Bac+5 pour L2",
+    "conditions_admission": "L1 : Bachelier, Élève de Terminale sous réserve du Bac, ou Professionnel avec 4 ans d'expérience. L2 : Titulaire d'un Master/Bac+5.",
+    "limite_age": "L1 étudiants : 17 à 24 ans. Professionnels et L2 : pas de limite d'âge.",
+    "pieces_a_fournir": [
+      "Demande manuscrite",
+      "CNI ou extrait de naissance",
+      "Fiche individuelle et photo",
+      "Certificat de scolarité et relevés de notes",
+      "Copie légalisée du Bac",
+      "Pièces professionnelles pour les candidats professionnels"
+    ],
+    "date_ouverture": "16 février 2026",
+    "date_cloture": "25 mai 2026 (Dépôt définitif : 31 juillet 2026)",
+    "date_ouverture_cloture": "Du 16 Février au 25 Mai 2026 (Dépôt jusqu'au 31 Juillet 2026)",
+    "date_epreuves": "Pré-sélection : 08 août 2026 · Épreuves : 03, 04 et 05 septembre 2026",
+    "lieu_epreuves": "CESTI, Dakar",
+    "matieres_concours": [
+      "Culture générale et actualité nationale/internationale",
+      "Épreuve de langue française et rédaction journalistique",
+      "Épreuve d'anglais",
+      "Épreuve orale et entretien de motivation"
+    ],
+    "nombre_places": "Selon quota annuel (environ 30 places)",
+    "frais_inscription": "10 000 FCFA hors Dakar / 10 100 FCFA à Dakar",
+    "debouches": "Journaliste (Presse écrite, Radio, Télévision, Web), Reporter, Rédacteur, Chargé de communication, Producteur audiovisuel, Présentateur.",
+    "documents_et_annales": "Appel à candidature, programme et sujets des années précédentes sur cesti.ucad.sn.",
+    "resultats": "Listes des candidats admis publiées par le CESTI."
+  },
+  {
+    "id": "ena_cycle_b",
+    "nom_concours": "Concours direct d'entrée au Cycle B — ENA",
+    "organisme_organisateur": "École Nationale d'Administration (ENA)",
+    "domaine": "Administration publique / Finances / Douanes / Travail",
+    "niveau_requis": "Baccalauréat toutes séries",
+    "conditions_admission": "Être titulaire du Baccalauréat et remplir les conditions d'accès à la fonction publique.",
+    "limite_age": "18 à 33 ans à la date d'ouverture du concours.",
+    "pieces_a_fournir": [
+      "Diplôme du Baccalauréat légalisé",
+      "CNI légalisée",
+      "Preuve de paiement des droits d'inscription",
+      "Dossier physique complet après admissibilité"
+    ],
+    "date_ouverture": "Selon calendrier officiel publié par arrêté",
+    "date_cloture": "Selon calendrier officiel",
+    "date_ouverture_cloture": "Publié par arrêté ministériel officiel",
+    "date_epreuves": "Selon calendrier officiel ENA",
+    "lieu_epreuves": "Centres d'examen désignés à Dakar",
+    "matieres_concours": [
+      "Test psychotechnique",
+      "Résumé de texte / culture générale",
+      "Dissertation de culture générale",
+      "Entretien avec le jury"
+    ],
+    "nombre_places": "Fixé par arrêté ministériel",
+    "frais_inscription": "5 500 FCFA",
+    "debouches": "Contrôleurs du Trésor, des Impôts, des Douanes, du Travail et Secrétaires d'Administration.",
+    "documents_et_annales": "Guide du candidat, programmes officiels et anciens sujets sur ena.sn.",
+    "resultats": "Listes d'admissibilité et d'admission publiées par l'ENA."
+  },
+  {
+    "id": "ena_cycle_a",
+    "nom_concours": "Concours direct d'entrée au Cycle A — ENA",
+    "organisme_organisateur": "École Nationale d'Administration (ENA)",
+    "domaine": "Administration / Gestion publique / Droit / Économie / Diplomatie",
+    "niveau_requis": "Maîtrise minimum ou Master (diplôme classé au moins A3)",
+    "conditions_admission": "Diplôme universitaire requis et conditions générales de la réglementation de la haute fonction publique.",
+    "limite_age": "18 à 33 ans au 1er janvier de l'année du concours.",
+    "pieces_a_fournir": [
+      "Diplôme de Master 2 ou Maîtrise légalisé",
+      "Extrait de naissance et certificat de nationalité",
+      "Casier judiciaire n°3",
+      "Preuve de paiement des droits d'inscription"
+    ],
+    "date_ouverture": "Selon arrêté officiel",
+    "date_cloture": "Selon calendrier officiel",
+    "date_ouverture_cloture": "Publié par arrêté ministériel officiel",
+    "date_epreuves": "Selon calendrier officiel ENA",
+    "lieu_epreuves": "Locaux de l'ENA, Dakar",
+    "matieres_concours": [
+      "Test psychotechnique",
+      "Résumé de texte",
+      "Culture générale",
+      "Droit public",
+      "Économie politique ou gestion publique",
+      "Synthèse de dossier",
+      "Grand oral avec le jury d'État"
+    ],
+    "nombre_places": "Fixé par autorisation du Premier Ministre",
+    "frais_inscription": "10 800 FCFA",
+    "debouches": "Administrateur civil, Diplomate (Conseiller des Affaires Étrangères), Inspecteur du Trésor, des Impôts, des Douanes, du Travail, Commissaire aux Enquêtes Économiques.",
+    "documents_et_annales": "Guide du candidat, programmes et annales sur ena.sn.",
+    "resultats": "Listes d'admissibilité et d'admission publiées par l'ENA et au Journal Officiel."
+  },
+  {
+    "id": "cfj_magistrature",
+    "nom_concours": "Concours direct de la Magistrature — CFJ",
+    "organisme_organisateur": "Centre de Formation Judiciaire (CFJ / Ministère de la Justice)",
+    "domaine": "Justice / Droit / Magistrature",
+    "niveau_requis": "Master ou Maîtrise en sciences juridiques (Droit privé ou Droit public)",
+    "conditions_admission": "Nationalité sénégalaise, Master 2 / Maîtrise en Droit avec mention appréciée, jouissance des droits civiques et aptitude physique/morale.",
+    "limite_age": "40 ans au plus au 1er janvier de l'année du concours.",
+    "pieces_a_fournir": [
+      "Demande manuscrite timbrée",
+      "Copie certifiée conforme du diplôme de Droit",
+      "Casier judiciaire bulletin n°3",
+      "Certificat de nationalité sénégalaise",
+      "Certificat médical d'aptitude"
+    ],
+    "date_ouverture": "Selon arrêté du Garde des Sceaux",
+    "date_cloture": "Selon calendrier officiel",
+    "date_ouverture_cloture": "Publié par arrêté du Ministère de la Justice",
+    "date_epreuves": "Selon convocation",
+    "lieu_epreuves": "Campus du CFJ, Dakar",
+    "matieres_concours": [
+      "Droit civil et procédure civile",
+      "Droit pénal et procédure pénale",
+      "Droit administratif et constitutionnel",
+      "Droit commercial / OHADA",
+      "Grand oral de culture juridique et éthique"
+    ],
+    "nombre_places": "Selon quota annuel de la session",
+    "frais_inscription": "Selon arrêté ministériel (environ 10 000 FCFA)",
+    "debouches": "Magistrat du Siège (Juge), Magistrat du Parquet (Procureur), Juge d'instruction, Conseiller de Cour d'Appel.",
+    "documents_et_annales": "Textes réglementaires, programmes et annales sur cfj.sn.",
+    "resultats": "Arrêté ministériel officiel du Ministère de la Justice et publication sur cfj.sn."
+  },
+  {
+    "id": "cfj_greffiers",
+    "nom_concours": "Concours direct des Greffiers — CFJ",
+    "organisme_organisateur": "Centre de Formation Judiciaire (CFJ / Ministère de la Justice)",
+    "domaine": "Justice / Administration judiciaire / Greffes",
+    "niveau_requis": "Selon la catégorie : Licence en Droit (Greffiers) ou Baccalauréat",
+    "conditions_admission": "Nationalité sénégalaise, diplôme requis selon la catégorie, conditions générales d'accès à la fonction publique.",
+    "limite_age": "Selon la session (généralement 18 à 35 ans)",
+    "pieces_a_fournir": [
+      "Fiche d'inscription officielle CFJ",
+      "Copies certifiées conformes des diplômes",
+      "Casier judiciaire n°3",
+      "Certificat de visite médicale"
+    ],
+    "date_ouverture": "Selon session",
+    "date_cloture": "Selon session",
+    "date_ouverture_cloture": "Publié par communiqué officiel du CFJ",
+    "date_epreuves": "Selon calendrier officiel",
+    "lieu_epreuves": "Campus du CFJ, Dakar",
+    "matieres_concours": [
+      "Organisation judiciaire et procédure",
+      "Culture générale et expression écrite",
+      "Droit civil et pénal élémentaire",
+      "Entretien oral avec le jury"
+    ],
+    "nombre_places": "Selon quota de la session",
+    "frais_inscription": "Selon communiqué officiel",
+    "debouches": "Greffier en chef, Greffier d'audience des cours et tribunaux, Cadre de l'administration judiciaire.",
+    "documents_et_annales": "Programme, communiqués et anciens sujets sur cfj.sn.",
+    "resultats": "Listes définitives publiées par le CFJ."
+  },
+  {
+    "id": "endss_concours",
+    "nom_concours": "Concours d'entrée à l'École Nationale de Développement Sanitaire et Social (ENDSS)",
+    "organisme_organisateur": "ENDSS / Université Cheikh Anta Diop de Dakar (UCAD)",
+    "domaine": "Santé / Sciences infirmières / Santé publique / Paramédical",
+    "niveau_requis": "Selon la licence ou la formation demandée (Baccalauréat scientifique ou équivalent)",
+    "conditions_admission": "Concours direct ou professionnel selon la formation ouverte.",
+    "formations": [
+      "Analyses biologiques médicales",
+      "Génie sanitaire",
+      "Ergothérapie",
+      "Orthophonie",
+      "Préparateur en pharmacie",
+      "Psychomotricité",
+      "Santé communautaire",
+      "Maintenance hospitalière",
+      "Sciences infirmières",
+      "Sage-femme",
+      "Prothèse dentaire"
+    ],
+    "pieces_a_fournir": [
+      "Demande manuscrite",
+      "Extrait de naissance",
+      "Certificat de nationalité",
+      "Casier judiciaire",
+      "Copie légalisée du diplôme",
+      "Certificat médical selon la procédure"
+    ],
+    "date_ouverture": "15 juin 2026",
+    "date_cloture": "02 août 2026",
+    "date_ouverture_cloture": "Du 15 Juin au 02 Août 2026",
+    "date_epreuves": "Selon formation et calendrier officiel (Septembre 2026)",
+    "lieu_epreuves": "Locaux de l'ENDSS / UCAD, Dakar",
+    "matieres_concours": [
+      "SVT & Biologie humaine",
+      "Physique - Chimie",
+      "Français / Culture générale sanitaire",
+      "Épreuves de spécialités selon la filière"
+    ],
+    "nombre_places": "Selon filière et quota",
+    "frais_inscription": "Selon communiqué de la session (environ 10 000 FCFA)",
+    "debouches": "Infirmier diplômé d'État, Sage-femme d'État, Technicien de laboratoire médical, Technicien sanitaire, Ergothérapeute, Orthophoniste, Préparateur en pharmacie, Prothésiste dentaire.",
+    "documents_et_annales": "Appels à candidature, programmes et anciens sujets sur endss.ucad.sn.",
+    "resultats": "Résultats publiés par l'ENDSS/UCAD."
+  },
+  {
+    "id": "grandes_ecoles_ingenieurs_concours",
+    "nom_concours": "Concours commun d'entrée aux grandes écoles d'ingénieurs du Sénégal",
+    "organisme_organisateur": "ESP / EPT / établissements partenaires (IPSL, etc.)",
+    "domaine": "Ingénierie / Sciences / Technologie / Innovation",
+    "niveau_requis": "Selon voie d'accès et école (Terminale scientifique, Bac S/T, CPGE ou Licence)",
+    "etablissements_concernes": [
+      "École Supérieure Polytechnique (ESP Dakar)",
+      "École Polytechnique de Thiès (EPT)",
+      "Institut Polytechnique de Saint-Louis (IPSL / UGB)"
+    ],
+    "conditions_admission": "Selon le règlement du concours commun et les prérequis de chaque établissement partenaire.",
+    "limite_age": "Selon école et session",
+    "pieces_a_fournir": [
+      "Dossier de candidature",
+      "Diplômes et relevés de notes",
+      "Pièce d'identité"
+    ],
+    "date_ouverture": "Selon calendrier de la session",
+    "date_cloture": "Selon calendrier de la session",
+    "date_ouverture_cloture": "Publié par arrêté conjoint",
+    "date_epreuves": "Selon calendrier officiel",
+    "lieu_epreuves": "Centres d'examen au Sénégal",
+    "matieres_concours": [
+      "Mathématiques avancées",
+      "Sciences Physiques et Chimie",
+      "Français & Anglais technique"
+    ],
+    "nombre_places": "Selon école et quota",
+    "frais_inscription": "Selon session",
+    "debouches": "Ingénieur informatique & IA, Ingénieur civil, Ingénieur mécanique, Ingénieur électrique, Ingénieur télécoms, Ingénieur industriel.",
+    "documents_et_annales": "Communiqués, programmes, sujets et listes des candidats sur les plateformes officielles.",
+    "resultats": "Listes principales et listes d'attente publiées par le jury commun."
+  },
+  {
+    "id": "esmt_concours",
+    "nom_concours": "Concours d'admission à l'École Supérieure Multinationale des Télécommunications (ESMT)",
+    "organisme_organisateur": "ESMT (Institution Inter-États)",
+    "domaine": "Télécommunications / Informatique / Numérique / IA",
+    "niveau_requis": "Baccalauréat scientifique ou technique pour Licences · Licence/Bac+3 pour Masters",
+    "filieres": [
+      "Télécommunications et Informatique (LTI)",
+      "Systèmes embarqués et électronique (LS2E)",
+      "Management et économie du numérique"
+    ],
+    "conditions_admission": "Selon niveau d'entrée et programme. Tests écrits pour les Licences et sélection technique pour les Masters.",
+    "limite_age": "Selon concours",
+    "pieces_a_fournir": [
+      "Dossier de candidature",
+      "Diplômes et relevés de notes",
+      "Pièce d'identité"
+    ],
+    "date_ouverture": "Selon session (généralement Mai - Juillet)",
+    "date_cloture": "Selon calendrier ESMT",
+    "date_ouverture_cloture": "Campagne annuelle ouverte en ligne",
+    "date_epreuves": "Selon calendrier ESMT",
+    "lieu_epreuves": "Dakar et centres désignés dans l'espace sous-régional",
+    "matieres_concours": [
+      "Mathématiques",
+      "Physique appliquée / Électricité",
+      "Français & Anglais",
+      "Test de logique numérique"
+    ],
+    "nombre_places": "Selon programme",
+    "frais_inscription": "Selon session (environ 15 000 FCFA)",
+    "debouches": "Ingénieur télécoms, Administrateur réseau & Cloud, Ingénieur systèmes embarqués, Ingénieur informatique, Expert cybersécurité, Consultant numérique.",
+    "documents_et_annales": "Programmes, communiqués, sujets et résultats sur esmt.sn.",
+    "resultats": "Listes officielles publiées par l'ESMT."
+  },
+  {
+    "id": "ensae_concours",
+    "nom_concours": "Concours d'entrée à l'ENSAE Pierre Ndiaye",
+    "organisme_organisateur": "ENSAE Pierre Ndiaye / ANSD / CAPESA",
+    "domaine": "Statistique / Économie / Data Science / Mathématiques",
+    "niveau_requis": "Selon cycle : Bac (TSS / AS / ISE cycle long) · Bac+2 / Licence (ITS / ISE cycle court)",
+    "cycles": [
+      "Technicien supérieur de la statistique (TSS)",
+      "Analyste statisticien (AS)",
+      "Ingénieur des travaux statistiques (ITS)",
+      "Ingénieur statisticien économiste (ISE)"
+    ],
+    "conditions_admission": "Diplôme requis selon le cycle et réussite au concours international CAPESA/ANSD.",
+    "limite_age": "Selon le cycle et la session (22 ans post-bac, 26 ans post-licence)",
+    "pieces_a_fournir": [
+      "Dossier de candidature international",
+      "Diplôme certifié ou certificat de scolarité",
+      "Relevés de notes",
+      "Pièce d'identité"
+    ],
+    "date_ouverture": "Décembre - Janvier",
+    "date_cloture": "Fin Janvier de chaque année",
+    "date_ouverture_cloture": "Du 15 Décembre au 31 Janvier",
+    "date_epreuves": "Avril (Simultané international)",
+    "lieu_epreuves": "Centres d'examen ENSAE / ANSD à Dakar",
+    "matieres_concours": [
+      "Mathématiques générales et analyse",
+      "Statistiques et probabilités",
+      "Économie et modélisation",
+      "Culture générale et français"
+    ],
+    "nombre_places": "Selon quota annuel international",
+    "frais_inscription": "10 000 FCFA",
+    "debouches": "Statisticien, Data Analyst, Économiste, Chargé d'études statistiques, Data Scientist, Statisticien économiste dans les banques centrales (BCEAO), instituts de statistique et organisations internationales.",
+    "documents_et_annales": "Programmes, anciens sujets et corrigés sur ensae.sn et capesa.net.",
+    "resultats": "Listes d'admis et listes d'attente publiées par le jury international du CAPESA."
+  },
+  {
+    "id": "ucad_concours_specifiques",
+    "nom_concours": "Concours d'entrée dans les établissements et écoles de l'UCAD",
+    "organisme_organisateur": "Université Cheikh Anta Diop de Dakar (UCAD)",
+    "domaine": "Variable selon l'établissement (Ingénierie, Journalisme, Santé, Éducation, Sport)",
+    "niveau_requis": "BFEM / Bac / Licence / Master selon concours",
+    "conditions_admission": "Variables selon l'école (ESP, CESTI, EBAD, ENDSS, ESEA, FASTEF, INSEPS, EISMV...).",
+    "exemples_etablissements": [
+      "ESP (École Supérieure Polytechnique)",
+      "CESTI (Centre d'Études des Sciences et Techniques de l'Information)",
+      "EBAD (École de Bibliothécaires, Archivistes et Documentalistes)",
+      "ENDSS (École Nationale de Développement Sanitaire et Social)",
+      "ESEA (École Supérieure d'Économie Appliquée)",
+      "FASTEF (Faculté des Sciences et Technologies de l'Éducation)",
+      "INSEPS (Institut National Supérieur de l'Éducation Populaire et du Sport)"
+    ],
+    "limite_age": "Variable selon concours",
+    "pieces_a_fournir": "Dossier selon règlement spécifique de chaque école",
+    "date_ouverture": "Calendrier échelonné de Février à Août",
+    "date_cloture": "Variable selon établissement",
+    "date_ouverture_cloture": "Calendrier échelonné selon l'établissement",
+    "date_epreuves": "Variable selon le calendrier de chaque école",
+    "lieu_epreuves": "Campus de l'UCAD ou centres d'examen désignés",
+    "matieres_concours": "Variables selon la formation choisie",
+    "nombre_places": "Selon quotas des écoles",
+    "frais_inscription": "Variables (généralement 5 000 à 10 000 FCFA)",
+    "debouches": "Dépendent de la filière et de l'école intégrée.",
+    "documents_et_annales": "Communiqués, appels à candidature, programmes et sujets sur ucad.sn et sur les sites des écoles.",
+    "resultats": "Résultats publiés par chaque établissement et affichés au Rectorat de l'UCAD."
+  },
+  {
+    "id": "cesag_selection",
+    "nom_concours": "Campagne d'Admission et Concours CESAG Dakar (Licence, Master, MBA)",
+    "organisme_organisateur": "Centre Africain d'Études Supérieures en Gestion / BCEAO / UEMOA",
+    "domaine": "Comptabilité-Contrôle-Audit (CCA), Banque-Finance, Management & MBA",
+    "niveau_requis": "Licence : Baccalauréat · Master : Licence reconnue CAMES · MBA : Bac+4/5 avec expérience",
+    "conditions_admission": "Test d'aptitude en gestion / concours écrit ou sélection sur dossier académique d'excellence.",
+    "limite_age": "Non plafonné pour les masters et MBAs professionnels.",
+    "pieces_a_fournir": [
+      "Dossier de candidature en ligne sur cesag.sn",
+      "Relevés de notes et diplômes certifiés",
+      "Curriculum Vitae et lettre de motivation professionnelle",
+      "Reçu des frais de dossier (25 000 FCFA)"
+    ],
+    "date_ouverture": "Février",
+    "date_cloture": "31 Juillet 2026",
+    "date_ouverture_cloture": "Campagne 2026-2027 ouverte jusqu'au 31 Juillet 2026",
+    "date_epreuves": "Sessions mensuelles de sélection et tests en ligne",
+    "lieu_epreuves": "Campus CESAG Dakar & Centres d'examen dans l'espace UEMOA",
+    "matieres_concours": [
+      "Test de logique quantitative et mathématiques de gestion",
+      "Test d'anglais des affaires",
+      "Entretien individuel de motivation"
+    ],
+    "nombre_places": 400,
+    "frais_inscription": "25 000 FCFA (Frais de dossier)",
+    "debouches": "Directeur Financier, Auditeur Big 4, Banquier central (BCEAO), Cadre supérieur international.",
+    "documents_et_annales": "Guide de l'étudiant téléchargeable sur cesag.sn.",
+    "resultats": "Publication des admissions sur le portail numérique cesag.sn."
+  },
+  {
+    "id": "dgb_excellence",
+    "nom_concours": "Programme de Bourse Nationale d'Excellence du Sénégal",
+    "organisme_organisateur": "Direction Générale des Bourses (DGB) / MESRI",
+    "domaine": "Toutes filières universitaires d'excellence (STEM, Médecine, Droit)",
+    "niveau_requis": "Nouveaux Bacheliers sénégalais ayant obtenu une Mention Bien ou Très Bien",
+    "conditions_admission": "Attribution automatique ou sur classement national aux meilleurs lauréats du Baccalauréat des séries S1, S2, S3, L et G.",
+    "limite_age": "23 ans au moment de l'obtention du Baccalauréat.",
+    "pieces_a_fournir": [
+      "Attestation de réussite au Baccalauréat avec mention",
+      "Relevé de notes officiel du Bac",
+      "Certificat de nationalité sénégalaise",
+      "Attestation d'inscription dans une université ou grande école reconnue"
+    ],
+    "date_ouverture": "15 Juillet 2026",
+    "date_cloture": "30 Août 2026",
+    "date_ouverture_cloture": "Du 15 Juillet au 30 Août 2026 (Après publication des résultats du Bac)",
+    "date_epreuves": "Attribution sur titre et dossier (sans épreuve écrite)",
+    "lieu_epreuves": "Commission nationale des bourses (Dakar)",
+    "matieres_concours": [
+      "Évaluation sur la moyenne générale obtenue au Baccalauréat"
+    ],
+    "nombre_places": 500,
+    "frais_inscription": "Gratuit (Service public de l'État)",
+    "debouches": "Allocation mensuelle bonifiée de 100 000 FCFA / mois + couverture médicale et prime d'équipement initial.",
+    "documents_et_annales": "Guide de l'étudiant boursier DGB téléchargeable sur dgb.sn.",
+    "resultats": "Listes publiées sur le portail officiel Campusen et affichées dans les universités."
+  }
+]
