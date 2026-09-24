@@ -143,22 +143,35 @@ RAPPEL : Réponds UNIQUEMENT en t'appuyant sur ce contexte documentaire officiel
     }
 
     // Mode Vercel AI SDK streamText avec modèle OpenAI / LLM
-    const result = streamText({
-      model,
-      system: fullSystemPrompt,
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
-      maxTokens: 1200,
-      temperature: 0.2, // Faible température pour éviter les hallucinations
-    });
+    try {
+      const result = streamText({
+        model,
+        system: fullSystemPrompt,
+        messages: messages.map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
+        maxTokens: 1200,
+        temperature: 0.2,
+      });
 
-    return result.toDataStreamResponse({
-      headers: {
-        "X-RateLimit-Remaining": String(rateLimit.remaining),
-      },
-    });
+      return result.toDataStreamResponse({
+        headers: {
+          "X-RateLimit-Remaining": String(rateLimit.remaining),
+        },
+      });
+    } catch (modelError) {
+      // Erreur spécifique au modèle LLM — jamais de chunk brut exposé
+      // eslint-disable-next-line no-console
+      console.error("[ERREUR MODÈLE IA]", {
+        timestamp: new Date().toISOString(),
+        message: modelError instanceof Error ? modelError.message : "Erreur modèle inconnue",
+      });
+      return NextResponse.json(
+        { error: "Le modèle d'IA est temporairement indisponible. Veuillez réessayer dans quelques instants." },
+        { status: 503 }
+      );
+    }
   } catch (error) {
     // Journalisation structurée côté serveur SANS exposer de données sensibles
     // eslint-disable-next-line no-console

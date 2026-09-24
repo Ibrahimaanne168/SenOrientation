@@ -1,8 +1,23 @@
 import type { Metadata, Viewport } from "next";
+import { Source_Serif_4, Inter } from "next/font/google";
 import "./globals.css";
 
+const sourceSerif = Source_Serif_4({
+  subsets: ["latin"],
+  variable: "--font-serif-var",
+  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans-var",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Agent IA d'Orientation | Sénégal",
+  title: "SenOrientation — Agent IA d'Orientation",
   description:
     "Orientation scolaire et universitaire personnalisée pour les élèves et étudiants sénégalais : universités, filières, admissions Campusen et bourses.",
   keywords: [
@@ -13,7 +28,7 @@ export const metadata: Metadata = {
     "Bourses Sénégal",
     "Filières Bac S1 S2 L1 L2 G",
   ],
-  authors: [{ name: "Ministère / Projet Orientation Sénégal" }],
+  authors: [{ name: "SenOrientation" }],
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",
@@ -33,8 +48,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="h-full">
-      <body className="h-full antialiased bg-white text-[#172033] selection:bg-[#1677E8]/20 selection:text-[#0B3B82]">
+    <html
+      lang="fr"
+      className={`h-full ${sourceSerif.variable} ${inter.variable}`}
+    >
+      <body className="h-full antialiased bg-[#FBFAF7] text-[#1A1A1A]" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
         {children}
       </body>
     </html>

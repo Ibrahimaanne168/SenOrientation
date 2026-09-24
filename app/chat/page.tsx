@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import { useChat } from "ai/react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Image from "next/image";
 import {
   Send,
@@ -9,86 +12,129 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Sparkles,
-  AlertCircle,
-  Loader2,
+  AlertTriangle,
   LogOut,
   User,
   Compass,
 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useState } from "react";
 
-interface Message {
-  id: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-}
-
+/* ─── Types ──────────────────────────────────────────────────────────── */
 interface ConversationItem {
   id: string;
   title: string;
   date: string;
 }
 
+/* ─── Questions de démarrage ─────────────────────────────────────────── */
 const STARTER_QUESTIONS = [
-  "Quelles sont les meilleures filières après un Bac S2 au Sénégal ?",
-  "Comment fonctionne la plateforme Campusen pour l'orientation ?",
-  "Quelles sont les conditions pour obtenir une bourse de l'État ?",
-  "Quels sont les débouchés d'ingénieur à l'ESP de Dakar ou l'UAM ?",
+  "Quelles filières après un Bac S2 au Sénégal ?",
+  "Comment fonctionne Campusen pour l'orientation ?",
+  "Conditions pour obtenir une bourse de l'État ?",
+  "Débouchés d'ingénieur à l'ESP de Dakar ?",
 ];
 
+/* ─── Horodatage ─────────────────────────────────────────────────────── */
+function formatTime(date: Date): string {
+  return date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+}
+
+/* ─── Composant Markdown éditorial ─────────────────────────────────── */
+function AssistantMarkdown({ content }: { content: string }) {
+  return (
+    <div className="prose-editorial">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          // Liens : ouvre dans un nouvel onglet avec sécurité rel
+          a: ({ href, children }) => (
+            <a href={href} target="_blank" rel="noopener noreferrer">
+              {children}
+            </a>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
+}
+
+/* ─── Page principale ────────────────────────────────────────────────── */
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome-msg",
-      role: "assistant",
-      content:
-        "Bonjour ! Je suis votre **Agent d'Orientation**. Je suis là pour vous aider à choisir votre filière, votre université au Sénégal (UCAD, UGB, USSEIN, UIDT, UAM...) et vous renseigner sur les procédures Campusen et les bourses.\n\nQuelle est votre série de Bac ou votre situation actuelle ?",
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [conversations, setConversations] = useState<ConversationItem[]>([
     { id: "1", title: "Orientation Bac Scientifique", date: "Aujourd'hui" },
     { id: "2", title: "Démarches Campusen & Bourses", date: "Hier" },
   ]);
   const [activeConvId, setActiveConvId] = useState<string>("1");
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [messageTimes, setMessageTimes] = useState<Record<string, Date>>({});
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Vérifier la session Supabase
+  /* ─── useChat (Vercel AI SDK officiel) ───────────────────────────── */
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit: handleUseChatSubmit,
+    isLoading,
+    error,
+    setMessages,
+  } = useChat({
+    api: "/api/chat",
+    initialMessages: [
+      {
+        id: "welcome-msg",
+        role: "assistant",
+        content:
+          "Bonjour. Je suis votre Agent d'Orientation pour les universités et filières du Sénégal.\n\nPour commencer, quelle est votre **série de Bac** ou votre situation actuelle ? (ex : Terminale S2, Terminale L, Bac G…)",
+        createdAt: new Date(),
+      },
+    ],
+    onError: (err) => {
+      // Erreur gérée via l'état `error` de useChat — log serveur uniquement
+      console.error("[Chat] Erreur de stream :", err.message);
+    },
+    onFinish: (message) => {
+      // Enregistrer l'horodatage de la réponse de l'assistant
+      setMessageTimes((prev) => ({ ...prev, [message.id]: new Date() }));
+    },
+    body: {
+      conversationId: activeConvId,
+    },
+  });
+
+  /* ─── Session utilisateur Supabase ───────────────────────────────── */
   useEffect(() => {
     try {
       const supabase = createClient();
       supabase.auth.getUser().then(({ data: { user } }) => {
-        if (user && user.email) {
-          setUserEmail(user.email);
-        }
+        if (user?.email) setUserEmail(user.email);
       });
     } catch {
-      // Pas bloquant si Supabase n'est pas connecté
+      // Non bloquant
     }
   }, []);
 
-  // Défilement automatique vers le bas
+  /* ─── Défilement automatique ─────────────────────────────────────── */
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  // Redimensionnement automatique du textarea
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(e.target.value);
-    if (errorMessage) setErrorMessage(null);
+  /* ─── Redimensionnement textarea ─────────────────────────────────── */
+  useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
     }
-  };
+  }, [input]);
 
+  /* ─── Nouvelle discussion ─────────────────────────────────────────── */
   const handleNewChat = () => {
     const newId = Date.now().toString();
     const newConv: ConversationItem = {
@@ -96,150 +142,92 @@ export default function ChatPage() {
       title: "Nouvelle discussion",
       date: "À l'instant",
     };
-    setConversations([newConv, ...conversations]);
+    setConversations((prev) => [newConv, ...prev]);
     setActiveConvId(newId);
     setMessages([
       {
-        id: "welcome-msg",
+        id: `welcome-${newId}`,
         role: "assistant",
         content:
-          "Bonjour ! Comment puis-je vous guider aujourd'hui dans votre projet d'orientation au Sénégal ?",
+          "Bonjour. Comment puis-je vous guider dans votre projet d'orientation au Sénégal ?",
+        createdAt: new Date(),
       },
     ]);
-    setErrorMessage(null);
   };
 
-  const handleSubmit = async (e?: React.FormEvent, customPrompt?: string) => {
-    if (e) e.preventDefault();
-    const promptToSend = (customPrompt || input).trim();
-    if (!promptToSend || isLoading) return;
-
-    setErrorMessage(null);
-    const userMsgId = `user-${Date.now()}`;
-    const userMessage: Message = { id: userMsgId, role: "user", content: promptToSend };
-
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInput("");
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: updatedMessages.map((m) => ({ role: m.role, content: m.content })),
-          conversationId: undefined,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(
-          errorData?.error || `Erreur serveur (${response.status}). Veuillez réessayer.`
-        );
-      }
-
-      if (!response.body) {
-        throw new Error("Aucun flux de réponse reçu du serveur.");
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      const assistantMsgId = `assistant-${Date.now()}`;
-
-      // Ajouter le message assistant vide
-      setMessages((prev) => [...prev, { id: assistantMsgId, role: "assistant", content: "" }]);
-
-      let accumulatedText = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
-
-        for (const line of lines) {
-          if (line.startsWith("0:")) {
-            try {
-              const textContent = JSON.parse(line.slice(2));
-              accumulatedText += textContent;
-              setMessages((prev) =>
-                prev.map((msg) =>
-                  msg.id === assistantMsgId ? { ...msg, content: accumulatedText } : msg
-                )
-              );
-            } catch {
-              // Ignore line parse errors in stream
-            }
-          } else if (line.trim().length > 0 && !line.startsWith("d:") && !line.startsWith("e:")) {
-            // Ligne texte brute
-            accumulatedText += line;
-            setMessages((prev) =>
-              prev.map((msg) =>
-                msg.id === assistantMsgId ? { ...msg, content: accumulatedText } : msg
-              )
-            );
-          }
-        }
-      }
-
-      // Mettre à jour le titre de la conversation si c'était "Nouvelle discussion"
-      setConversations((prev) =>
-        prev.map((c) =>
-          c.id === activeConvId && c.title === "Nouvelle discussion"
-            ? { ...c, title: promptToSend.slice(0, 30) + (promptToSend.length > 30 ? "..." : "") }
-            : c
-        )
-      );
-    } catch (err: unknown) {
-      const errText =
-        err instanceof Error ? err.message : "Une erreur est survenue lors de la communication avec l'assistant.";
-      setErrorMessage(errText);
-    } finally {
-      setIsLoading(false);
-    }
+  /* ─── Envoi avec question de démarrage ───────────────────────────── */
+  const handleStarterQuestion = (question: string) => {
+    const fakeEvent = {
+      preventDefault: () => {},
+    } as React.FormEvent<HTMLFormElement>;
+    // Injecter dans input puis soumettre via un POST simulé
+    handleUseChatSubmit(fakeEvent, { data: { content: question } });
   };
 
+  /* ─── Envoi avec Entrée (sans Shift) ─────────────────────────────── */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit();
+      handleUseChatSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
     }
   };
 
+  /* ─── Mise à jour du titre de conversation ───────────────────────── */
+  useEffect(() => {
+    const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
+    if (lastUserMessage) {
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === activeConvId && c.title === "Nouvelle discussion"
+            ? {
+                ...c,
+                title:
+                  lastUserMessage.content.slice(0, 32) +
+                  (lastUserMessage.content.length > 32 ? "…" : ""),
+              }
+            : c
+        )
+      );
+    }
+  }, [messages, activeConvId]);
+
+  /* ─── Rendu ────────────────────────────────────────────────────────── */
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-white text-[#172033]">
-      {/* SIDEBAR : Fond Gris très clair (#F5F7FA) */}
+    <div className="flex h-screen w-full overflow-hidden bg-[#FBFAF7] text-[#1A1A1A]">
+
+      {/* ══════════════════════════════════════════════════════════════
+          SIDEBAR — fond légèrement plus chaud que paper
+      ══════════════════════════════════════════════════════════════ */}
       <aside
         aria-label="Historique des discussions"
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-[#F5F7FA] transition-all duration-200 md:static ${
-          sidebarOpen ? "w-72 translate-x-0" : "-translate-x-full md:w-0 md:translate-x-0 md:hidden"
+        className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-[#E8E5DF] bg-[#F5F3EE] transition-all duration-200 md:static ${
+          sidebarOpen ? "w-64 translate-x-0" : "-translate-x-full md:w-0 md:translate-x-0 md:hidden"
         }`}
       >
-        {/* En-tête Sidebar avec Logo Officiel */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200/90 bg-white/70">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-center p-1 shrink-0">
+        {/* En-tête Sidebar */}
+        <div className="flex items-center justify-between px-4 py-4 border-b border-[#E8E5DF]">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full border border-[#0B2545] flex items-center justify-center shrink-0">
               <Image
                 src="/logo.png"
                 alt="Logo SenOrientation"
-                width={28}
-                height={28}
-                priority
+                width={20}
+                height={20}
                 className="object-contain"
               />
             </div>
             <div>
-              <span className="font-bold text-sm tracking-tight text-[#0B3B82] block leading-tight">
+              {/* Signature typographique : petites capitales + letter-spacing */}
+              <span
+                className="block text-[11px] font-semibold uppercase tracking-widest text-[#0B2545]"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
                 SenOrientation
               </span>
-              <span className="text-[11px] font-medium text-[#18A999] block leading-tight">
+              <span
+                className="block text-[10px] uppercase tracking-widest text-[#6B6B6B]"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
                 Orientation SN
               </span>
             </div>
@@ -247,51 +235,61 @@ export default function ChatPage() {
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Fermer la barre latérale"
-            className="p-1.5 text-slate-500 hover:text-[#0B3B82] rounded-md md:hidden"
+            className="p-1 text-[#6B6B6B] hover:text-[#0B2545] rounded transition-colors md:hidden"
           >
-            <PanelLeftClose className="w-5 h-5" />
+            <PanelLeftClose className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Bouton Nouvelle Discussion */}
-        <div className="p-3">
+        {/* Bouton Nouvelle Discussion — accent or sur le lien */}
+        <div className="px-3 py-3">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center gap-2 px-3.5 py-2.5 text-sm font-semibold text-[#0B3B82] bg-white hover:bg-slate-50 rounded-xl border border-slate-200 shadow-2xs transition-all hover:border-[#1677E8]/40"
+            className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[#0B2545] border border-[#0B2545]/20 rounded-sm hover:border-[#C9A227] hover:text-[#C9A227] transition-all"
+            style={{ fontFamily: "Inter, sans-serif" }}
           >
-            <Plus className="w-4 h-4 text-[#1677E8]" />
-            <span>Nouvelle discussion</span>
+            <Plus className="w-3.5 h-3.5" />
+            <span className="uppercase tracking-wider text-[10px]">Nouvelle discussion</span>
           </button>
         </div>
 
         {/* Liste des conversations */}
-        <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
-          <div className="px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-[#172033]/60">
+        <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-px">
+          <p
+            className="px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-[#6B6B6B] mb-1"
+            style={{ fontFamily: "Inter, sans-serif" }}
+          >
             Historique
-          </div>
+          </p>
           {conversations.map((conv) => (
             <button
               key={conv.id}
               onClick={() => setActiveConvId(conv.id)}
-              className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded-xl text-left transition-all ${
+              className={`w-full flex items-start gap-2 px-3 py-2 text-xs rounded-sm text-left transition-all ${
                 conv.id === activeConvId
-                  ? "bg-[#1677E8]/10 text-[#0B3B82] font-semibold border-l-3 border-[#1677E8]"
-                  : "text-[#172033]/80 hover:bg-white hover:text-[#0B3B82]"
+                  ? "bg-[#0B2545]/6 text-[#0B2545] border-l border-[#0B2545]"
+                  : "text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#EEECE7]"
               }`}
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
-              <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${conv.id === activeConvId ? "text-[#1677E8]" : "text-slate-400"}`} />
-              <span className="truncate flex-1">{conv.title}</span>
+              <MessageSquare className="w-3 h-3 shrink-0 mt-0.5 opacity-60" />
+              <span className="truncate flex-1 leading-tight">{conv.title}</span>
             </button>
           ))}
         </nav>
 
-        {/* Pied de Sidebar : État utilisateur */}
-        <div className="p-3 border-t border-slate-200 bg-white/70">
+        {/* Pied de sidebar */}
+        <div className="px-3 py-3 border-t border-[#E8E5DF]">
           {userEmail ? (
-            <div className="flex items-center justify-between text-xs text-[#172033]">
-              <div className="flex items-center gap-2 truncate">
-                <User className="w-4 h-4 text-[#1677E8] shrink-0" />
-                <span className="truncate font-medium">{userEmail}</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <User className="w-3 h-3 text-[#6B6B6B] shrink-0" />
+                <span
+                  className="text-[10px] text-[#6B6B6B] truncate"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  {userEmail}
+                </span>
               </div>
               <button
                 onClick={async () => {
@@ -301,148 +299,183 @@ export default function ChatPage() {
                 }}
                 title="Se déconnecter"
                 aria-label="Se déconnecter"
-                className="p-1 text-slate-400 hover:text-red-600 rounded transition-colors"
+                className="p-1 text-[#6B6B6B] hover:text-red-600 rounded transition-colors"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-3 h-3" />
               </button>
             </div>
           ) : (
             <Link
               href="/login"
-              className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 text-xs font-semibold text-[#0B3B82] bg-white hover:bg-slate-50 rounded-xl border border-slate-200 shadow-2xs transition-all hover:border-[#1677E8]/40"
+              className="flex items-center justify-center gap-1.5 w-full py-2 text-[10px] font-semibold uppercase tracking-widest text-[#0B2545] border border-[#0B2545]/20 rounded-sm hover:border-[#C9A227] hover:text-[#C9A227] transition-all"
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
-              <User className="w-3.5 h-3.5 text-[#1677E8]" />
-              <span>Connexion / Sauvegarder</span>
+              <User className="w-3 h-3" />
+              <span>Connexion</span>
             </Link>
           )}
         </div>
       </aside>
 
-      {/* ZONE CENTRALE DE CONVERSATION : Fond Blanc (#FFFFFF) */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden bg-white">
-        {/* NAVBAR : Bleu profond (#0B3B82) */}
-        <header className="h-14 bg-[#0B3B82] text-white flex items-center justify-between px-4 sm:px-6 shadow-xs shrink-0">
-          <div className="flex items-center gap-3">
+      {/* ══════════════════════════════════════════════════════════════
+          ZONE CENTRALE
+      ══════════════════════════════════════════════════════════════ */}
+      <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#FBFAF7]">
+
+        {/* HEADER — fond navy très fin, signature typographique */}
+        <header className="shrink-0 border-b border-[#E8E5DF] bg-[#FBFAF7] px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-4">
             {!sidebarOpen && (
               <button
                 onClick={() => setSidebarOpen(true)}
                 aria-label="Ouvrir la barre latérale"
-                className="p-1.5 text-white/80 hover:text-white rounded-md hover:bg-white/10 transition-colors"
+                className="p-1 text-[#6B6B6B] hover:text-[#0B2545] rounded transition-colors"
               >
-                <PanelLeftOpen className="w-5 h-5" />
+                <PanelLeftOpen className="w-4 h-4" />
               </button>
             )}
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-white p-0.5 shadow-xs flex items-center justify-center">
-                <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  width={22}
-                  height={22}
-                  className="object-contain"
-                />
-              </div>
-              <h1 className="text-sm font-bold tracking-tight text-white flex items-center gap-2">
-                <span>Agent IA d&apos;Orientation</span>
-                {/* Badge Turquoise (#18A999) */}
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#18A999] text-white shadow-2xs">
-                  Sénégal
-                </span>
+            <div>
+              {/* Nom agent avec filet bicolore navy+or en dessous */}
+              <h1
+                className="text-sm font-semibold text-[#0B2545] uppercase tracking-widest leading-none"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                Agent d&apos;Orientation
               </h1>
+              {/* Filet signature : navy + or */}
+              <div className="flex mt-1" aria-hidden="true">
+                <div className="h-px w-6 bg-[#0B2545]" />
+                <div className="h-px w-4 bg-[#C9A227]" />
+              </div>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-2 text-xs text-blue-100 font-medium">
-            <span className="w-2 h-2 rounded-full bg-[#18A999] animate-pulse" />
-            <span>Données vérifiées • Campusen & Universités SN</span>
-          </div>
+          {/* Badge sources — texte sobre, pas d'icône animée */}
+          <p
+            className="hidden sm:block text-[10px] uppercase tracking-widest text-[#6B6B6B]"
+            style={{ fontFamily: "Inter, sans-serif" }}
+          >
+            Sources : universités officielles &amp; Campusen
+          </p>
         </header>
 
-        {/* Zone des messages : Fond Blanc (#FFFFFF) */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 md:px-12 space-y-6 bg-white">
-          <div className="max-w-3xl mx-auto space-y-6">
-            {messages.map((msg) => (
-              <article
-                key={msg.id}
-                className={`flex gap-3 sm:gap-4 ${
-                  msg.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                {/* Avatar Assistant avec le vrai logo.png */}
-                {msg.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 p-1">
-                    <Image
-                      src="/logo.png"
-                      alt="Logo SenOrientation"
-                      width={22}
-                      height={22}
-                      className="object-contain"
-                    />
-                  </div>
-                )}
+        {/* ZONE MESSAGES */}
+        <div className="flex-1 overflow-y-auto py-8 px-4 sm:px-6 md:px-12">
+          <div className="max-w-2xl mx-auto space-y-8">
+            {messages.map((msg) => {
+              const time = msg.createdAt
+                ? formatTime(new Date(msg.createdAt))
+                : messageTimes[msg.id]
+                ? formatTime(messageTimes[msg.id])
+                : null;
 
-                {/* Bulle de message : Gris très clair (#F5F7FA) pour assistant, Bleu vif (#1677E8) pour utilisateur */}
-                <div
-                  className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                    msg.role === "user"
-                      ? "bg-[#1677E8] text-white shadow-xs rounded-br-xs"
-                      : "bg-[#F5F7FA] border border-slate-200/90 text-[#172033] shadow-2xs rounded-bl-xs"
-                  }`}
-                >
-                  <div className="whitespace-pre-wrap font-normal">
-                    {msg.content}
+              if (msg.role === "assistant") {
+                return (
+                  <article key={msg.id} className="flex gap-0">
+                    {/* Filet vertical gauche navy/30 */}
+                    <div
+                      className="shrink-0 w-px bg-[#0B2545]/20 mr-6 mt-1"
+                      aria-hidden="true"
+                    />
+                    <div className="flex-1 py-6 min-w-0">
+                      <AssistantMarkdown content={msg.content} />
+                      {time && (
+                        <p
+                          className="mt-3 text-[10px] text-[#6B6B6B]"
+                          style={{ fontFamily: "Inter, sans-serif" }}
+                          aria-label={`Envoyé à ${time}`}
+                        >
+                          {time}
+                        </p>
+                      )}
+                    </div>
+                  </article>
+                );
+              }
+
+              // Message utilisateur
+              return (
+                <article key={msg.id} className="flex justify-end">
+                  <div className="max-w-[75%]">
+                    <div
+                      className="bg-[#F1F0EC] text-[#1A1A1A] px-4 py-3 rounded-sm"
+                      style={{ fontFamily: "Inter, sans-serif", fontSize: "0.875rem", lineHeight: "1.6" }}
+                    >
+                      {msg.content}
+                    </div>
+                    {time && (
+                      <p
+                        className="mt-1 text-[10px] text-[#6B6B6B] text-right"
+                        style={{ fontFamily: "Inter, sans-serif" }}
+                      >
+                        {time}
+                      </p>
+                    )}
                   </div>
+                </article>
+              );
+            })}
+
+            {/* Indicateur de chargement : caret clignotant */}
+            {isLoading && (
+              <article className="flex gap-0">
+                <div className="shrink-0 w-px bg-[#0B2545]/20 mr-6 mt-1" aria-hidden="true" />
+                <div className="flex-1 py-6">
+                  <p
+                    className="loading-caret text-[#6B6B6B] italic text-sm"
+                    style={{ fontFamily: "var(--font-serif-var), Georgia, serif" }}
+                    aria-live="polite"
+                    aria-label="L'agent rédige une réponse"
+                  >
+                    Réflexion en cours
+                  </p>
                 </div>
               </article>
-            ))}
-
-            {/* État de chargement / Réflexion de l'agent */}
-            {isLoading && messages[messages.length - 1]?.role === "user" && (
-              <div className="flex gap-3 sm:gap-4 justify-start">
-                <div className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 p-1">
-                  <Image
-                    src="/logo.png"
-                    alt="Logo SenOrientation"
-                    width={22}
-                    height={22}
-                    className="object-contain animate-pulse"
-                  />
-                </div>
-                <div className="rounded-2xl px-4 py-3 bg-[#F5F7FA] border border-slate-200/90 text-[#172033]/80 text-sm flex items-center gap-2.5">
-                  {/* Progression en Turquoise (#18A999) */}
-                  <Loader2 className="w-4 h-4 animate-spin text-[#18A999]" />
-                  <span className="text-xs font-medium">Recherche dans la base d&apos;orientation sénégalaise...</span>
-                </div>
-              </div>
             )}
 
-            {/* Message d'erreur visible */}
-            {errorMessage && (
+            {/* Erreur de stream — message propre, jamais de contenu brut */}
+            {error && !isLoading && (
               <div
                 role="alert"
-                className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2"
+                className="flex items-start gap-3 p-4 border border-[#E8E5DF] rounded-sm bg-[#FDF8F3]"
               >
-                <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
-                <span>{errorMessage}</span>
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <p
+                    className="text-sm font-medium text-[#1A1A1A]"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                  >
+                    Une erreur est survenue
+                  </p>
+                  <p
+                    className="text-xs text-[#6B6B6B] mt-0.5"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                  >
+                    Veuillez réessayer. Si le problème persiste, rafraîchissez la page.
+                  </p>
+                </div>
               </div>
             )}
 
-            {/* Suggestions d'amorçage pour l'étudiant */}
+            {/* Suggestions de démarrage */}
             {messages.length === 1 && !isLoading && (
               <div className="pt-4">
-                <p className="text-xs font-semibold text-[#172033]/70 mb-2.5 flex items-center gap-1.5">
-                  {/* Accent / Objectifs en Or / Ambre (#F5B51B) */}
-                  <Sparkles className="w-4 h-4 text-[#F5B51B]" />
-                  <span>Suggestions de questions fréquentes :</span>
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-widest text-[#6B6B6B] mb-4 flex items-center gap-2"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  <Sparkles className="w-3 h-3 text-[#C9A227]" />
+                  Suggestions fréquentes
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {STARTER_QUESTIONS.map((q, idx) => (
                     <button
                       key={idx}
-                      onClick={() => handleSubmit(undefined, q)}
-                      className="group text-left text-xs p-3.5 rounded-xl border border-slate-200/90 bg-[#F5F7FA] hover:bg-white hover:border-[#1677E8] text-[#172033] transition-all shadow-2xs flex items-start gap-2"
+                      onClick={() => handleStarterQuestion(q)}
+                      className="group text-left text-xs px-4 py-3 border border-[#E8E5DF] rounded-sm hover:border-[#0B2545] text-[#1A1A1A] transition-all flex items-start gap-2.5 bg-white"
+                      style={{ fontFamily: "Inter, sans-serif" }}
                     >
-                      <Compass className="w-3.5 h-3.5 text-[#18A999] shrink-0 mt-0.5 group-hover:text-[#1677E8] transition-colors" />
-                      <span className="font-medium group-hover:text-[#0B3B82] transition-colors">{q}</span>
+                      <Compass className="w-3 h-3 text-[#6B6B6B] shrink-0 mt-0.5 group-hover:text-[#0B2545] transition-colors" />
+                      <span className="leading-snug group-hover:text-[#0B2545] transition-colors">{q}</span>
                     </button>
                   ))}
                 </div>
@@ -453,44 +486,46 @@ export default function ChatPage() {
           </div>
         </div>
 
-        {/* CHAMP DE SAISIE EN BAS : Fond Blanc (#FFFFFF) */}
-        <div className="border-t border-slate-100 p-4 sm:p-5 bg-white">
-          <div className="max-w-3xl mx-auto">
+        {/* CHAMP DE SAISIE */}
+        <div className="shrink-0 border-t border-[#E8E5DF] bg-[#FBFAF7] px-4 sm:px-6 md:px-12 py-4">
+          <div className="max-w-2xl mx-auto">
             <form
-              onSubmit={(e) => handleSubmit(e)}
-              className="relative flex items-end gap-2 bg-[#F5F7FA] border border-slate-300 rounded-2xl p-2 focus-within:bg-white focus-within:border-[#1677E8] focus-within:ring-2 focus-within:ring-[#1677E8]/20 transition-all shadow-2xs"
+              onSubmit={handleUseChatSubmit}
+              className="flex items-end gap-3"
             >
               <label htmlFor="chat-input" className="sr-only">
                 Posez votre question d&apos;orientation
               </label>
-              <textarea
-                id="chat-input"
-                ref={textareaRef}
-                rows={1}
-                value={input}
-                onChange={handleTextareaChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Posez votre question d'orientation (ex: après un Bac S2, bourse...)"
-                disabled={isLoading}
-                aria-label="Votre question d'orientation"
-                className="w-full resize-none bg-transparent px-3 py-1.5 text-sm text-[#172033] placeholder:text-slate-400 focus:outline-none max-h-40 overflow-y-auto"
-              />
-              {/* Bouton Envoyer : Bleu vif (#1677E8) */}
+              <div className="flex-1 relative">
+                <textarea
+                  id="chat-input"
+                  ref={textareaRef}
+                  rows={1}
+                  value={input}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Votre question d'orientation…"
+                  disabled={isLoading}
+                  aria-label="Votre question d'orientation"
+                  className="w-full resize-none bg-white border border-[#D1CFC9] rounded-sm px-4 py-3 text-sm text-[#1A1A1A] placeholder:text-[#A8A69F] focus:outline-none focus:border-[#C9A227] max-h-40 overflow-y-auto transition-colors"
+                  style={{ fontFamily: "Inter, sans-serif", lineHeight: "1.5" }}
+                />
+              </div>
+              {/* Bouton envoi : icône monochrome navy, pas de fond bleu flashy */}
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="Envoyer le message"
-                className="p-2.5 bg-[#1677E8] hover:bg-[#1263c7] text-white rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0 shadow-2xs"
+                className="shrink-0 p-3 border border-[#0B2545] text-[#0B2545] rounded-sm hover:bg-[#0B2545] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
-                {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
+                <Send className="w-4 h-4" />
               </button>
             </form>
-            <p className="text-[11px] text-center text-[#172033]/60 mt-2">
-              L&apos;agent s&apos;appuie exclusivement sur les données officielles des universités sénégalaises et de Campusen.
+            <p
+              className="text-[10px] text-center text-[#6B6B6B] mt-2 uppercase tracking-wider"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Données officielles — Universités publiques &amp; Campusen.sec.gouv.sn
             </p>
           </div>
         </div>
