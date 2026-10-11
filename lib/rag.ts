@@ -80,58 +80,76 @@ export function detectIntent(message: string): "greeting" | "gratitude" | "query
 
 export function reformulateQuery(
   history: { role: string; content: string }[],
-  currentQuery: string
+  currentQuery: string,
+  profile?: {
+    serie?: string | null;
+    projet?: string | null;
+    matieres_aimees?: string[];
+    ville?: string | null;
+    budget?: string | null;
+  }
 ): string {
   const current = currentQuery.trim();
   const lowerCurrent = current.toLowerCase();
 
-  // Si l'historique est vide ou si la requête contient déjà tout, la retourner
-  if (!history || history.length === 0) {
-    return current;
+  // Détection depuis le profil fourni en priorité
+  let detectedSerie: string | null = profile?.serie ? `Bac ${profile.serie}` : null;
+  let detectedInterest: string | null = profile?.projet || null;
+
+  // Analyser l'historique récent si non fourni dans le profil
+  if (history && history.length > 0) {
+    const recentHistory = history.slice(-6);
+    for (const msg of recentHistory) {
+      const text = msg.content.toLowerCase();
+      if (!detectedSerie) {
+        if (text.includes("s1") || text.includes("scientifique s1")) detectedSerie = "Bac S1";
+        else if (text.includes("s2") || text.includes("scientifique s2")) detectedSerie = "Bac S2";
+        else if (text.includes("s3")) detectedSerie = "Bac S3";
+        else if (text.includes("l1")) detectedSerie = "Bac L1";
+        else if (text.includes("l2") || text.includes("littéraire")) detectedSerie = "Bac L2";
+        else if (text.includes("l'")) detectedSerie = "Bac L'";
+        else if (text.includes("bac g") || text.includes("steg")) detectedSerie = "Bac G / STEG";
+        else if (text.includes("t1")) detectedSerie = "Bac T1";
+        else if (text.includes("t2")) detectedSerie = "Bac T2";
+      }
+
+      if (!detectedInterest) {
+        if (text.includes("informatique") || text.includes("code") || text.includes("dev")) detectedInterest = "informatique et technologies";
+        else if (text.includes("médecine") || text.includes("santé")) detectedInterest = "santé et médecine";
+        else if (text.includes("droit") || text.includes("juridique")) detectedInterest = "droit et sciences politiques";
+        else if (text.includes("gestion") || text.includes("finance") || text.includes("banque")) detectedInterest = "gestion, audit et finance";
+        else if (text.includes("agronomie") || text.includes("agriculture")) detectedInterest = "agronomie et agro-business";
+      }
+    }
   }
 
-  // Analyser les derniers messages pour extraire le profil de l'élève (série, niveau, intérêts)
-  const recentHistory = history.slice(-6);
-  let detectedSerie: string | null = null;
-  let detectedInterest: string | null = null;
+  // Cas spécifique : message qui annonce juste la série (ex: "je suis en S2", "Bac S2")
+  if (lowerCurrent.match(/^(?:je suis en\s+|bac\s+)?(s[1-3]|l[1-2]|l'|g|steg|t[1-2])$/i)) {
+    const serieName = detectedSerie || `Bac ${current.toUpperCase()}`;
+    return `orientation et filières supérieures après ${serieName} au Sénégal dans le public et le privé`;
+  }
 
-  for (const msg of recentHistory) {
-    const text = msg.content.toLowerCase();
-    
-    // Détection de série
-    if (text.includes("s1") || text.includes("scientifique s1")) detectedSerie = "Bac S1";
-    else if (text.includes("s2") || text.includes("scientifique s2")) detectedSerie = "Bac S2";
-    else if (text.includes("s3")) detectedSerie = "Bac S3";
-    else if (text.includes("l1")) detectedSerie = "Bac L1";
-    else if (text.includes("l2") || text.includes("littéraire")) detectedSerie = "Bac L2";
-    else if (text.includes("l'")) detectedSerie = "Bac L'";
-    else if (text.includes("bac g") || text.includes("steg")) detectedSerie = "Bac G / STEG";
-    else if (text.includes("t1")) detectedSerie = "Bac T1";
-    else if (text.includes("t2")) detectedSerie = "Bac T2";
-
-    // Détection d'intérêt récurrent
-    if (text.includes("informatique") || text.includes("code") || text.includes("dev")) detectedInterest = "informatique et technologies";
-    else if (text.includes("médecine") || text.includes("santé")) detectedInterest = "santé et médecine";
-    else if (text.includes("droit") || text.includes("juridique")) detectedInterest = "droit et sciences politiques";
-    else if (text.includes("gestion") || text.includes("finance") || text.includes("banque")) detectedInterest = "gestion, audit et finance";
-    else if (text.includes("agronomie") || text.includes("agriculture")) detectedInterest = "agronomie et agro-business";
+  // Cas spécifique : message qui mentionne le public ou le privé (ex: "je vise le public uniquement")
+  if (lowerCurrent.includes("public") || lowerCurrent.includes("campusen")) {
+    const serieName = detectedSerie || "bacheliers";
+    const domain = detectedInterest ? `en ${detectedInterest}` : "filières prioritaires";
+    return `filières et universités publiques Campusen après ${serieName} ${domain} au Sénégal`;
   }
 
   // Si la question actuelle est courte ou incomplète (ex: "j'aime les maths", "quelles filières ?", "quelles écoles ?")
   const needsContext =
-    current.split(" ").length <= 7 &&
-    !lowerCurrent.includes("bac") &&
-    !lowerCurrent.includes("série") &&
-    !lowerCurrent.includes("campusen");
+    current.split(" ").length <= 8 &&
+    !lowerCurrent.includes("campusen.sec.gouv.sn");
 
   if (needsContext && detectedSerie) {
     if (lowerCurrent.includes("math") || lowerCurrent.includes("pc") || lowerCurrent.includes("svt")) {
       return `filières après ${detectedSerie} orientées mathématiques et sciences appliquées au Sénégal`;
     }
     if (lowerCurrent.includes("école") || lowerCurrent.includes("université")) {
-      return `universités publiques et écoles après ${detectedSerie} au Sénégal`;
+      return `universités publiques et grandes écoles après ${detectedSerie} au Sénégal`;
     }
-    return `filières et opportunités après ${detectedSerie} au Sénégal ${current}`;
+    const domain = detectedInterest ? `en ${detectedInterest}` : "";
+    return `filières d'excellence et débouchés après ${detectedSerie} ${domain} au Sénégal ${current}`;
   }
 
   if (needsContext && detectedInterest) {

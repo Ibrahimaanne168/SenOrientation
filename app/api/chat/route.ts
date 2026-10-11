@@ -10,21 +10,33 @@ import {
   formatKnowledgeForPrompt,
   KnowledgeMatch,
 } from "@/lib/rag";
-import { SYSTEM_PROMPT, getAIModel } from "@/lib/ai";
+import { SYSTEM_PROMPT_TEMPLATE, getAIModel } from "@/lib/ai";
 import { createClient } from "@/lib/supabase/server";
+import {
+  ConversationProfile,
+  INITIAL_PROFILE,
+  updateConversationProfile,
+} from "@/lib/profile";
 
 export const maxDuration = 30; // 30 secondes max
 
 /**
- * Diffuse un texte statique au format data-stream attendu par useChat()
+ * Diffuse un objet JSON strict au format data-stream attendu par useChat()
  */
-function streamStaticText(text: string, remainingRateLimit = 19) {
+function streamJsonResponse(
+  payload: { reply: string; suggestions: string[]; profile?: ConversationProfile },
+  remainingRateLimit = 19
+) {
+  const jsonString = JSON.stringify(payload);
   return createDataStreamResponse({
     execute: async (dataStream) => {
-      const chunks = text.split(" ");
+      if (payload.profile) {
+        dataStream.writeMessageAnnotation({ profile: payload.profile } as any);
+      }
+      const chunks = jsonString.split(" ");
       for (const chunk of chunks) {
         dataStream.write(formatDataStreamPart("text", chunk + " "));
-        await new Promise((resolve) => setTimeout(resolve, 20));
+        await new Promise((resolve) => setTimeout(resolve, 15));
       }
     },
     headers: {
@@ -35,7 +47,7 @@ function streamStaticText(text: string, remainingRateLimit = 19) {
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Récupération de l'adresse IP pour le rate limiting
+    // 1. Rate limiting par adresse IP
     const ip =
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       req.headers.get("x-real-ip") ||
@@ -63,15 +75,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Validation du format JSON et parsing Zod
+    // 2. Validation Zod et extraction des données
     const body = await req.json().catch(() => null);
     const parsed = chatRequestSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
-        {
-          error: "Requête invalide. Veuillez vérifier votre message.",
-        },
+        { error: "Requête invalide. Veuillez vérifier votre message." },
         { status: 400 }
       );
     }
@@ -86,30 +96,57 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Sanitisation anti-prompt injection
+    // 3. Assainissement anti-injection
     const sanitized = sanitizeUserInput(latestUserMessage.content);
     if (sanitized.isSuspicious) {
       // eslint-disable-next-line no-console
       console.warn(
-        `[SÉCURITÉ] Tentative de contournement détectée pour l'IP ${ip}:`,
+        `[SÉCURITÉ] Tentative suspecte pour l'IP ${ip}:`,
         sanitized.warnings
       );
     }
-
-    // Remplacer le contenu du dernier message par la version assainie
     latestUserMessage.content = sanitized.cleanText;
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ÉTAPE 1 : ROUTAGE DES INTENTIONS (Salutations / Remerciements)
-    // Ne lance PAS la recherche vectorielle et répond court
+    // 1. GESTION DU PROFIL PROGRESSIF (ÉTAPES 1 À 5)
+    // ─────────────────────────────────────────────────────────────────────────
+    const incomingProfile: ConversationProfile =
+      (body?.profile && typeof body.profile === "object")
+        ? body.profile
+        : INITIAL_PROFILE;
+
+    const previousHistory = messages.slice(0, -1);
+    const updatedProfile = await updateConversationProfile(
+      incomingProfile,
+      previousHistory,
+      sanitized.cleanText
+    );
+
+    // LOG OBLIGATOIRE : Profil mis à jour
+    // eslint-disable-next-line no-console
+    console.log("[RAG Pipeline] Profil mis à jour :\n", JSON.stringify(updatedProfile, null, 2));
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 2. ROUTAGE DES INTENTIONS (Salutations / Remerciements)
+    // N'appelle pas la recherche documentaire pour les simples salutations
     // ─────────────────────────────────────────────────────────────────────────
     const intent = detectIntent(sanitized.cleanText);
 
     if (intent === "greeting") {
       // eslint-disable-next-line no-console
       console.log("[RAG Pipeline] Routage : Salutation détectée -> Recherche RAG ignorée.");
-      return streamStaticText(
-        "Bonjour ! Je suis SenOrientation, ton conseiller pour l'orientation scolaire et universitaire au Sénégal. Quelle est ta série de Bac (ex. S1, S2, L1, L2, G, T...) ou quel domaine t'intéresse pour que je puisse t'aider ?",
+      return streamJsonResponse(
+        {
+          reply:
+            "Bonjour ! Je suis SenOrientation, ton conseiller d'orientation scolaire et universitaire au Sénégal. Pour t'aider à choisir tes études supérieures, quelle est ta série de Baccalauréat ?",
+          suggestions: [
+            "Bac S1 / S2 (Scientifique)",
+            "Bac L1 / L2 (Littéraire)",
+            "Bac G / STEG (Gestion)",
+            "Bac Technique (T1/T2)",
+          ],
+          profile: updatedProfile,
+        },
         rateLimit.remaining
       );
     }
@@ -117,28 +154,42 @@ export async function POST(req: NextRequest) {
     if (intent === "gratitude") {
       // eslint-disable-next-line no-console
       console.log("[RAG Pipeline] Routage : Remerciement détecté -> Recherche RAG ignorée.");
-      return streamStaticText(
-        "Je t'en prie ! N'hésite pas si tu as d'autres questions sur tes choix de filières, la plateforme Campusen, les bourses DGES ou les concours.",
+      return streamJsonResponse(
+        {
+          reply:
+            "Je t'en prie ! N'hésite pas si tu as d'autres questions sur tes choix de filières, les universités publiques via Campusen, les bourses DGES ou les concours.",
+          suggestions: [
+            "Voir les universités publiques",
+            "Comment fonctionne Campusen ?",
+            "Quelles sont les bourses de l'État ?",
+          ],
+          profile: updatedProfile,
+        },
         rateLimit.remaining
       );
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ÉTAPE 2 : HISTORIQUE (10 max) & REFORMULATION CONTEXTUELLE DE LA REQUÊTE
-    // Ex: "j'aime les maths" + profil S2 -> "filières après Bac S2 orientées mathématiques..."
+    // 3. REFORMULATION CONTEXTUELLE DE LA REQUÊTE AVEC HISTORIQUE (10 max)
     // ─────────────────────────────────────────────────────────────────────────
     const recentMessages = messages.slice(-10);
     const historyBeforeCurrent = recentMessages.slice(0, -1);
-    const reformulatedQuery = reformulateQuery(historyBeforeCurrent, sanitized.cleanText);
+    const reformulatedQuery = reformulateQuery(
+      historyBeforeCurrent,
+      sanitized.cleanText,
+      updatedProfile
+    );
 
-    // LOG SERVEUR : Requête reformulée
+    // LOG OBLIGATOIRE : Requête reformulée
     // eslint-disable-next-line no-console
     console.log(`[RAG Pipeline] Requête reformulée : "${reformulatedQuery}"`);
 
-    // Recherche vectorielle TF-IDF / L2 Cosinus (top-k 5, seuil minimal de similarité 0.28)
+    // ─────────────────────────────────────────────────────────────────────────
+    // 4. RECHERCHE VECTORIELLE AVEC SEUIL DE SIMILARITÉ MINIMAL (top-k 4 à 6)
+    // ─────────────────────────────────────────────────────────────────────────
     const knowledgeMatches = await searchKnowledge(reformulatedQuery, 5, 0.28);
 
-    // LOG SERVEUR : Passages récupérés avec score
+    // LOG OBLIGATOIRE : Passages récupérés avec scores
     // eslint-disable-next-line no-console
     console.log(
       `[RAG Pipeline] Passages récupérés (${knowledgeMatches.length}) :`,
@@ -152,39 +203,36 @@ export async function POST(req: NextRequest) {
     // Si aucun passage ne passe le seuil minimal de similarité
     if (knowledgeMatches.length === 0) {
       // eslint-disable-next-line no-console
-      console.log("[RAG Pipeline] Aucun passage au-dessus du seuil (score < 0.28) -> Réponse de repli.");
-      return streamStaticText(
-        "Je n'ai pas cette information dans ma base documentaire officielle. Je te conseille de te renseigner directement sur la plateforme Campusen (campusen.sec.gouv.sn) ou auprès du Ministère de l'Enseignement Supérieur (MESRI).",
+      console.log("[RAG Pipeline] Aucun passage au-dessus du seuil (score < 0.28) -> Réponse 'je n'ai pas cette information'.");
+      return streamJsonResponse(
+        {
+          reply:
+            "Je n'ai pas cette information dans ma base documentaire officielle. Je te conseille de te renseigner directement sur la plateforme Campusen (campusen.sec.gouv.sn) ou auprès du Ministère de l'Enseignement Supérieur (MESRI).",
+          suggestions: [
+            "Quelles sont les universités publiques au Sénégal ?",
+            "Comment fonctionne Campusen ?",
+            "Quels sont les concours d'excellence ?",
+          ],
+          profile: updatedProfile,
+        },
         rateLimit.remaining
       );
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ÉTAPE 3 : INJECTION SOUS [CONTEXTE] DANS LE PROMPT SYSTÈME
+    // 5. INJECTION DANS LE PROMPT SYSTÈME ({profil_json} et {extraits_recuperes})
     // ─────────────────────────────────────────────────────────────────────────
     const formattedKnowledge = formatKnowledgeForPrompt(knowledgeMatches);
 
-    const fullSystemPrompt = `${SYSTEM_PROMPT}
+    const fullSystemPrompt = SYSTEM_PROMPT_TEMPLATE
+      .replace("{profil_json}", JSON.stringify(updatedProfile, null, 2))
+      .replace("{extraits_recuperes}", formattedKnowledge);
 
-==================================================
-CONTEXTE DOCUMENTAIRE OFFICIEL DU SÉNÉGAL :
-==================================================
-${formattedKnowledge}
-==================================================
-DIRECTIVES CRITIQUES :
-1. Réponds UNIQUEMENT et STRICTEMENT en t'appuyant sur les passages fournis ci-dessus sous [CONTEXTE].
-2. Si une information demandée ne figure pas dans le contexte, dis explicitement que tu n'as pas cette information dans ta base documentaire officielle.
-3. Structure TOUJOURS la réponse en séparant clairement :
-   - 🏛️ Établissements & Filières Publiques (orientation via Campusen / concours)
-   - 🏢 Établissements Privés Reconnus (accrédités ANAQ-Sup / CAMES)`;
-
-    // LOG SERVEUR : Prompt final
+    // LOG OBLIGATOIRE : Prompt final
     // eslint-disable-next-line no-console
     console.log("[RAG Pipeline] Prompt final :\n", fullSystemPrompt);
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // 4. SAUVEGARDE OPTIONNELLE DANS SUPABASE (si session connectée)
-    // ─────────────────────────────────────────────────────────────────────────
+    // Sauvegarde en base si connecté
     try {
       const supabase = await createClient();
       const {
@@ -199,21 +247,22 @@ DIRECTIVES CRITIQUES :
         });
       }
     } catch {
-      // Ne bloque pas la réponse si la session n'est pas active
+      // Non bloquant
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ÉTAPE 5 : APPEL DU MODÈLE (Température 0.3, historique 10 max)
+    // 6. APPEL DU MODÈLE (JSON, maxTokens 250, température 0.3, historique 10 max)
     // ─────────────────────────────────────────────────────────────────────────
     const model = getAIModel();
 
     if (!model) {
-      // Moteur local officiel fondé sur les passages du RAG récupérés
-      const fallbackResponse = generateLocalOrientationResponse(
+      // Mode local officiel si aucune clé OpenAI valide n'est configurée
+      const localPayload = generateLocalOrientationPayload(
         reformulatedQuery,
-        knowledgeMatches
+        knowledgeMatches,
+        updatedProfile
       );
-      return streamStaticText(fallbackResponse, rateLimit.remaining);
+      return streamJsonResponse(localPayload, rateLimit.remaining);
     }
 
     try {
@@ -224,22 +273,27 @@ DIRECTIVES CRITIQUES :
           role: m.role,
           content: m.content,
         })),
-        maxTokens: 1200,
-        temperature: 0.3, // Température fixée à 0.3 comme demandé
+        maxTokens: 250, // Limite stricte à 250 tokens
+        temperature: 0.3, // Température 0.3
       });
 
-      return result.toDataStreamResponse({
+      return createDataStreamResponse({
+        execute: async (dataStream) => {
+          dataStream.writeMessageAnnotation({ profile: updatedProfile } as any);
+          await result.mergeIntoDataStream(dataStream);
+        },
         headers: {
           "X-RateLimit-Remaining": String(rateLimit.remaining),
         },
       });
     } catch {
-      // Si l'appel distant OpenAI échoue, basculer sur la synthèse locale du contexte RAG
-      const fallbackResponse = generateLocalOrientationResponse(
+      // Fallback local transparent si OpenAI renvoie une erreur
+      const localPayload = generateLocalOrientationPayload(
         reformulatedQuery,
-        knowledgeMatches
+        knowledgeMatches,
+        updatedProfile
       );
-      return streamStaticText(fallbackResponse, rateLimit.remaining);
+      return streamJsonResponse(localPayload, rateLimit.remaining);
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -259,55 +313,78 @@ DIRECTIVES CRITIQUES :
 }
 
 /**
- * Synthèse locale d'orientation basée sur les passages du RAG validés
- * avec séparation systématique Public / Privé.
+ * Générateur local de réponse au format JSON { reply, suggestions, profile }
+ * avec respect de la limite concise (sous 250 tokens) et progression des étapes.
  */
-function generateLocalOrientationResponse(
+function generateLocalOrientationPayload(
   query: string,
-  knowledge: KnowledgeMatch[]
-): string {
-  if (!knowledge || knowledge.length === 0) {
-    return "Je n'ai pas cette information dans ma base documentaire officielle. Je te conseille de te renseigner directement sur la plateforme Campusen (campusen.sec.gouv.sn) ou auprès du Ministère de l'Enseignement Supérieur (MESRI).";
+  knowledge: KnowledgeMatch[],
+  profile: ConversationProfile
+): { reply: string; suggestions: string[]; profile: ConversationProfile } {
+  const topDoc = knowledge[0]?.content || "";
+
+  // Suggestions dynamiques selon l'étape de profil
+  let suggestions: string[] = [];
+  if (profile.etape <= 1) {
+    suggestions = ["Bac S1 / S2", "Bac L1 / L2", "Bac G / STEG", "Bac Technique"];
+  } else if (profile.etape === 2) {
+    suggestions = [
+      "J'aime les maths et l'info",
+      "Je préfère les SVT et la médecine",
+      "J'ai 13 de moyenne",
+      "Plutôt le droit et les langues",
+    ];
+  } else if (profile.etape === 3) {
+    suggestions = [
+      "Devenir ingénieur à Dakar",
+      "Médecine à l'UCAD ou UGB",
+      "Droit & Carrières juridiques",
+      "Finance / Audit (CESAG)",
+    ];
+  } else if (profile.etape === 4) {
+    suggestions = [
+      "Public uniquement (Campusen)",
+      "Privé avec bourse d'État",
+      "Public avec repli privé",
+      "Bourses DGES disponibles",
+    ];
+  } else {
+    suggestions = [
+      "Exporter mon récapitulatif",
+      "Comment payer sur Campusen ?",
+      "Préparer les concours",
+      "Nouvelle discussion",
+    ];
   }
 
-  const publicChunks: string[] = [];
-  const privateChunks: string[] = [];
-  const generalChunks: string[] = [];
-
-  for (const match of knowledge) {
-    if (match.content.includes("[Établissement Public") || match.source.includes("public")) {
-      publicChunks.push(match.content.replace(/\[Établissement Public \(Campusen\)\]\s*/g, ""));
-    } else if (match.content.includes("[Établissement Privé") || match.source.includes("prive")) {
-      privateChunks.push(
-        match.content.replace(/\[Établissement Privé \(Accrédité ANAQ-Sup \/ CAMES\)\]\s*/g, "")
-      );
-    } else {
-      generalChunks.push(match.content);
+  // Synthèse courte adaptée
+  let reply = "";
+  if (profile.etape === 5) {
+    reply = `🎉 **Profil complet (Étape 5/5)** : Avec ta série **${profile.serie || "Bac"}**${profile.projet ? ` et ton projet en **${profile.projet}**` : ""}, voici tes options prioritaires au Sénégal :\n\n`;
+    if (topDoc.includes("Établissement Public")) {
+      reply += `🏛️ **Public (Campusen)** : Renseigne tes vœux prioritaires (ex: ESP, FMPOS, UGB ou FST) à 25 000 FCFA/an avec éligibilité aux bourses DGES.\n`;
     }
-  }
-
-  let res = `Voici les informations officielles issues de notre base documentaire pour : **${query}**\n\n`;
-
-  if (publicChunks.length > 0) {
-    res += `### 🏛️ Établissements & Filières Publiques (Campusen)\n`;
-    for (const item of publicChunks) {
-      res += `${item}\n\n`;
+    reply += `🏢 **Privé Accrédité** : Écoles reconnues ANAQ-Sup / CAMES accessibles sur dossier ou bourses d'affectation.\n\nClique sur "Exporter le récapitulatif" pour conserver ta fiche !`;
+  } else {
+    reply = `D'après nos documents officiels pour **${query}** :\n\n`;
+    if (topDoc) {
+      const snippet = topDoc.split("\n").slice(0, 4).join("\n");
+      reply += `${snippet}\n\n`;
     }
+    reply += `Pour affiner l'étape ${profile.etape}/5 : ${
+      profile.etape === 1
+        ? "Quelle est ta série de Bac ?"
+        : profile.etape === 2
+        ? "Quelles sont tes matières favorites ou ta moyenne ?"
+        : profile.etape === 3
+        ? "Quel métier aimerais-tu exercer et dans quelle ville ?"
+        : "As-tu des contraintes de budget (filières publiques Campusen ou privé) ?"
+    }`;
   }
 
-  if (privateChunks.length > 0) {
-    res += `### 🏢 Établissements Privés Reconnus (ANAQ-Sup / CAMES)\n`;
-    for (const item of privateChunks) {
-      res += `${item}\n\n`;
-    }
-  }
-
-  if (generalChunks.length > 0) {
-    res += `### 📌 Modalités Officielles & Informations Complémentaires\n`;
-    for (const item of generalChunks) {
-      res += `${item}\n\n`;
-    }
-  }
-
-  return res.trim();
+  return {
+    reply,
+    suggestions,
+    profile,
+  };
 }
