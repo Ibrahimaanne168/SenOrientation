@@ -16,11 +16,12 @@ import {
   AlertCircle,
   Copy,
   Check,
+  RotateCw,
 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-/* ─── 4 Suggestions en petites bulles arrondies (chips) ───────────────── */
+/* ─── 4 Suggestions en petites bulles arrondies cliquables (chips) ─────── */
 const SUGGESTIONS = [
   "Filières après Bac S2",
   "Comment fonctionne Campusen ?",
@@ -34,7 +35,7 @@ interface ConversationItem {
   date: string;
 }
 
-/* ─── Rendu Markdown sans serif, 16px, interligne 1.6, gras en 600 ─────── */
+/* ─── Rendu Markdown sans bulle (16px, interligne 1.6, h3 en 16px/600) ─── */
 function BotMessageMarkdown({ content }: { content: string }) {
   return (
     <div className="bot-response-content">
@@ -77,6 +78,7 @@ export default function ChatPage() {
     error,
     setMessages,
     append,
+    reload,
   } = useChat({
     api: "/api/chat",
     initialMessages: [
@@ -94,7 +96,7 @@ export default function ChatPage() {
     },
   });
 
-  /* ─── Récupération session utilisateur ──────────────────────────── */
+  /* ─── Session utilisateur Supabase ───────────────────────────────── */
   useEffect(() => {
     try {
       const supabase = createClient();
@@ -122,7 +124,7 @@ export default function ChatPage() {
     }
   }, [input]);
 
-  /* ─── Mise à jour du titre de conversation ───────────────────────── */
+  /* ─── Titre automatique selon la discussion ──────────────────────── */
   useEffect(() => {
     const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
     if (!lastUserMsg) return;
@@ -140,7 +142,7 @@ export default function ChatPage() {
     );
   }, [messages, activeConvId]);
 
-  /* ─── Démarrer une nouvelle discussion ───────────────────────────── */
+  /* ─── Nouvelle discussion ────────────────────────────────────────── */
   const handleNewChat = () => {
     const newId = Date.now().toString();
     setConversations((prev) => [
@@ -169,7 +171,7 @@ export default function ChatPage() {
     });
   };
 
-  /* ─── Touche Entrée pour envoyer ─────────────────────────────────── */
+  /* ─── Touche Entrée pour soumettre ───────────────────────────────── */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -177,15 +179,19 @@ export default function ChatPage() {
     }
   };
 
-  /* ─── Copier le texte ────────────────────────────────────────────── */
+  /* ─── Copier la réponse ──────────────────────────────────────────── */
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 1800);
   };
 
+  // Trouver le titre de la discussion courante pour l'en-tête
+  const currentConversation = conversations.find((c) => c.id === activeConvId);
+  const headerTitle = currentConversation?.title || "Discussion d'orientation";
+
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-white text-[#1E293B]">
+    <div className="flex h-screen w-full overflow-hidden bg-white text-[#1F2937]">
 
       {/* ════════════════════════════════════════════
           PANNEAU LATÉRAL (SIDEBAR)
@@ -199,12 +205,12 @@ export default function ChatPage() {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-[#F8FAFC] border-r border-[#E2E8F0] transition-transform duration-200 ease-out md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-white border-r border-[#E5E7EB] transition-transform duration-200 ease-out md:static md:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* En-tête de la sidebar avec Logo officiel */}
-        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#E2E8F0]">
+        {/* En-tête de la sidebar avec Logo officiel UNIQUE */}
+        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#E5E7EB]">
           <div className="flex items-center gap-2.5">
             <Image
               src="/logo.png"
@@ -214,33 +220,33 @@ export default function ChatPage() {
               className="object-contain shrink-0"
               priority
             />
-            <span className="font-semibold text-[15px] text-[#1E293B] tracking-tight">
+            <span className="font-semibold text-[15px] text-[#1F2937] tracking-tight">
               SenOrientation
             </span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Fermer le menu"
-            className="p-1 text-[#64748B] hover:text-[#1E293B] md:hidden"
+            className="p-1 text-[#6B7280] hover:text-[#1F2937] md:hidden"
           >
             <PanelLeftClose className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Bouton Nouvelle discussion */}
+        {/* Bouton Nouvelle discussion = bouton plein couleur d'accent #0B3D91 */}
         <div className="p-3">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-[14px] font-medium text-[#1E293B] bg-white border border-[#E2E8F0] hover:bg-slate-100/80 rounded-lg transition-colors shadow-2xs"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-[14px] font-medium text-white bg-[#0B3D91] hover:bg-[#082E6E] rounded-lg transition-colors"
           >
-            <Plus className="w-4 h-4 text-[#0B4282]" />
+            <Plus className="w-4 h-4" />
             <span>Nouvelle discussion</span>
           </button>
         </div>
 
         {/* Historique des discussions */}
         <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
-          <p className="px-2 py-1 text-[12px] font-medium text-[#64748B]">
+          <p className="px-2 py-1 text-[12px] font-medium text-[#6B7280]">
             Historique
           </p>
           {conversations.map((conv) => {
@@ -254,13 +260,13 @@ export default function ChatPage() {
                 }}
                 className={`w-full flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-lg text-left transition-colors ${
                   isActive
-                    ? "bg-[#0B4282] text-white font-medium"
-                    : "text-[#475569] hover:bg-white hover:text-[#1E293B]"
+                    ? "bg-[#F1F3F5] text-[#1F2937] font-semibold"
+                    : "text-[#4B5563] hover:bg-[#F9FAFB] hover:text-[#1F2937]"
                 }`}
               >
                 <MessageSquare
                   className={`w-3.5 h-3.5 shrink-0 ${
-                    isActive ? "text-white" : "text-[#94A3B8]"
+                    isActive ? "text-[#0B3D91]" : "text-[#9CA3AF]"
                   }`}
                 />
                 <span className="truncate">{conv.title}</span>
@@ -269,10 +275,10 @@ export default function ChatPage() {
           })}
         </div>
 
-        {/* Pied de sidebar */}
-        <div className="p-3 border-t border-[#E2E8F0]">
+        {/* Pied de sidebar : lien texte simple Connexion / Déconnexion */}
+        <div className="p-3 border-t border-[#E5E7EB]">
           {userEmail ? (
-            <div className="flex items-center justify-between px-2 py-1.5 text-[12.5px] text-[#475569]">
+            <div className="flex items-center justify-between px-2 py-1 text-[13px] text-[#4B5563]">
               <span className="truncate">{userEmail}</span>
               <button
                 onClick={async () => {
@@ -281,7 +287,7 @@ export default function ChatPage() {
                   setUserEmail(null);
                 }}
                 title="Se déconnecter"
-                className="text-[#64748B] hover:text-red-600 p-1"
+                className="text-[#6B7280] hover:text-red-600 p-1"
               >
                 <LogOut className="w-3.5 h-3.5" />
               </button>
@@ -289,9 +295,9 @@ export default function ChatPage() {
           ) : (
             <Link
               href="/login"
-              className="flex items-center justify-center gap-2 py-2 px-3 text-[13px] font-medium text-[#1E293B] bg-white border border-[#E2E8F0] hover:bg-slate-100/80 rounded-lg transition-colors w-full shadow-2xs"
+              className="flex items-center gap-2 px-2.5 py-1.5 text-[14px] text-[#4B5563] hover:text-[#1F2937] transition-colors"
             >
-              <User className="w-3.5 h-3.5 text-[#0B4282]" />
+              <User className="w-4 h-4 text-[#6B7280]" />
               <span>Connexion</span>
             </Link>
           )}
@@ -299,105 +305,83 @@ export default function ChatPage() {
       </aside>
 
       {/* ════════════════════════════════════════════
-          ZONE PRINCIPALE (FOND BLANC PUR #FFFFFF)
+          ZONE CENTRALE (CONTENEUR 760px MAX)
       ════════════════════════════════════════════ */}
       <main className="flex-1 flex flex-col h-full overflow-hidden bg-white">
 
-        {/* Liseré subtil aux 3 couleurs des flèches du logo (Bleu, Vert, Doré) */}
-        <div className="flex h-[2px] w-full shrink-0" aria-hidden="true">
-          <div className="flex-1 bg-[#0B67D3]" />
-          <div className="flex-1 bg-[#16A34A]" />
-          <div className="flex-1 bg-[#F59E0B]" />
-        </div>
-
-        {/* En-tête avec Logo SenOrientation */}
-        <header className="shrink-0 h-13 border-b border-[#E2E8F0] px-4 sm:px-6 flex items-center justify-between bg-white">
-          <div className="flex items-center gap-3">
+        {/* En-tête : Titre de la discussion + Badge discret (aucun logo ici) */}
+        <header className="shrink-0 h-13 border-b border-[#E5E7EB] px-4 sm:px-6 flex items-center justify-between bg-white">
+          <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label="Ouvrir le menu"
-              className="p-1.5 text-[#64748B] hover:text-[#1E293B] md:hidden"
+              className="p-1.5 text-[#6B7280] hover:text-[#1F2937] md:hidden shrink-0"
             >
               <PanelLeftOpen className="w-4 h-4" />
             </button>
-            <div className="flex items-center gap-2.5">
-              <Image
-                src="/logo.png"
-                alt="Logo SenOrientation"
-                width={26}
-                height={26}
-                className="object-contain shrink-0"
-                priority
-              />
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-[15px] text-[#0B4282]">
-                  SenOrientation
-                </span>
-                <span className="text-[#CBD5E1] hidden sm:inline">•</span>
-                <span className="text-[13px] text-[#64748B] hidden sm:inline">
-                  Guide d&apos;orientation post-Bac au Sénégal
-                </span>
-              </div>
-            </div>
+
+            {/* Titre de la discussion en casse normale */}
+            <h1 className="text-[14.5px] font-medium text-[#1F2937] truncate">
+              {headerTitle}
+            </h1>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] text-[#475569] bg-[#F8FAFC] px-2.5 py-1 rounded-full border border-[#E2E8F0]">
+          {/* Badge discret Campusen */}
+          <div className="shrink-0">
+            <span className="text-[12px] text-[#6B7280] bg-[#F9FAFB] px-2.5 py-1 rounded-md border border-[#E5E7EB]">
               Campusen &amp; Universités publiques
             </span>
           </div>
         </header>
 
-        {/* Zone des messages */}
+        {/* Zone des messages (760px max) */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 md:py-8 bg-white">
-          <div className="max-w-[700px] mx-auto space-y-5">
+          <div className="max-w-[760px] mx-auto space-y-6">
 
-            {/* Écran d'accueil au démarrage avec logo bien visible */}
-            {messages.length <= 1 && (
-              <div className="pt-2 pb-1">
-                <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl mb-4 max-w-sm">
-                  <Image
-                    src="/logo.png"
-                    alt="Logo SenOrientation"
-                    width={40}
-                    height={40}
-                    className="object-contain shrink-0"
-                    priority
-                  />
-                  <div>
-                    <span className="font-semibold text-[13.5px] text-[#0B4282] block leading-tight">
-                      SenOrientation
-                    </span>
-                    <span className="text-[12px] text-[#64748B] block mt-0.5 leading-tight">
-                      Oriente-toi selon ta série et tes notes
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Fil des messages avec bulles classiques */}
+            {/* Fil des messages */}
             {messages.map((msg) => {
               const isBot = msg.role === "assistant";
 
               if (isBot) {
                 return (
-                  <div key={msg.id} className="flex justify-start">
-                    <div className="max-w-[88%] sm:max-w-[82%] bg-[#F1F5F9] text-[#1E293B] rounded-2xl rounded-tl-sm px-4 sm:px-5 py-3.5 relative group border border-[#E2E8F0]/60">
+                  /* Bot : SANS BULLE, texte directement sur fond blanc avec avatar rond à gauche */
+                  <div key={msg.id} className="flex items-start gap-3.5 group pt-1">
+                    {/* Petit avatar rond */}
+                    <div className="w-7 h-7 rounded-full bg-[#0B3D91] text-white flex items-center justify-center font-semibold text-[11px] shrink-0 mt-0.5 select-none">
+                      S
+                    </div>
+
+                    <div className="flex-1 min-w-0">
                       <BotMessageMarkdown content={msg.content} />
 
-                      {/* Bouton copier discret */}
-                      <div className="mt-2 pt-1 flex justify-end">
+                      {/* Boutons copier / régénérer visibles SEULEMENT AU SURVOL */}
+                      <div className="mt-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleCopy(msg.content, msg.id)}
-                          className="text-[#94A3B8] hover:text-[#475569] p-0.5 rounded transition-colors"
-                          title="Copier"
+                          className="flex items-center gap-1 text-[12px] text-[#6B7280] hover:text-[#1F2937] px-2 py-0.5 rounded hover:bg-gray-100 transition-colors"
+                          title="Copier la réponse"
                         >
                           {copiedId === msg.id ? (
-                            <Check className="w-3 h-3 text-[#16A34A]" />
+                            <>
+                              <Check className="w-3 h-3 text-emerald-600" />
+                              <span>Copié</span>
+                            </>
                           ) : (
-                            <Copy className="w-3 h-3" />
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copier</span>
+                            </>
                           )}
+                        </button>
+
+                        <button
+                          onClick={() => reload()}
+                          disabled={isLoading}
+                          className="flex items-center gap-1 text-[12px] text-[#6B7280] hover:text-[#1F2937] px-2 py-0.5 rounded hover:bg-gray-100 transition-colors"
+                          title="Régénérer la réponse"
+                        >
+                          <RotateCw className="w-3 h-3" />
+                          <span>Régénérer</span>
                         </button>
                       </div>
                     </div>
@@ -405,27 +389,30 @@ export default function ChatPage() {
                 );
               }
 
-              /* Message de l'élève (droite, Bleu signature du logo #0B4282, texte blanc) */
+              /* Utilisateur : bulle à droite, couleur d'accent #0B3D91, rayon 16px, padding 10px 16px, texte blanc */
               return (
-                <div key={msg.id} className="flex justify-end">
-                  <div className="max-w-[85%] sm:max-w-[78%] bg-[#0B4282] text-white rounded-2xl rounded-tr-sm px-4 sm:px-5 py-3 text-[15px] leading-relaxed shadow-2xs">
+                <div key={msg.id} className="flex justify-end pt-1">
+                  <div className="max-w-[85%] sm:max-w-[75%] bg-[#0B3D91] text-white rounded-[16px] px-4 py-2.5 text-[15px] leading-relaxed">
                     {msg.content}
                   </div>
                 </div>
               );
             })}
 
-            {/* Indicateur de génération */}
+            {/* Indicateur de saisie/chargement */}
             {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-[#F1F5F9] text-[#64748B] rounded-2xl rounded-tl-sm px-4 py-3 text-[14px] flex items-center gap-2 border border-[#E2E8F0]/60">
-                  <span className="w-2 h-2 rounded-full bg-[#0B4282] animate-pulse" />
+              <div className="flex items-center gap-3 pt-1">
+                <div className="w-7 h-7 rounded-full bg-[#0B3D91] text-white flex items-center justify-center font-semibold text-[11px] shrink-0">
+                  S
+                </div>
+                <div className="text-[14px] text-[#6B7280] flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0B3D91] animate-pulse" />
                   <span>Recherche des filières officielles...</span>
                 </div>
               </div>
             )}
 
-            {/* Message d'erreur */}
+            {/* Erreur de connexion */}
             {error && (
               <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-800 text-[13.5px] flex items-start gap-2.5">
                 <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
@@ -435,10 +422,10 @@ export default function ChatPage() {
               </div>
             )}
 
-            {/* 4 Suggestions (chips) cliquables */}
+            {/* 4 Suggestions (chips) cliquables au démarrage */}
             {messages.length === 1 && !isLoading && (
-              <div className="pt-2">
-                <p className="text-[12.5px] font-medium text-[#64748B] mb-2.5">
+              <div className="pl-10 pt-2">
+                <p className="text-[12.5px] font-medium text-[#6B7280] mb-2.5">
                   Suggestions :
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -446,7 +433,7 @@ export default function ChatPage() {
                     <button
                       key={idx}
                       onClick={() => handleSuggestionClick(sug)}
-                      className="text-left text-[13px] text-[#334155] bg-[#F8FAFC] hover:bg-[#EEF2F6] hover:text-[#0B4282] border border-[#E2E8F0] hover:border-[#0B4282]/40 px-3.5 py-1.5 rounded-full transition-colors"
+                      className="text-left text-[13px] text-[#374151] bg-[#F9FAFB] hover:bg-[#F3F4F6] hover:text-[#0B3D91] border border-[#E5E7EB] px-3.5 py-1.5 rounded-full transition-colors"
                     >
                       {sug}
                     </button>
@@ -460,13 +447,14 @@ export default function ChatPage() {
         </div>
 
         {/* ════════════════════════════════════════════
-            ZONE DE SAISIE FIXE EN BAS
+            ZONE DE SAISIE ET PIED DE PAGE (760px MAX)
         ════════════════════════════════════════════ */}
-        <div className="shrink-0 p-3 sm:p-4 bg-white border-t border-[#E2E8F0]">
-          <div className="max-w-[700px] mx-auto">
+        <div className="shrink-0 p-3 sm:p-4 bg-white border-t border-[#E5E7EB]">
+          <div className="max-w-[760px] mx-auto">
+            {/* Champ avec bordure 1px grise, rayon 14px, focus en couleur d'accent */}
             <form
               onSubmit={handleSubmit}
-              className="flex items-end gap-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2 focus-within:border-[#0B4282] focus-within:bg-white transition-colors"
+              className="flex items-end gap-2 bg-white border border-[#E5E7EB] rounded-[14px] p-2 focus-within:border-[#0B3D91] transition-colors"
             >
               <textarea
                 ref={textareaRef}
@@ -476,21 +464,26 @@ export default function ChatPage() {
                 onKeyDown={handleKeyDown}
                 placeholder="Pose ta question d'orientation..."
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-0 text-[15px] text-[#1E293B] placeholder:text-[#94A3B8] focus:outline-none resize-none leading-relaxed py-1 px-1.5 max-h-32"
+                className="flex-1 bg-transparent border-0 text-[15px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none resize-none leading-relaxed py-1 px-1.5 max-h-32"
               />
 
-              {/* Bouton d'envoi en Bleu signature du logo (#0B4282) */}
+              {/* Bouton d'envoi rond : gris quand vide, accent plein #0B3D91 quand actif */}
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="Envoyer le message"
-                className="w-9 h-9 rounded-lg bg-[#0B4282] hover:bg-[#083264] text-white flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+                className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                  input.trim() && !isLoading
+                    ? "bg-[#0B3D91] hover:bg-[#082E6E] text-white cursor-pointer"
+                    : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
+                }`}
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
 
-            <p className="mt-2 text-center text-[11px] text-[#94A3B8]">
+            {/* Pied de page en 12px gris, casse normale */}
+            <p className="mt-2 text-center text-[12px] text-[#6B7280]">
               Données issues des universités publiques et de campusen.sec.gouv.sn
             </p>
           </div>

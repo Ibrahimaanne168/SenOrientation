@@ -7,13 +7,13 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   weight: ["400", "500", "600"],
   display: "swap",
-  fallback: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "sans-serif"],
 });
 
 export const metadata: Metadata = {
   title: "SenOrientation — Guide d'orientation post-Bac au Sénégal",
   description:
-    "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et débouchés.",
+    "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles.",
   icons: {
     icon: "/logo.png",
   },
@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`h-full ${plusJakartaSans.variable}`}>
-      <body className="h-full bg-white text-[#1F2937] font-sans antialiased">
+      <body className="h-full bg-[var(--color-bg)] text-[var(--color-text)] antialiased">
         {children}
       </body>
     </html>

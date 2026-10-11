@@ -1,97 +1,158 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SENORIENTATION — Variables & Design Tokens (Épuré, Naturel, Lisible)
+   SENORIENTATION — Système Typographique & Design Tokens
+   Échelle : 13 / 14 / 16 / 20 / 24px • Bleu Marine #0B3D91 • Fond Blanc
 ════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Police unique Sans-Serif */
-  --font-sans: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* 1. Police unique sans-serif appliquée partout */
+  --font-sans: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* Échelle de tailles strictement cadrée : 14 / 16 / 18 / 24 */
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-md: 18px;
-  --text-lg: 24px;
+  /* 2. Échelle de tailles strictement cadrée : 13 / 14 / 16 / 20 / 24px */
+  --text-xs: 13px;   /* Métadonnées, badges, horodatage */
+  --text-sm: 14px;   /* Boutons, navigation, saisie */
+  --text-base: 16px; /* Corps du texte, réponses du bot, h3 */
+  --text-md: 20px;   /* Sous-titres h2 */
+  --text-lg: 24px;   /* Titres h1 */
 
-  /* Poids */
+  /* 3. Poids & Interlignes */
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
 
-  /* Interlignes */
   --leading-tight: 1.25;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.6;
+  --leading-normal: 1.45;
+  --leading-body: 1.6;
 
-  /* Largeur de lecture confortable */
+  /* 4. Conteneur central unique */
+  --max-width-content: 760px;
   --max-reading-ch: 65ch;
 
-  /* Couleurs de la charte du logo SenOrientation */
+  /* 5. Palette Mode Clair : Fond blanc pur, gris équilibrés, bleu marine d'accent */
   --color-bg: #FFFFFF;
-  --color-sidebar: #F8FAFC;
-  --color-border: #E2E8F0;
-  --color-border-subtle: #F1F5F9;
+  --color-sidebar: #FFFFFF;
+  --color-sidebar-active: #F1F3F5;
+  --color-border: #E5E7EB;
+  --color-border-subtle: #F3F4F6;
 
-  --color-text: #1E293B;           /* Ardoise très foncé lisible */
-  --color-text-muted: #64748B;     /* Métadonnées */
-  --color-text-light: #94A3B8;
+  --color-text: #1F2937;           /* Gris très foncé, jamais de noir pur (WCAG AAA) */
+  --color-text-secondary: #6B7280; /* Gris secondaire pour métadonnées */
+  --color-text-tertiary: #9CA3AF;
 
-  /* Couleur signature du logo : Bleu profond */
-  --color-accent: #0B4282;
-  --color-accent-hover: #083264;
+  --color-accent: #0B3D91;         /* Bleu marine noble & haut de gamme */
+  --color-accent-hover: #082E6E;
   --color-accent-contrast: #FFFFFF;
 
-  /* Couleurs secondaires des flèches d'orientation du logo */
-  --color-logo-blue: #0B67D3;
-  --color-logo-green: #16A34A;
-  --color-logo-gold: #F59E0B;
-
-  /* Bulles de message */
-  --color-bot-bubble: #F1F5F9;
-  --color-bot-text: #1E293B;
-  --color-user-bubble: #0B4282;
+  --color-user-bubble: #0B3D91;
   --color-user-text: #FFFFFF;
 }
 
-/* Base */
-html {
-  background-color: var(--color-bg);
+/* 6. Mode sombre propre */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0F172A;
+    --color-sidebar: #0B1120;
+    --color-sidebar-active: #1E293B;
+    --color-border: #1E293B;
+    --color-border-subtle: #1E293B;
+
+    --color-text: #F8FAFC;
+    --color-text-secondary: #94A3B8;
+    --color-text-tertiary: #64748B;
+
+    --color-accent: #3B82F6;
+    --color-accent-hover: #60A5FA;
+    --color-accent-contrast: #FFFFFF;
+
+    --color-user-bubble: #2563EB;
+    --color-user-text: #FFFFFF;
+  }
+}
+
+/* ─── Application globale de la typographie ───────────────────────────── */
+html,
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--color-text);
-  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans);
   margin: 0;
   padding: 0;
 }
 
-/* Rendu typographique épuré des réponses du bot (16px, interligne 1.6, max 65ch, même police) */
+/* ─── Rendu Markdown des réponses du bot (16px, interligne 1.6, pas de bulle) ─── */
 .bot-response-content {
-  font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: var(--leading-relaxed);
+  line-height: var(--leading-body);
+  font-weight: var(--weight-regular);
   color: var(--color-text);
   max-width: var(--max-reading-ch);
 }
 
 .bot-response-content p {
-  margin: 0 0 0.875rem 0;
+  margin: 0 0 0.85rem 0;
 }
 .bot-response-content p:last-child {
   margin-bottom: 0;
 }
 
-/* Gras discret : poids 600, même police, même couleur */
+/* h3 en 16px/600 avec marge haute */
+.bot-response-content h3 {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin-top: 1.25rem;
+  margin-bottom: 0.35rem;
+  line-height: var(--leading-normal);
+}
+
+.bot-response-content h2 {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin-top: 1.4rem;
+  margin-bottom: 0.4rem;
+  line-height: var(--leading-tight);
+}
+
+.bot-response-content h1 {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Listes ul / ol bien indentées */
+.bot-response-content ul,
+.bot-response-content ol {
+  margin: 0 0 0.85rem 0;
+  padding-left: 1.35rem;
+}
+.bot-response-content li {
+  margin-bottom: 0.3rem;
+  padding-left: 0.15rem;
+}
+.bot-response-content ul {
+  list-style-type: disc;
+}
+.bot-response-content ol {
+  list-style-type: decimal;
+}
+
+/* Gras en 600 seulement, sans altération de couleur */
 .bot-response-content strong,
 .bot-response-content b {
   font-weight: var(--weight-semibold);
-  font-family: inherit;
   color: inherit;
 }
 
@@ -100,43 +161,7 @@ body {
   font-style: italic;
 }
 
-.bot-response-content h1,
-.bot-response-content h2,
-.bot-response-content h3 {
-  font-weight: var(--weight-semibold);
-  color: var(--color-text);
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
-  line-height: var(--leading-normal);
-}
-.bot-response-content h1 { font-size: var(--text-md); }
-.bot-response-content h2 { font-size: var(--text-base); }
-.bot-response-content h3 { font-size: var(--text-sm); }
-
-.bot-response-content ul,
-.bot-response-content ol {
-  margin: 0 0 0.875rem 0;
-  padding-left: 1.25rem;
-}
-.bot-response-content li {
-  margin-bottom: 0.25rem;
-}
-
-.bot-response-content blockquote {
-  margin: 0.75rem 0;
-  padding: 0.25rem 0 0.25rem 0.875rem;
-  border-left: 2px solid var(--color-accent);
-  color: var(--color-text-muted);
-}
-
-.bot-response-content code {
-  font-family: ui-monospace, SFMono-Regular, monospace;
-  font-size: 0.875em;
-  padding: 0.15em 0.35em;
-  background-color: #E5E7EB;
-  border-radius: 4px;
-}
-
+/* Liens soulignés dans la couleur d'accent */
 .bot-response-content a {
   color: var(--color-accent);
   text-decoration: underline;
@@ -146,7 +171,15 @@ body {
   color: var(--color-accent-hover);
 }
 
-/* Scrollbar minimale */
+.bot-response-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+  padding: 0.15em 0.35em;
+  background-color: var(--color-border-subtle);
+  border-radius: 4px;
+}
+
+/* Scrollbar sobre */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -155,6 +188,6 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E5E7EB;
+  background: var(--color-border);
   border-radius: 9999px;
 }
