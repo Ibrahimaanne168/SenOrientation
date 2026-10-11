@@ -36,13 +36,16 @@ interface ParsedAssistantMessage {
   reply: string;
   suggestions: string[];
   profil_update?: Partial<ConversationProfile>;
-  hypotheses?: string[];
+  dossier?: Partial<ConversationProfile>;
+  indices?: Array<{ texte: string; statut: string }>;
+  hypotheses?: Array<{ domaine: string; confiance: string }> | string[];
   pistes?: Array<{
     nom: string;
     etablissements: string[];
     duree: string;
     debouches: string;
-    pourquoi: string;
+    indice_retenu?: string;
+    pourquoi?: string;
   }>;
   etablissements?: string[];
   etape?: number;
@@ -78,7 +81,9 @@ function parseAssistantMessage(content: string): ParsedAssistantMessage {
       return {
         reply: obj.reply,
         suggestions: Array.isArray(obj.suggestions) ? obj.suggestions : [],
-        profil_update: obj.profil_update,
+        profil_update: obj.dossier || obj.profil_update,
+        dossier: obj.dossier,
+        indices: Array.isArray(obj.indices) ? obj.indices : [],
         hypotheses: Array.isArray(obj.hypotheses) ? obj.hypotheses : [],
         pistes: Array.isArray(obj.pistes) ? obj.pistes : [],
         etablissements: Array.isArray(obj.etablissements) ? obj.etablissements : [],
@@ -183,7 +188,7 @@ export default function ChatPage() {
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Salut ! Bienvenue sur SenOrientation. Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
+            "Bonjour ! Je suis l'Enquêteur de SenOrientation. Mon affaire du jour, c'est toi : découvrir qui tu es vraiment pour dénicher les filières qui te correspondent le mieux. Pour ouvrir le dossier, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
           suggestions: [
             "Bac S1 ou S2",
             "Bac L1 ou L2",
@@ -287,7 +292,7 @@ export default function ChatPage() {
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Salut ! Bienvenue sur SenOrientation. Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
+            "Bonjour ! Je suis l'Enquêteur de SenOrientation. Mon affaire du jour, c'est toi : découvrir qui tu es vraiment pour dénicher les filières qui te correspondent le mieux. Pour ouvrir le dossier, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
           suggestions: [
             "Bac S1 ou S2",
             "Bac L1 ou L2",

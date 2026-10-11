@@ -1,11 +1,22 @@
 // ============================================================================
-// SENORIENTATION - GESTION DU PROFIL DE CONVERSATION PROGRESSIF (ÉTAPES 1 À 5)
+// SENORIENTATION - DOSSIER DE L'ENQUÊTEUR (PROFIL PROGRESSIF ÉTAPES 1 À 5)
 // ============================================================================
+
+export interface Indice {
+  texte: string;
+  statut: "certain" | "probable" | "a_verifier";
+}
+
+export interface Hypothese {
+  domaine: string;
+  confiance: "faible" | "moyenne" | "forte";
+}
 
 export interface ConversationProfile {
   serie: string | null;
   niveau: string | null;
   matieres_aimees: string[];
+  matieres_fuies: string[];
   points_forts: string[];
   activites: string[];
   environnement: string[];
@@ -17,12 +28,15 @@ export interface ConversationProfile {
   priorites: string[];
   freins: string[];
   etape: number; // 1 à 5
+  indices?: Indice[];
+  hypotheses?: Hypothese[];
 }
 
 export const INITIAL_PROFILE: ConversationProfile = {
   serie: null,
   niveau: null,
   matieres_aimees: [],
+  matieres_fuies: [],
   points_forts: [],
   activites: [],
   environnement: [],
@@ -34,10 +48,12 @@ export const INITIAL_PROFILE: ConversationProfile = {
   priorites: [],
   freins: [],
   etape: 1,
+  indices: [],
+  hypotheses: [],
 };
 
 /**
- * Fusionne la mise à jour issue du modèle JSON dans le profil courant
+ * Fusionne la mise à jour du dossier dans le profil courant
  */
 export function mergeProfileUpdate(
   current: ConversationProfile,
@@ -58,6 +74,9 @@ export function mergeProfileUpdate(
     matieres_aimees: Array.from(
       new Set([...(current.matieres_aimees || []), ...(update.matieres_aimees || [])])
     ).filter(Boolean),
+    matieres_fuies: Array.from(
+      new Set([...(current.matieres_fuies || []), ...(update.matieres_fuies || [])])
+    ).filter(Boolean),
     points_forts: Array.from(
       new Set([...(current.points_forts || []), ...(update.points_forts || [])])
     ).filter(Boolean),
@@ -73,6 +92,8 @@ export function mergeProfileUpdate(
     freins: Array.from(
       new Set([...(current.freins || []), ...(update.freins || [])])
     ).filter(Boolean),
+    indices: update.indices || current.indices || [],
+    hypotheses: update.hypotheses || current.hypotheses || [],
     etape: Math.min(
       5,
       Math.max(current.etape || 1, suggestedEtape || update.etape || current.etape || 1)
@@ -83,8 +104,7 @@ export function mergeProfileUpdate(
 }
 
 /**
- * Met à jour le profil de manière déterministe par analyse heuristique
- * (Garantie de fonctionnement sans clé API externe ou en mode secours)
+ * Analyse heuristique des indices du dossier
  */
 export function heuristicUpdateProfile(
   current: ConversationProfile,
@@ -94,16 +114,30 @@ export function heuristicUpdateProfile(
   const profile: ConversationProfile = {
     ...current,
     matieres_aimees: [...(current.matieres_aimees || [])],
+    matieres_fuies: [...(current.matieres_fuies || [])],
     points_forts: [...(current.points_forts || [])],
     activites: [...(current.activites || [])],
     environnement: [...(current.environnement || [])],
     priorites: [...(current.priorites || [])],
     freins: [...(current.freins || [])],
+    indices: [...(current.indices || [])],
+    hypotheses: [...(current.hypotheses || [])],
   };
 
   const text = (
     history.map((h) => h.content).join(" ") + " " + latestMessage
   ).toLowerCase();
+
+  const latestLower = latestMessage.toLowerCase().trim();
+
+  // Gestion du cas où l'élève clique sur "Autre série ou réorientation"
+  if (latestLower.includes("autre série") || latestLower.includes("réorientation")) {
+    profile.serie = null;
+    profile.niveau = "Réorientation";
+    profile.hypotheses = [];
+    profile.etape = 1;
+    return profile;
+  }
 
   // 1. Détection de la série
   if (!profile.serie) {
@@ -121,11 +155,10 @@ export function heuristicUpdateProfile(
   // 2. Détection du niveau
   if (!profile.niveau) {
     if (text.includes("terminale") || text.includes("tle")) profile.niveau = "Terminale";
-    else if (text.includes("bachelier") || text.includes("bac")) profile.niveau = "Nouveau Bachelier";
-    else if (text.includes("réorientation") || text.includes("reorientation") || text.includes("changer")) profile.niveau = "Réorientation";
+    else if (text.includes("bachelier")) profile.niveau = "Nouveau Bachelier";
   }
 
-  // 3. Détection des matières aimées
+  // 3. Détection des matières aimées et fuies
   const MATIERES_MAP: Record<string, string> = {
     math: "Mathématiques",
     calcul: "Mathématiques",
@@ -140,115 +173,79 @@ export function heuristicUpdateProfile(
     histoire: "Histoire-Géographie",
     géo: "Histoire-Géographie",
     économie: "Économie",
-    gestion: "Gestion / Comptabilité",
-    compta: "Gestion / Comptabilité",
+    gestion: "Gestion",
     informatique: "Informatique",
     code: "Informatique",
   };
 
   for (const [key, label] of Object.entries(MATIERES_MAP)) {
-    if (text.includes(key) && !profile.matieres_aimees.includes(label)) {
+    if (text.includes(`fuis ${key}`) || text.includes(`déteste ${key}`) || text.includes(`nul en ${key}`)) {
+      if (!profile.matieres_fuies.includes(label)) profile.matieres_fuies.push(label);
+    } else if (text.includes(key) && !profile.matieres_aimees.includes(label) && !profile.matieres_fuies.includes(label)) {
       profile.matieres_aimees.push(label);
     }
   }
 
-  // 4. Façon de travailler / Points forts
-  const FORTS_MAP: Record<string, string> = {
-    logique: "Résoudre des problèmes de calcul",
-    calcul: "Résoudre des problèmes de calcul",
-    rédiger: "Écrire et argumenter",
-    ecrire: "Écrire et argumenter",
-    argumenter: "Écrire et argumenter",
-    bricoler: "Bricoler avec les mains",
-    pratique: "Travaux pratiques et terrain",
-    aider: "Aider et soigner les gens",
-    dessiner: "Créer et dessiner",
-  };
-
-  for (const [key, label] of Object.entries(FORTS_MAP)) {
-    if (text.includes(key) && !profile.points_forts.includes(label)) {
-      profile.points_forts.push(label);
-    }
+  // 4. Activités et points forts
+  if ((text.includes("fifa") || text.includes("jeux vidéo") || text.includes("gaming")) && !profile.activites.includes("Jeux vidéo / Compétition")) {
+    profile.activites.push("Jeux vidéo / Compétition");
+  }
+  if ((text.includes("calcul") || text.includes("logique") || text.includes("énigme")) && !profile.points_forts.includes("Calcul et logique")) {
+    profile.points_forts.push("Calcul et logique");
+  }
+  if ((text.includes("rédiger") || text.includes("écrire") || text.includes("argumenter")) && !profile.points_forts.includes("Écriture et argumentation")) {
+    profile.points_forts.push("Écriture et argumentation");
+  }
+  if ((text.includes("bricoler") || text.includes("réparer") || text.includes("mains")) && !profile.points_forts.includes("Bricolage et réparation")) {
+    profile.points_forts.push("Bricolage et réparation");
+  }
+  if ((text.includes("aider") || text.includes("soigner")) && !profile.points_forts.includes("Aide et écoute")) {
+    profile.points_forts.push("Aide et écoute");
   }
 
-  // 5. Cadre / Environnement de travail
-  if (text.includes("bureau") && !profile.environnement.includes("Bureau")) {
-    profile.environnement.push("Bureau");
-  }
-  if ((text.includes("chantier") || text.includes("terrain")) && !profile.environnement.includes("Chantier / Terrain")) {
-    profile.environnement.push("Chantier / Terrain");
-  }
-  if (text.includes("hôpital") || text.includes("hopital") || text.includes("santé")) {
-    if (!profile.environnement.includes("Hôpital / Santé")) profile.environnement.push("Hôpital / Santé");
-  }
-  if (text.includes("écran") || text.includes("ordinateur")) {
-    if (!profile.environnement.includes("Devant un écran")) profile.environnement.push("Devant un écran");
-  }
+  // 5. Cadre professionnel
+  if (text.includes("bureau") && !profile.environnement.includes("Bureau")) profile.environnement.push("Bureau");
+  if ((text.includes("chantier") || text.includes("terrain")) && !profile.environnement.includes("Terrain")) profile.environnement.push("Terrain");
+  if (text.includes("hôpital") || text.includes("hopital")) profile.environnement.push("Hôpital");
+  if (text.includes("écran") || text.includes("ordinateur")) profile.environnement.push("Devant un écran");
 
-  // 6. Détection du projet ou métier
+  // 6. Projet
   if (!profile.projet) {
-    if (text.includes("médecin") || text.includes("medecin") || text.includes("santé")) {
-      profile.projet = "Médecine et santé";
-    } else if (text.includes("ingénieur") || text.includes("ingenieur") || text.includes("informatique") || text.includes("développeur")) {
-      profile.projet = "Informatique et ingénierie";
-    } else if (text.includes("avocat") || text.includes("magistrat") || text.includes("juriste") || text.includes("droit")) {
-      profile.projet = "Droit et justice";
-    } else if (text.includes("expert-comptable") || text.includes("banque") || text.includes("finance") || text.includes("audit")) {
-      profile.projet = "Finance et gestion";
-    } else if (text.includes("journaliste") || text.includes("communication")) {
-      profile.projet = "Journalisme et communication";
-    } else if (text.includes("agronome") || text.includes("agriculture")) {
-      profile.projet = "Agronomie et environnement";
-    }
+    if (text.includes("médecin") || text.includes("santé")) profile.projet = "Médecine et santé";
+    else if (text.includes("ingénieur") || text.includes("développeur")) profile.projet = "Ingénierie et informatique";
+    else if (text.includes("avocat") || text.includes("juriste")) profile.projet = "Droit et justice";
+    else if (text.includes("comptable") || text.includes("finance")) profile.projet = "Finance et gestion";
   }
 
-  // 7. Détection de la ville ou région
+  // 7. Ville & Budget
   if (!profile.ville) {
     if (text.includes("dakar")) profile.ville = "Dakar";
-    else if (text.includes("saint-louis") || text.includes("saint louis")) profile.ville = "Saint-Louis";
-    else if (text.includes("thiès") || text.includes("thies")) profile.ville = "Thiès";
-    else if (text.includes("ziguinchor")) profile.ville = "Ziguinchor";
-    else if (text.includes("kaolack")) profile.ville = "Kaolack";
-    else if (text.includes("bambey")) profile.ville = "Bambey";
+    else if (text.includes("saint-louis")) profile.ville = "Saint-Louis";
+    else if (text.includes("thiès")) profile.ville = "Thiès";
   }
-
-  // 8. Détection du budget
   if (!profile.budget) {
-    if (text.includes("public") || text.includes("campusen") || text.includes("25 000") || text.includes("25000")) {
-      profile.budget = "Public gratuit ou presque (Campusen)";
-    } else if (text.includes("privé") || text.includes("prive")) {
-      profile.budget = "Privé payant";
-    }
+    if (text.includes("public") || text.includes("campusen") || text.includes("25 000")) profile.budget = "Public Campusen";
+    else if (text.includes("privé")) profile.budget = "Privé";
   }
 
-  // 9. Détection de la moyenne
-  if (!profile.moyenne) {
-    const moyenneMatch = latestMessage.match(/\b([1-2]?[0-9](?:[.,][0-9]{1,2})?)\s*(?:\/20|de moyenne|\s*moyenne)?\b/i);
-    if (moyenneMatch && parseFloat(moyenneMatch[1].replace(",", ".")) <= 20) {
-      profile.moyenne = moyenneMatch[1].replace(",", ".");
-    }
-  }
+  // Calcul d'étape selon la règle d'or de la section 3 :
+  // On ne passe à l'étape 3 (verdict/pistes) QUE SI :
+  // (a) série ou niveau connu ET (b) au moins DEUX indices certains parmi matières_aimees, points_forts, activites, projet, environnement
+  let certainIndicesCount = 0;
+  if (profile.matieres_aimees.length > 0) certainIndicesCount += profile.matieres_aimees.length;
+  if (profile.points_forts.length > 0) certainIndicesCount += profile.points_forts.length;
+  if (profile.activites.length > 0) certainIndicesCount += profile.activites.length;
+  if (profile.environnement.length > 0) certainIndicesCount += profile.environnement.length;
+  if (profile.projet) certainIndicesCount += 1;
 
-  // 10. Progression des étapes (1 à 5)
-  // Étape 1 : Accueil / Série
-  // Étape 2 : Découverte (matières, façon de travailler, cadre)
-  // Étape 3 : Devinette (dès série + au moins un centre d'intérêt)
-  // Étape 4 : Approfondissement d'une piste
-  // Étape 5 : Plan d'action final
   let computedEtape = profile.etape || 1;
 
-  if (profile.serie) {
+  if (profile.serie || profile.niveau) {
     computedEtape = Math.max(computedEtape, 2);
   }
 
-  const hasInterests =
-    profile.matieres_aimees.length > 0 ||
-    profile.points_forts.length > 0 ||
-    profile.activites.length > 0 ||
-    profile.environnement.length > 0 ||
-    Boolean(profile.projet);
-
-  if (profile.serie && hasInterests) {
+  // Section 3 : minimum série + 2 indices certains pour étape 3
+  if ((profile.serie || profile.niveau) && certainIndicesCount >= 2) {
     computedEtape = Math.max(computedEtape, 3);
   }
 
