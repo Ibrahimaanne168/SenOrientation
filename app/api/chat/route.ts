@@ -15,24 +15,45 @@ import { createClient } from "@/lib/supabase/server";
 import {
   ConversationProfile,
   INITIAL_PROFILE,
-  updateConversationProfile,
+  heuristicUpdateProfile,
+  mergeProfileUpdate,
 } from "@/lib/profile";
 
 export const maxDuration = 30; // 30 secondes max
+
+export interface TechnicalOutput {
+  reply: string;
+  suggestions: string[];
+  profil_update: Partial<ConversationProfile>;
+  hypotheses: string[];
+  pistes: Array<{
+    nom: string;
+    etablissements: string[];
+    duree: string;
+    debouches: string;
+    pourquoi: string;
+  }>;
+  etablissements: string[];
+  etape: number;
+}
 
 /**
  * Diffuse un objet JSON strict au format data-stream attendu par useChat()
  */
 function streamJsonResponse(
-  payload: { reply: string; suggestions: string[]; profile?: ConversationProfile },
+  payload: TechnicalOutput,
+  updatedProfile: ConversationProfile,
   remainingRateLimit = 19
 ) {
   const jsonString = JSON.stringify(payload);
   return createDataStreamResponse({
     execute: async (dataStream) => {
-      if (payload.profile) {
-        dataStream.writeMessageAnnotation({ profile: payload.profile } as any);
-      }
+      dataStream.writeMessageAnnotation({
+        profile: updatedProfile,
+        etape: payload.etape,
+        pistes: payload.pistes,
+        hypotheses: payload.hypotheses,
+      } as any);
       const chunks = jsonString.split(" ");
       for (const chunk of chunks) {
         dataStream.write(formatDataStreamPart("text", chunk + " "));
@@ -54,7 +75,7 @@ export async function POST(req: NextRequest) {
       "127.0.0.1";
 
     const rateLimit = checkRateLimit(`chat_${ip}`, {
-      limit: 20, // 20 messages par minute max
+      limit: 20,
       windowMs: 60 * 1000,
     });
 
@@ -108,7 +129,7 @@ export async function POST(req: NextRequest) {
     latestUserMessage.content = sanitized.cleanText;
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 1. GESTION DU PROFIL PROGRESSIF (ÉTAPES 1 À 5)
+    // 1. GESTION PROGRESSIVE DU PROFIL
     // ─────────────────────────────────────────────────────────────────────────
     const incomingProfile: ConversationProfile =
       (body?.profile && typeof body.profile === "object")
@@ -116,7 +137,7 @@ export async function POST(req: NextRequest) {
         : INITIAL_PROFILE;
 
     const previousHistory = messages.slice(0, -1);
-    const updatedProfile = await updateConversationProfile(
+    const updatedProfile = heuristicUpdateProfile(
       incomingProfile,
       previousHistory,
       sanitized.cleanText
@@ -127,90 +148,97 @@ export async function POST(req: NextRequest) {
     console.log("[RAG Pipeline] Profil mis à jour :\n", JSON.stringify(updatedProfile, null, 2));
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 2. ROUTAGE DES INTENTIONS (Salutations / Remerciements)
-    // N'appelle pas la recherche documentaire pour les simples salutations
+    // 2. ROUTAGE DES INTENTIONS SANS RECHERCHE DOCUMENTAIRE
     // ─────────────────────────────────────────────────────────────────────────
     const intent = detectIntent(sanitized.cleanText);
 
     if (intent === "greeting") {
       // eslint-disable-next-line no-console
       console.log("[RAG Pipeline] Routage : Salutation détectée -> Recherche RAG ignorée.");
-      return streamJsonResponse(
-        {
-          reply:
-            "Bonjour ! Je suis SenOrientation, ton conseiller d'orientation scolaire et universitaire au Sénégal. Pour t'aider à choisir tes études supérieures, quelle est ta série de Baccalauréat ?",
-          suggestions: [
-            "Bac S1 / S2 (Scientifique)",
-            "Bac L1 / L2 (Littéraire)",
-            "Bac G / STEG (Gestion)",
-            "Bac Technique (T1/T2)",
-          ],
-          profile: updatedProfile,
-        },
-        rateLimit.remaining
-      );
+      const payload: TechnicalOutput = {
+        reply:
+          "Salut ! Bienvenue sur SenOrientation. Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
+        suggestions: [
+          "Bac S1 ou S2",
+          "Bac L1 ou L2",
+          "Bac G ou STEG",
+          "Autre série ou réorientation",
+        ],
+        profil_update: { serie: updatedProfile.serie || undefined },
+        hypotheses: [],
+        pistes: [],
+        etablissements: [],
+        etape: 1,
+      };
+      return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
     }
 
     if (intent === "gratitude") {
       // eslint-disable-next-line no-console
       console.log("[RAG Pipeline] Routage : Remerciement détecté -> Recherche RAG ignorée.");
-      return streamJsonResponse(
-        {
-          reply:
-            "Je t'en prie ! N'hésite pas si tu as d'autres questions sur tes choix de filières, les universités publiques via Campusen, les bourses DGES ou les concours.",
-          suggestions: [
-            "Voir les universités publiques",
-            "Comment fonctionne Campusen ?",
-            "Quelles sont les bourses de l'État ?",
-          ],
-          profile: updatedProfile,
-        },
-        rateLimit.remaining
-      );
+      const payload: TechnicalOutput = {
+        reply:
+          "Je t'en prie ! N'hésite pas si tu as d'autres doutes ou si tu souhaites affiner un choix de filière. Quelle est ta prochaine question ?",
+        suggestions: [
+          "Voir les démarches Campusen",
+          "Les bourses disponibles",
+          "Affiner mes pistes",
+          "Je ne sais pas",
+        ],
+        profil_update: {},
+        hypotheses: [],
+        pistes: [],
+        etablissements: [],
+        etape: updatedProfile.etape,
+      };
+      return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // GESTION DU DOUTE OU DU STRESS & DU "JE NE SAIS PAS"
-    // Ne lance JAMAIS de recherche RAG sur une phrase d'émotion
-    // ─────────────────────────────────────────────────────────────────────────
+    // Gestion du doute ou du stress (sans liste de filières, ton grand frère/grande sœur)
     if (intent === "emotion") {
       // eslint-disable-next-line no-console
-      console.log("[RAG Pipeline] Routage : Doute / Stress détecté -> Recherche RAG ignorée (écoute active & normalisation).");
+      console.log("[RAG Pipeline] Routage : Doute / Stress détecté -> Recherche RAG ignorée (empathie & question simple).");
       const isMath = sanitized.cleanText.toLowerCase().includes("math");
       const reply = isMath
-        ? "Pas de panique, c'est très courant et beaucoup d'élèves réussissent brillamment sans être des as en maths. On va y aller doucement. Dans quelles autres matières te sens-tu le plus à l'aise ?"
+        ? "C'est très courant de bloquer sur les maths à ce stade, ne t'en fais pas. Beaucoup réussissent brillamment sans être des as du calcul. On va y aller doucement. Dans quelles autres matières te sens-tu le plus à l'aise ?"
         : "Pas de souci, beaucoup d'élèves se sentent comme ça avant de choisir. On va y aller pas à pas. Tu es plutôt à l'aise en calcul, en rédaction ou en travaux pratiques ?";
 
       const suggestions = isMath
-        ? ["Français & Rédaction", "Histoire & Géo", "Langues vivantes", "SVT & Biologie"]
-        : ["Plutôt le calcul", "Plutôt la rédaction", "Plutôt les travaux pratiques"];
+        ? ["Français et rédaction", "Histoire et géo", "Langues vivantes", "Je ne sais pas"]
+        : ["Plutôt en calcul", "Plutôt en rédaction", "Plutôt en travaux pratiques", "Je ne sais pas"];
 
-      return streamJsonResponse(
-        {
-          reply,
-          suggestions,
-          profile: updatedProfile,
-        },
-        rateLimit.remaining
-      );
+      const payload: TechnicalOutput = {
+        reply,
+        suggestions,
+        profil_update: { freins: ["Stress / Doute sur son orientation"] },
+        hypotheses: [],
+        pistes: [],
+        etablissements: [],
+        etape: updatedProfile.etape,
+      };
+      return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
     }
 
+    // Gestion du "je ne sais pas" (3 choix concrets sans reformuler la même question)
     if (intent === "dont_know") {
       // eslint-disable-next-line no-console
       console.log("[RAG Pipeline] Routage : 'Je ne sais pas' détecté -> Recherche RAG ignorée (3 choix concrets).");
-      return streamJsonResponse(
-        {
-          reply:
-            "C'est tout à fait normal d'hésiter à ce stade ! Pour t'aider à y voir plus clair, parmi ces 3 grands univers, lequel t'attire le plus naturellement ?",
-          suggestions: [
-            "Sciences, santé & tech",
-            "Gestion, finance & droit",
-            "Lettres, langues & médias",
-          ],
-          profile: updatedProfile,
-        },
-        rateLimit.remaining
-      );
+      const payload: TechnicalOutput = {
+        reply:
+          "C'est tout à fait normal d'hésiter. Pour qu'on avance pas à pas, quel univers te parle le plus naturellement au quotidien ?",
+        suggestions: [
+          "Comprendre comment les choses fonctionnent",
+          "Aider et soigner les personnes",
+          "Créer, dessiner ou argumenter",
+          "Je ne sais pas",
+        ],
+        profil_update: {},
+        hypotheses: [],
+        pistes: [],
+        etablissements: [],
+        etape: updatedProfile.etape,
+      };
+      return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -244,31 +272,21 @@ export async function POST(req: NextRequest) {
       }))
     );
 
-    // Si aucun passage ne passe le seuil minimal de similarité
-    if (knowledgeMatches.length === 0) {
-      // eslint-disable-next-line no-console
-      console.log("[RAG Pipeline] Aucun passage au-dessus du seuil (score < 0.28) -> Réponse 'je n'ai pas cette information'.");
-      return streamJsonResponse(
-        {
-          reply:
-            "Je n'ai pas cette information dans ma base documentaire officielle. Je te conseille de te renseigner directement sur la plateforme Campusen (campusen.sec.gouv.sn) ou auprès du Ministère de l'Enseignement Supérieur (MESRI).",
-          suggestions: [
-            "Quelles sont les universités publiques au Sénégal ?",
-            "Comment fonctionne Campusen ?",
-            "Quels sont les concours d'excellence ?",
-          ],
-          profile: updatedProfile,
-        },
-        rateLimit.remaining
-      );
-    }
+    // ─────────────────────────────────────────────────────────────────────────
+    // 5. INJECTION DANS LE PROMPT SYSTÈME ({date_du_jour}, {profil_json}, {extraits_recuperes})
+    // ─────────────────────────────────────────────────────────────────────────
+    const todayDate = new Date().toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // 5. INJECTION DANS LE PROMPT SYSTÈME ({profil_json} et {extraits_recuperes})
-    // ─────────────────────────────────────────────────────────────────────────
-    const formattedKnowledge = formatKnowledgeForPrompt(knowledgeMatches);
+    const formattedKnowledge = knowledgeMatches.length > 0
+      ? formatKnowledgeForPrompt(knowledgeMatches)
+      : "[CONTEXTE]\nAucun document spécifique au-dessus du seuil de pertinence.";
 
     const fullSystemPrompt = SYSTEM_PROMPT_TEMPLATE
+      .replace("{date_du_jour}", todayDate)
       .replace("{profil_json}", JSON.stringify(updatedProfile, null, 2))
       .replace("{extraits_recuperes}", formattedKnowledge);
 
@@ -276,7 +294,7 @@ export async function POST(req: NextRequest) {
     // eslint-disable-next-line no-console
     console.log("[RAG Pipeline] Prompt final :\n", fullSystemPrompt);
 
-    // Sauvegarde en base si connecté
+    // Sauvegarde en base si session active
     try {
       const supabase = await createClient();
       const {
@@ -295,18 +313,18 @@ export async function POST(req: NextRequest) {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 6. APPEL DU MODÈLE (JSON, maxTokens 250, température 0.3, historique 10 max)
+    // 6. APPEL DU MODÈLE OU GÉNÉRATEUR LOCAL
     // ─────────────────────────────────────────────────────────────────────────
     const model = getAIModel();
 
     if (!model) {
-      // Mode local officiel si aucune clé OpenAI valide n'est configurée
+      // Mode local de secours respectant scrupuleusement le ton et le JSON strict
       const localPayload = generateLocalOrientationPayload(
         reformulatedQuery,
         knowledgeMatches,
         updatedProfile
       );
-      return streamJsonResponse(localPayload, rateLimit.remaining);
+      return streamJsonResponse(localPayload, updatedProfile, rateLimit.remaining);
     }
 
     try {
@@ -317,13 +335,16 @@ export async function POST(req: NextRequest) {
           role: m.role,
           content: m.content,
         })),
-        maxTokens: 250, // Limite stricte à 250 tokens
-        temperature: 0.3, // Température 0.3
+        maxTokens: 250,
+        temperature: 0.3,
       });
 
       return createDataStreamResponse({
         execute: async (dataStream) => {
-          dataStream.writeMessageAnnotation({ profile: updatedProfile } as any);
+          dataStream.writeMessageAnnotation({
+            profile: updatedProfile,
+            etape: updatedProfile.etape,
+          } as any);
           await result.mergeIntoDataStream(dataStream);
         },
         headers: {
@@ -337,7 +358,7 @@ export async function POST(req: NextRequest) {
         knowledgeMatches,
         updatedProfile
       );
-      return streamJsonResponse(localPayload, rateLimit.remaining);
+      return streamJsonResponse(localPayload, updatedProfile, rateLimit.remaining);
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -357,78 +378,179 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * Générateur local de réponse au format JSON { reply, suggestions, profile }
- * avec respect de la limite concise (sous 250 tokens) et progression des étapes.
+ * Générateur local respectant le ton de grand frère/sœur sans emojis,
+ * les étapes 1 à 5 et le format technique JSON strict.
  */
 function generateLocalOrientationPayload(
   query: string,
   knowledge: KnowledgeMatch[],
   profile: ConversationProfile
-): { reply: string; suggestions: string[]; profile: ConversationProfile } {
-  const topDoc = knowledge[0]?.content || "";
+): TechnicalOutput {
+  const etape = profile.etape || 1;
 
-  // Suggestions dynamiques selon l'étape de profil
-  let suggestions: string[] = [];
-  if (profile.etape <= 1) {
-    suggestions = ["Bac S1 / S2", "Bac L1 / L2", "Bac G / STEG", "Bac Technique"];
-  } else if (profile.etape === 2) {
-    suggestions = [
-      "J'aime les maths et l'info",
-      "Je préfère les SVT et la médecine",
-      "J'ai 13 de moyenne",
-      "Plutôt le droit et les langues",
-    ];
-  } else if (profile.etape === 3) {
-    suggestions = [
-      "Devenir ingénieur à Dakar",
-      "Médecine à l'UCAD ou UGB",
-      "Droit & Carrières juridiques",
-      "Finance / Audit (CESAG)",
-    ];
-  } else if (profile.etape === 4) {
-    suggestions = [
-      "Public uniquement (Campusen)",
-      "Privé avec bourse d'État",
-      "Public avec repli privé",
-      "Bourses DGES disponibles",
-    ];
-  } else {
-    suggestions = [
-      "Exporter mon récapitulatif",
-      "Comment payer sur Campusen ?",
-      "Préparer les concours",
-      "Nouvelle discussion",
-    ];
+  if (etape <= 1) {
+    return {
+      reply:
+        "Salut ! Bienvenue sur SenOrientation. Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
+      suggestions: [
+        "Bac S1 ou S2",
+        "Bac L1 ou L2",
+        "Bac G ou STEG",
+        "Autre série ou réorientation",
+      ],
+      profil_update: { serie: profile.serie || undefined },
+      hypotheses: [],
+      pistes: [],
+      etablissements: [],
+      etape: 1,
+    };
   }
 
-  // Synthèse courte adaptée
-  let reply = "";
-  if (profile.etape === 5) {
-    reply = `🎉 **Profil complet (Étape 5/5)** : Avec ta série **${profile.serie || "Bac"}**${profile.projet ? ` et ton projet en **${profile.projet}**` : ""}, voici tes options prioritaires au Sénégal :\n\n`;
-    if (topDoc.includes("Établissement Public")) {
-      reply += `🏛️ **Public (Campusen)** : Renseigne tes vœux prioritaires (ex: ESP, FMPOS, UGB ou FST) à 25 000 FCFA/an avec éligibilité aux bourses DGES.\n`;
-    }
-    reply += `🏢 **Privé Accrédité** : Écoles reconnues ANAQ-Sup / CAMES accessibles sur dossier ou bourses d'affectation.\n\nClique sur "Exporter le récapitulatif" pour conserver ta fiche !`;
-  } else {
-    reply = "Voici les repères officiels pour t'orienter :\n\n";
-    if (topDoc) {
-      const snippet = topDoc.split("\n").slice(0, 4).join("\n");
-      reply += `${snippet}\n\n`;
-    }
-    reply += `Pour affiner l'étape ${profile.etape}/5 : ${
-      profile.etape === 1
-        ? "Quelle est ta série de Bac ?"
-        : profile.etape === 2
-        ? "Quelles sont tes matières favorites ou ta moyenne ?"
-        : profile.etape === 3
-        ? "Quel métier aimerais-tu exercer et dans quelle ville ?"
-        : "As-tu des contraintes de budget (filières publiques Campusen ou privé) ?"
-    }`;
+  if (etape === 2) {
+    return {
+      reply:
+        "C'est bien noté. Pour mieux cerner ce qui te motive, dis-moi : quelles matières te donnent envie d'ouvrir ton cahier, et lesquelles tu fuis ?",
+      suggestions: [
+        "J'aime les maths et la logique",
+        "Je préfère les SVT et la santé",
+        "J'aime argumenter et écrire",
+        "Je ne sais pas",
+      ],
+      profil_update: {
+        matieres_aimees: profile.matieres_aimees,
+        points_forts: profile.points_forts,
+      },
+      hypotheses: [],
+      pistes: [],
+      etablissements: [],
+      etape: 2,
+    };
   }
 
+  if (etape === 3) {
+    const isScientifique = profile.serie?.startsWith("S") || profile.matieres_aimees.includes("Mathématiques");
+
+    if (isScientifique) {
+      return {
+        reply: `Pour l'instant je te vois plutôt vers les sciences de l'ingénieur ou les mathématiques appliquées. Dis-moi si je me trompe.
+
+**Génie logiciel, ESP Dakar**
+- Durée : 5 ans (concours DUT ou DIC)
+- Débouchés : développeur, ingénieur en intelligence artificielle
+- Pourquoi toi : tu as une logique scientifique et le goût de la technique
+
+**Informatique et mathématiques, UGB Saint-Louis**
+- Durée : 3 à 5 ans (Campusen)
+- Débouchés : data analyst, administrateur systèmes, actuaire
+- Pourquoi toi : tu aimes résoudre des problèmes de calcul
+
+Laquelle t'attire le plus, ou tu veux que j'affine ?`,
+        suggestions: [
+          "Génie logiciel à l'ESP",
+          "Mathématiques à l'UGB",
+          "Je veux que tu affines",
+          "Je ne sais pas",
+        ],
+        profil_update: {
+          serie: profile.serie,
+          matieres_aimees: profile.matieres_aimees,
+        },
+        hypotheses: ["Génie logiciel", "Mathématiques appliquées"],
+        pistes: [
+          {
+            nom: "Génie logiciel",
+            etablissements: ["esp"],
+            duree: "5 ans",
+            debouches: "développeur, ingénieur IA",
+            pourquoi: "logique scientifique et goût de la technique",
+          },
+          {
+            nom: "Informatique et mathématiques",
+            etablissements: ["ugb"],
+            duree: "3 à 5 ans",
+            debouches: "data analyst, administrateur systèmes",
+            pourquoi: "goût pour le calcul et la modélisation",
+          },
+        ],
+        etablissements: ["esp", "ugb"],
+        etape: 3,
+      };
+    }
+
+    return {
+      reply: `Pour l'instant je te vois plutôt vers les sciences juridiques ou le management d'entreprise. Dis-moi si je me trompe.
+
+**Droit et sciences politiques, FSJP UCAD**
+- Durée : 3 à 5 ans (Campusen)
+- Débouchés : juriste d'entreprise, avocat, magistrat
+- Pourquoi toi : tu aimes argumenter et débattre
+
+**Gestion et finance, FASEG UCAD ou CESAG**
+- Durée : 3 ans (Licence)
+- Débouchés : gestionnaire, auditeur, analyste financier
+- Pourquoi toi : tu as le sens de l'organisation et de l'analyse
+
+Laquelle t'attire le plus, ou tu veux que j'affine ?`,
+      suggestions: [
+        "Droit à l'UCAD",
+        "Gestion au CESAG",
+        "Je veux que tu affines",
+        "Je ne sais pas",
+      ],
+      profil_update: { serie: profile.serie },
+      hypotheses: ["Droit", "Gestion d'entreprise"],
+      pistes: [
+        {
+          nom: "Droit et sciences politiques",
+          etablissements: ["ucad"],
+          duree: "3 à 5 ans",
+          debouches: "juriste d'entreprise, avocat",
+          pourquoi: "goût pour l'argumentation et les textes",
+        },
+      ],
+      etablissements: ["ucad", "cesag"],
+      etape: 3,
+    };
+  }
+
+  if (etape === 4) {
+    return {
+      reply: `Dans les universités publiques comme l'UCAD ou l'UGB, l'accès se fait via Campusen avec des droits d'inscription nationaux fixés à 25 000 FCFA par an. Tu es également éligible aux bourses de l'État sénégalais (DGES), qui sont de 20 000 FCFA par mois en demi-bourse et 40 000 FCFA par mois en bourse entière.
+
+Tu souhaites approfondir les concours d'entrée, ou passer aux démarches concrètes sur Campusen ?`,
+      suggestions: [
+        "Voir les concours d'entrée",
+        "Les démarches Campusen",
+        "Établir mon plan d'action",
+        "Je ne sais pas",
+      ],
+      profil_update: { budget: profile.budget || "Public Campusen" },
+      hypotheses: ["Approfondissement de la filière choisie"],
+      pistes: [],
+      etablissements: ["ucad", "ugb"],
+      etape: 4,
+    };
+  }
+
+  // Étape 5 : Plan d'action
   return {
-    reply,
-    suggestions,
-    profile,
+    reply: `Voici ton plan d'action en 4 points pour sécuriser ton orientation :
+
+1. Crée ton compte Campusen dès la publication des résultats du Bac avec ton numéro de table et ta date de naissance.
+2. Classe tes choix en mettant en premier les filières sélectives, suivies de filières de repli solides.
+3. Prépare tes dossiers de concours entre mai et juillet si tu vises des écoles comme l'ESP ou l'ENSAE.
+4. Dès validation de ta proposition d'orientation, règle les 25 000 FCFA par mobile money sous 7 à 10 jours sous peine de forclusion.
+
+Tu veux qu'on revoie un point précis ?`,
+    suggestions: [
+      "Exporter mon récapitulatif",
+      "Détail des concours",
+      "Nouvelle discussion",
+    ],
+    profil_update: { etape: 5 },
+    hypotheses: ["Plan d'action validé"],
+    pistes: [],
+    etablissements: ["campusen"],
+    etape: 5,
   };
 }

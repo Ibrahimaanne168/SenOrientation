@@ -18,11 +18,13 @@ import {
   PanelLeftOpen,
   AlertCircle,
   Download,
-  FileText,
-  CheckCircle2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { ConversationProfile, INITIAL_PROFILE } from "@/lib/profile";
+import {
+  ConversationProfile,
+  INITIAL_PROFILE,
+  mergeProfileUpdate,
+} from "@/lib/profile";
 
 interface ConversationItem {
   id: string;
@@ -33,20 +35,29 @@ interface ConversationItem {
 interface ParsedAssistantMessage {
   reply: string;
   suggestions: string[];
-  profile?: ConversationProfile;
+  profil_update?: Partial<ConversationProfile>;
+  hypotheses?: string[];
+  pistes?: Array<{
+    nom: string;
+    etablissements: string[];
+    duree: string;
+    debouches: string;
+    pourquoi: string;
+  }>;
+  etablissements?: string[];
+  etape?: number;
 }
 
 const ETAPE_LABELS: Record<number, string> = {
-  1: "Série & Intérêts",
-  2: "Matières & Moyenne",
-  3: "Projet & Mobilité",
-  4: "Budget & Bourses",
-  5: "Plan Final Prêt",
+  1: "Accueil et série",
+  2: "Découverte",
+  3: "Pistes et devinette",
+  4: "Approfondissement",
+  5: "Plan d'action",
 };
 
 /**
- * Parseur robuste pour les messages de l'assistant au format JSON { reply, suggestions, profile }
- * Gère le texte en cours de streaming et nettoie les balises markdown si présentes
+ * Parseur robuste pour les messages de l'assistant au format JSON strict
  */
 function parseAssistantMessage(content: string): ParsedAssistantMessage {
   if (!content) return { reply: "", suggestions: [] };
@@ -67,7 +78,11 @@ function parseAssistantMessage(content: string): ParsedAssistantMessage {
       return {
         reply: obj.reply,
         suggestions: Array.isArray(obj.suggestions) ? obj.suggestions : [],
-        profile: obj.profile,
+        profil_update: obj.profil_update,
+        hypotheses: Array.isArray(obj.hypotheses) ? obj.hypotheses : [],
+        pistes: Array.isArray(obj.pistes) ? obj.pistes : [],
+        etablissements: Array.isArray(obj.etablissements) ? obj.etablissements : [],
+        etape: typeof obj.etape === "number" ? obj.etape : undefined,
       };
     }
   } catch {
@@ -88,9 +103,14 @@ function parseAssistantMessage(content: string): ParsedAssistantMessage {
           // Suggestions incomplètes en cours de streaming
         }
       }
+
+      const etapeMatch = unwrapped.match(/"etape"\s*:\s*([1-5])/);
+      const etape = etapeMatch ? parseInt(etapeMatch[1], 10) : undefined;
+
       return {
         reply: replyText,
         suggestions,
+        etape,
       };
     } catch {
       // Fallback
@@ -163,13 +183,14 @@ export default function ChatPage() {
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Salut ! Je suis **SenOrientation**, ton guide pour construire ton orientation scolaire et universitaire au Sénégal.\n\nPour débuter ton accompagnement étape par étape, **quelle est ta série de Bac** (ou ton domaine d'intérêt) ?",
+            "Salut ! Bienvenue sur SenOrientation. Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
           suggestions: [
-            "Bac S1 / S2 (Scientifique)",
-            "Bac L1 / L2 (Littéraire)",
-            "Bac G / STEG (Gestion)",
-            "Bac Technique (T1/T2)",
+            "Bac S1 ou S2",
+            "Bac L1 ou L2",
+            "Bac G ou STEG",
+            "Autre série ou réorientation",
           ],
+          etape: 1,
         }),
         createdAt: new Date(),
       },
@@ -200,8 +221,8 @@ export default function ChatPage() {
 
     // 2. Lecture depuis le JSON du message
     const parsed = parseAssistantMessage(lastAssistantMsg.content);
-    if (parsed.profile && typeof parsed.profile.etape === "number") {
-      setProfile(parsed.profile);
+    if (parsed.profil_update || typeof parsed.etape === "number") {
+      setProfile((prev) => mergeProfileUpdate(prev, parsed.profil_update, parsed.etape));
     }
   }, [messages]);
 
@@ -251,7 +272,7 @@ export default function ChatPage() {
     );
   }, [messages, activeConvId]);
 
-  /* ─── Bouton "Nouvelle discussion" : réinitialise le profil et le chat ─ */
+  /* ─── Bouton Nouvelle discussion ─────────────────────────────────── */
   const handleNewChat = () => {
     const newId = Date.now().toString();
     setProfile(INITIAL_PROFILE);
@@ -266,13 +287,14 @@ export default function ChatPage() {
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Salut ! Je suis **SenOrientation**, ton guide officiel au Sénégal.\n\nPour débuter ta nouvelle démarche d'orientation, **quelle est ta série de Bac** ?",
+            "Salut ! Bienvenue sur SenOrientation. Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
           suggestions: [
-            "Bac S1 / S2 (Scientifique)",
-            "Bac L1 / L2 (Littéraire)",
-            "Bac G / STEG (Gestion)",
-            "Bac Technique (T1/T2)",
+            "Bac S1 ou S2",
+            "Bac L1 ou L2",
+            "Bac G ou STEG",
+            "Autre série ou réorientation",
           ],
+          etape: 1,
         }),
         createdAt: new Date(),
       },
@@ -303,29 +325,26 @@ export default function ChatPage() {
   const generateRecapText = () => {
     const dateStr = new Date().toLocaleDateString("fr-FR");
     return `============================================================
-SENORIENTATION - FICHE D'ORIENTATION OFFICIELLE (SÉNÉGAL)
+SENORIENTATION - FICHE D'ORIENTATION (SENEGAL)
 Date : ${dateStr}
-Plateforme nationale : campusen.sec.gouv.sn
+Plateforme officielle : campusen.sec.gouv.sn
 ============================================================
 
-1. PROFIL DE L'ÉLÈVE
-- Série de Baccalauréat : ${profile.serie || "Non précisée"}
-- Moyenne générale : ${profile.moyenne ? `${profile.moyenne}/20` : "Non précisée"}
-- Matières favorites : ${profile.matieres_aimees.length > 0 ? profile.matieres_aimees.join(", ") : "Non précisées"}
-- Points forts : ${profile.points_forts.length > 0 ? profile.points_forts.join(", ") : "Non précisés"}
-- Métier / Projet visé : ${profile.projet || "En cours de validation"}
-- Ville / Mobilité : ${profile.ville || "Sénégal (Toutes régions)"}
-- Préférence financière : ${profile.budget || "Universités publiques (Campusen) & Bourses DGES"}
+1. PROFIL DE L'ELEVE
+- Serie de Bac : ${profile.serie || "Non precisee"}
+- Niveau : ${profile.niveau || "Terminale / Bachelier"}
+- Moyenne generale : ${profile.moyenne ? `${profile.moyenne}/20` : "Non precisee"}
+- Matieres aimees : ${profile.matieres_aimees.length > 0 ? profile.matieres_aimees.join(", ") : "Non precisees"}
+- Points forts : ${profile.points_forts.length > 0 ? profile.points_forts.join(", ") : "Non precises"}
+- Projet / Metier vise : ${profile.projet || "En cours de validation"}
+- Ville souhaitee : ${profile.ville || "Senegal"}
+- Budget : ${profile.budget || "Public Campusen (25 000 FCFA/an)"}
 
-2. SYNTHÈSE DES RECOMMANDATIONS OFFICIELLES
-- Secteur Public (Campusen) : Droits d'inscription de 25 000 FCFA/an. Inscription obligatoire sur campusen.sec.gouv.sn dès parution des résultats du Bac.
-- Bourses DGES : Éligibilité aux bourses de l'État (Demi-bourse 20 000 FCFA/mois, Bourse entière 40 000 FCFA/mois en Licence).
-- Secteur Privé : Établissements accrédités ANAQ-Sup et CAMES (dossier direct ou subventions).
-
-3. PROCHAINES DÉMARCHES CRUCIALES
-- Créer ton compte Campusen avec ton numéro de table et ta date de naissance.
-- Classer tes 18 choix de filières par ordre de préférence absolue.
-- Valider et payer dans les 7 à 10 jours suivant l'attribution sous peine de forclusion.
+2. RECOMMANDATIONS ET DEMARCHES
+- Etablissements publics via Campusen : droits d'inscription fixes a 25 000 FCFA/an.
+- Bourses DGES : eligibilite selon resultats (20 000 a 40 000 FCFA/mois).
+- Ecoles d'excellence sur concours : depots entre mai et juillet.
+- Delai de validation Campusen : 7 a 10 jours pour regler par mobile money sous peine de forclusion.
 ============================================================`;
   };
 
@@ -423,7 +442,7 @@ Plateforme nationale : campusen.sec.gouv.sn
         {/* Indicateur de profil de l'élève dans la sidebar */}
         <div className="p-3 bg-[#F9FAFB] border-b border-[#E5E7EB] text-[12.5px] space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-[#1F2937]">Progression Profil</span>
+            <span className="font-semibold text-[#1F2937]">Progression</span>
             <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#EBF3FE] text-[#0B3D91]">
               Étape {profile.etape}/5
             </span>
@@ -503,7 +522,7 @@ Plateforme nationale : campusen.sec.gouv.sn
       ════════════════════════════════════════════ */}
       <main className="flex-1 flex flex-col h-full overflow-hidden bg-white">
 
-        {/* En-tête : Titre + Progression + Bouton Nouvelle discussion */}
+        {/* En-tête */}
         <header className="shrink-0 h-13 border-b border-[#E5E7EB] px-4 sm:px-6 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3 min-w-0">
             <button
@@ -520,17 +539,15 @@ Plateforme nationale : campusen.sec.gouv.sn
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
-            {/* Badge d'étape progressif */}
             <span className="hidden sm:inline-flex items-center gap-1.5 text-[12px] text-[#0B3D91] bg-[#EBF3FE] px-2.5 py-1 rounded-md border border-[#BFDBFE] font-medium">
               <span className="w-2 h-2 rounded-full bg-[#0B3D91]" />
               Étape {profile.etape}/5 : {ETAPE_LABELS[profile.etape]}
             </span>
 
-            {/* Bouton Nouvelle discussion rapide */}
             <button
               onClick={handleNewChat}
               className="flex items-center gap-1 px-2.5 py-1 text-[12.5px] font-medium text-[#4B5563] hover:text-[#0B3D91] hover:bg-[#F3F4F6] rounded-md border border-[#E5E7EB] transition-colors cursor-pointer"
-              title="Réinitialiser le profil et commencer une nouvelle discussion"
+              title="Nouvelle discussion"
             >
               <Plus className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Nouveau</span>
@@ -538,28 +555,25 @@ Plateforme nationale : campusen.sec.gouv.sn
           </div>
         </header>
 
-        {/* Zone des messages (760px max) */}
+        {/* Zone des messages */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 md:py-8 bg-white">
           <div className="max-w-[760px] mx-auto space-y-6">
 
             {/* CARTE RÉCAPITULATIF FINAL EXPORTABLE QUAND ÉTAPE = 5 */}
             {profile.etape === 5 && (
-              <div className="p-4 sm:p-5 bg-[#F8FAFC] border-2 border-[#93C5FD] rounded-xl shadow-xs space-y-3.5 animate-fadeIn">
+              <div className="p-4 sm:p-5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl shadow-xs space-y-3.5 animate-fadeIn">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-[#0B3D91]" />
-                    <h2 className="text-[15px] font-semibold text-[#1F2937]">
-                      Fiche d&apos;Orientation Personnalisée (Étape 5/5)
-                    </h2>
-                  </div>
-                  <span className="text-[12px] bg-emerald-100 text-emerald-800 font-medium px-2 py-0.5 rounded-full">
-                    Profil Complet
+                  <h2 className="text-[15px] font-semibold text-[#1F2937]">
+                    Fiche d&apos;orientation (Étape 5/5)
+                  </h2>
+                  <span className="text-[12px] bg-slate-100 text-slate-800 font-medium px-2 py-0.5 rounded-full border border-slate-200">
+                    Profil complet
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[13px] bg-white p-3 rounded-lg border border-[#E2E8F0]">
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Série de Baccalauréat</span>
+                    <span className="text-[#64748B] block text-[11.5px]">Série de Bac</span>
                     <strong className="text-[#0F172A]">{profile.serie || "Non précisée"}</strong>
                   </div>
                   <div>
@@ -577,19 +591,19 @@ Plateforme nationale : campusen.sec.gouv.sn
                     </span>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Métier / Domaine visé</span>
+                    <span className="text-[#64748B] block text-[11.5px]">Projet ou métier</span>
                     <strong className="text-[#0B3D91]">
                       {profile.projet || "En cours de sélection"}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Mobilité &amp; Ville</span>
+                    <span className="text-[#64748B] block text-[11.5px]">Ville souhaitée</span>
                     <span className="text-[#0F172A]">{profile.ville || "Sénégal"}</span>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Cadre de formation</span>
+                    <span className="text-[#64748B] block text-[11.5px]">Budget</span>
                     <span className="text-[#0F172A]">
-                      {profile.budget || "Campusen (Public) & Privé accrédité"}
+                      {profile.budget || "Public Campusen (25 000 FCFA/an)"}
                     </span>
                   </div>
                 </div>
@@ -611,7 +625,7 @@ Plateforme nationale : campusen.sec.gouv.sn
                     {copiedRecap ? (
                       <>
                         <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-700">Fiche copiée !</span>
+                        <span className="text-emerald-700">Copié</span>
                       </>
                     ) : (
                       <>
@@ -639,7 +653,6 @@ Plateforme nationale : campusen.sec.gouv.sn
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      {/* Réponse textuelle rendue en Markdown */}
                       <BotMessageMarkdown content={parsed.reply || msg.content} />
 
                       {/* Suggestions affichées comme chips cliquables sous le message */}
@@ -710,7 +723,7 @@ Plateforme nationale : campusen.sec.gouv.sn
                 </div>
                 <div className="text-[14px] text-[#6B7280] flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#0B3D91] animate-pulse" />
-                  <span>Actualisation du profil &amp; des filières officielles...</span>
+                  <span>Réflexion en cours...</span>
                 </div>
               </div>
             )}
@@ -744,7 +757,7 @@ Plateforme nationale : campusen.sec.gouv.sn
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Pose ta question ou choisis une suggestion ci-dessus..."
+                placeholder="Pose ta question ou choisis une réponse ci-dessus..."
                 disabled={isLoading}
                 className="flex-1 bg-transparent border-0 text-[15px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none resize-none leading-relaxed py-1 px-1.5 max-h-32"
               />
@@ -764,7 +777,7 @@ Plateforme nationale : campusen.sec.gouv.sn
             </form>
 
             <p className="mt-2 text-center text-[12px] text-[#6B7280]">
-              Données officielles Campusen &amp; universités du Sénégal — Progression en 5 étapes
+              Données issues des universités publiques et de campusen.sec.gouv.sn
             </p>
           </div>
         </div>
