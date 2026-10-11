@@ -47,14 +47,49 @@ const GRATITUDE_WORDS = [
   "ok merci",
 ];
 
-export function detectIntent(message: string): "greeting" | "gratitude" | "query" {
+const EMOTION_PATTERNS = [
+  "perdu",
+  "suis perdu",
+  "un peu perdu",
+  "ai peur",
+  "peur de",
+  "stresse",
+  "angoisse",
+  "panique",
+  "suis nul",
+  "suis nulle",
+  "nul en",
+  "nulle en",
+  "y arriverai pas",
+  "découragé",
+  "decourage",
+  "sais plus quoi",
+  "sais plus trop",
+];
+
+const DONT_KNOW_PATTERNS = [
+  "je ne sais pas",
+  "je sais pas",
+  "jsp",
+  "aucune idee",
+  "aucune idée",
+  "je sais pas trop",
+  "pas d'idee",
+  "pas d'idée",
+  "j'en sais rien",
+  "chais pas",
+];
+
+export function detectIntent(
+  message: string
+): "greeting" | "gratitude" | "emotion" | "dont_know" | "query" {
   const clean = message
     .toLowerCase()
     .trim()
     .replace(/[!?,;.:/\\()]/g, "")
     .replace(/\s+/g, " ");
 
-  // Vérifier si c'est une salutation simple
+  // 1. Vérifier si c'est une salutation simple
   if (
     GREETING_WORDS.has(clean) ||
     clean.startsWith("bonjour ") && clean.split(" ").length <= 4 ||
@@ -64,10 +99,24 @@ export function detectIntent(message: string): "greeting" | "gratitude" | "query
     return "greeting";
   }
 
-  // Vérifier si c'est un remerciement
+  // 2. Vérifier si c'est un remerciement
   for (const g of GRATITUDE_WORDS) {
     if (clean === g || clean.startsWith(`${g} `) && clean.split(" ").length <= 5) {
       return "gratitude";
+    }
+  }
+
+  // 3. Vérifier si l'élève exprime du doute ou du stress (Ne pas lancer de recherche RAG)
+  for (const p of EMOTION_PATTERNS) {
+    if (clean.includes(p)) {
+      return "emotion";
+    }
+  }
+
+  // 4. Vérifier si l'élève dit "je ne sais pas"
+  for (const p of DONT_KNOW_PATTERNS) {
+    if (clean === p || clean.startsWith(`${p} `) || clean.endsWith(` ${p}`)) {
+      return "dont_know";
     }
   }
 

@@ -170,6 +170,50 @@ export async function POST(req: NextRequest) {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // GESTION DU DOUTE OU DU STRESS & DU "JE NE SAIS PAS"
+    // Ne lance JAMAIS de recherche RAG sur une phrase d'émotion
+    // ─────────────────────────────────────────────────────────────────────────
+    if (intent === "emotion") {
+      // eslint-disable-next-line no-console
+      console.log("[RAG Pipeline] Routage : Doute / Stress détecté -> Recherche RAG ignorée (écoute active & normalisation).");
+      const isMath = sanitized.cleanText.toLowerCase().includes("math");
+      const reply = isMath
+        ? "Pas de panique, c'est très courant et beaucoup d'élèves réussissent brillamment sans être des as en maths. On va y aller doucement. Dans quelles autres matières te sens-tu le plus à l'aise ?"
+        : "Pas de souci, beaucoup d'élèves se sentent comme ça avant de choisir. On va y aller pas à pas. Tu es plutôt à l'aise en calcul, en rédaction ou en travaux pratiques ?";
+
+      const suggestions = isMath
+        ? ["Français & Rédaction", "Histoire & Géo", "Langues vivantes", "SVT & Biologie"]
+        : ["Plutôt le calcul", "Plutôt la rédaction", "Plutôt les travaux pratiques"];
+
+      return streamJsonResponse(
+        {
+          reply,
+          suggestions,
+          profile: updatedProfile,
+        },
+        rateLimit.remaining
+      );
+    }
+
+    if (intent === "dont_know") {
+      // eslint-disable-next-line no-console
+      console.log("[RAG Pipeline] Routage : 'Je ne sais pas' détecté -> Recherche RAG ignorée (3 choix concrets).");
+      return streamJsonResponse(
+        {
+          reply:
+            "C'est tout à fait normal d'hésiter à ce stade ! Pour t'aider à y voir plus clair, parmi ces 3 grands univers, lequel t'attire le plus naturellement ?",
+          suggestions: [
+            "Sciences, santé & tech",
+            "Gestion, finance & droit",
+            "Lettres, langues & médias",
+          ],
+          profile: updatedProfile,
+        },
+        rateLimit.remaining
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // 3. REFORMULATION CONTEXTUELLE DE LA REQUÊTE AVEC HISTORIQUE (10 max)
     // ─────────────────────────────────────────────────────────────────────────
     const recentMessages = messages.slice(-10);
@@ -366,7 +410,7 @@ function generateLocalOrientationPayload(
     }
     reply += `🏢 **Privé Accrédité** : Écoles reconnues ANAQ-Sup / CAMES accessibles sur dossier ou bourses d'affectation.\n\nClique sur "Exporter le récapitulatif" pour conserver ta fiche !`;
   } else {
-    reply = `D'après nos documents officiels pour **${query}** :\n\n`;
+    reply = "Voici les repères officiels pour t'orienter :\n\n";
     if (topDoc) {
       const snippet = topDoc.split("\n").slice(0, 4).join("\n");
       reply += `${snippet}\n\n`;
