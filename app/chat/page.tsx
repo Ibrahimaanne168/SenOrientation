@@ -11,38 +11,32 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   User,
+  LogOut,
+  AlertCircle,
   Copy,
   Check,
-  Mic,
-  Paperclip,
-  Share2,
-  Mail,
-  Smartphone,
-  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-/* ─── Types ──────────────────────────────────────────────────────────── */
+/* ─── 4 Suggestions en petites bulles arrondies (chips) ───────────────── */
+const SUGGESTIONS = [
+  "Filières après Bac S2",
+  "Comment fonctionne Campusen ?",
+  "Conditions pour la bourse",
+  "Débouchés d'ingénieur à l'ESP",
+];
+
 interface ConversationItem {
   id: string;
   title: string;
   date: string;
 }
 
-const STARTER_CHIPS = [
-  "Quelles filières après un Bac S2 ?",
-  "Comment fonctionne Campusen ?",
-  "Critères pour la bourse de l'État",
-  "Débouchés d'ingénieur à l'ESP",
-  "Que faire avec un Bac L2 ?",
-  "Facultés de médecine au Sénégal",
-];
-
-/* ─── Rendu Markdown respectant les règles typographiques ────────────── */
-function BotMessageContent({ content }: { content: string }) {
+/* ─── Rendu Markdown sans serif, 16px, interligne 1.6, gras en 600 ─────── */
+function BotMessageMarkdown({ content }: { content: string }) {
   return (
-    <div className="prose-orientation">
+    <div className="bot-response-content">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -59,41 +53,29 @@ function BotMessageContent({ content }: { content: string }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   PAGE DE CHAT — SENORIENTATION
-══════════════════════════════════════════════════════════════════════ */
 export default function ChatPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile-first : fermée par défaut sur petit écran
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [conversations, setConversations] = useState<ConversationItem[]>([
-    { id: "1", title: "Filières après Bac S2", date: "Aujourd'hui" },
-    { id: "2", title: "Démarches bourses DGES", date: "Hier" },
+    { id: "1", title: "Orientation Bac Scientifique", date: "Aujourd'hui" },
+    { id: "2", title: "Démarches Campusen & Bourses", date: "Hier" },
   ]);
   const [activeConvId, setActiveConvId] = useState<string>("1");
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Micro dictée vocale (Web Speech)
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<unknown>(null);
-
-  // Modales légères (Resend & Telegram)
-  const [showEmailModal, setShowEmailModal] = useState(false);
-  const [emailInput, setEmailInput] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  /* ─── Vercel AI SDK ───────────────────────────────────────────────── */
+  /* ─── useChat Vercel AI SDK ─────────────────────────────────────── */
   const {
     messages,
     input,
-    setInput,
     handleInputChange,
-    handleSubmit: chatSubmit,
+    handleSubmit,
     isLoading,
     error,
     setMessages,
+    append,
   } = useChat({
     api: "/api/chat",
     initialMessages: [
@@ -101,14 +83,17 @@ export default function ChatPage() {
         id: "welcome",
         role: "assistant",
         content:
-          "Salut ! Dis-moi ta série de Bac (S1, S2, L, G...) ou ce qui t'intéresse, et je t'aide à trouver les meilleures filières et démarches Campusen au Sénégal.",
+          "Salut ! Dis-moi ta série de Bac (S1, S2, L, G...) et je t'aide à trouver ta filière.",
         createdAt: new Date(),
       },
     ],
-    body: { conversationId: activeConvId },
+    onError: (err) => {
+      // eslint-disable-next-line no-console
+      console.error("[Chat error]", err);
+    },
   });
 
-  /* ─── Vérification session Supabase ──────────────────────────────── */
+  /* ─── Récupération session utilisateur ──────────────────────────── */
   useEffect(() => {
     try {
       const supabase = createClient();
@@ -120,125 +105,89 @@ export default function ChatPage() {
     }
   }, []);
 
-  /* ─── Web Speech Recognition ─────────────────────────────────────── */
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const SpeechRecognition =
-        (window as unknown as { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown })
-          .SpeechRecognition ||
-        (window as unknown as { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown })
-          .webkitSpeechRecognition;
-
-      if (SpeechRecognition) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const recog = new (SpeechRecognition as any)();
-        recog.continuous = false;
-        recog.interimResults = false;
-        recog.lang = "fr-FR";
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        recog.onresult = (event: any) => {
-          const transcript = event.results[0][0].transcript;
-          if (transcript) {
-            setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
-          }
-          setIsListening(false);
-        };
-        recog.onerror = () => setIsListening(false);
-        recog.onend = () => setIsListening(false);
-        recognitionRef.current = recog;
-      }
-    }
-  }, [setInput]);
-
-  const toggleSpeech = () => {
-    if (!recognitionRef.current) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const recog = recognitionRef.current as any;
-    if (isListening) {
-      recog.stop();
-      setIsListening(false);
-    } else {
-      try {
-        recog.start();
-        setIsListening(true);
-      } catch {
-        setIsListening(false);
-      }
-    }
-  };
-
-  /* ─── Auto-scroll ─────────────────────────────────────────────────── */
+  /* ─── Auto-scroll vers le bas ───────────────────────────────────── */
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  /* ─── Textarea auto-resize ────────────────────────────────────────── */
+  /* ─── Redimensionnement automatique du textarea ─────────────────── */
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        140
+      )}px`;
     }
   }, [input]);
 
-  /* ─── Titrage de la conversation ─────────────────────────────────── */
+  /* ─── Mise à jour du titre de conversation ───────────────────────── */
   useEffect(() => {
-    const last = [...messages].reverse().find((m) => m.role === "user");
-    if (!last) return;
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
+    if (!lastUserMsg) return;
     setConversations((prev) =>
       prev.map((c) =>
         c.id === activeConvId && c.title === "Nouvelle discussion"
           ? {
               ...c,
-              title: last.content.slice(0, 28) + (last.content.length > 28 ? "…" : ""),
+              title:
+                lastUserMsg.content.slice(0, 30) +
+                (lastUserMsg.content.length > 30 ? "…" : ""),
             }
           : c
       )
     );
   }, [messages, activeConvId]);
 
+  /* ─── Démarrer une nouvelle discussion ───────────────────────────── */
   const handleNewChat = () => {
-    const id = Date.now().toString();
+    const newId = Date.now().toString();
     setConversations((prev) => [
-      { id, title: "Nouvelle discussion", date: "À l'instant" },
+      { id: newId, title: "Nouvelle discussion", date: "À l'instant" },
       ...prev,
     ]);
-    setActiveConvId(id);
+    setActiveConvId(newId);
     setMessages([
       {
-        id: `welcome-${id}`,
+        id: `welcome-${newId}`,
         role: "assistant",
         content:
-          "Salut ! Quelle est ta série ou la question qui te préoccupe pour tes études supérieures ?",
+          "Salut ! Dis-moi ta série de Bac (S1, S2, L, G...) et je t'aide à trouver ta filière.",
         createdAt: new Date(),
       },
     ]);
     setSidebarOpen(false);
   };
 
+  /* ─── Clic sur une suggestion (envoi direct) ─────────────────────── */
+  const handleSuggestionClick = (question: string) => {
+    if (isLoading) return;
+    append({
+      role: "user",
+      content: question,
+    });
+  };
+
+  /* ─── Touche Entrée pour envoyer ─────────────────────────────────── */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      chatSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+      handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
     }
   };
 
+  /* ─── Copier le texte ────────────────────────────────────────────── */
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 1800);
   };
 
-  const handleChipClick = (question: string) => {
-    const fake = { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>;
-    chatSubmit(fake, { data: { content: question } });
-  };
-
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[var(--color-bg)] text-[var(--color-text)]">
+    <div className="flex h-screen w-full overflow-hidden bg-white text-[#1F2937]">
 
       {/* ════════════════════════════════════════════
-          PANNEAU LATÉRAL (SIDEBAR HUMAINE SANS TICS IA)
+          PANNEAU LATÉRAL (SIDEBAR)
       ════════════════════════════════════════════ */}
       {sidebarOpen && (
         <div
@@ -249,92 +198,92 @@ export default function ChatPage() {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col w-[270px] bg-[var(--color-surface)] border-r border-[var(--color-border)] transition-transform duration-200 ease-out md:static md:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full md:w-64"
+        className={`fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-[#F7F7F8] border-r border-[#E5E7EB] transition-transform duration-200 ease-out md:static md:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* En-tête de la sidebar avec touche d'asymétrie sénégalaise */}
-        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[var(--color-border-subtle)]">
+        {/* En-tête de la sidebar */}
+        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#E5E7EB]">
           <div className="flex items-center gap-2">
-            <span
-              className="w-2 h-2 rounded-full bg-[var(--color-accent)] shrink-0"
-              aria-hidden="true"
-            />
-            <span className="font-semibold text-[15px] tracking-tight">SenOrientation</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0F7B4F] shrink-0" />
+            <span className="font-semibold text-[15px] text-[#1F2937]">
+              SenOrientation
+            </span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Fermer le menu"
-            className="p-1 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] md:hidden"
+            className="p-1 text-[#6B7280] hover:text-[#1F2937] md:hidden"
           >
             <PanelLeftClose className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Bouton Nouvelle discussion (casse normale, zéro all-caps) */}
+        {/* Bouton Nouvelle discussion */}
         <div className="p-3">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-[14px] font-medium text-[var(--color-accent-contrast)] bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] rounded-md transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-[14px] font-medium text-[#1F2937] bg-white border border-[#E5E7EB] hover:bg-gray-50 rounded-lg transition-colors"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-[#6B7280]" />
             <span>Nouvelle discussion</span>
           </button>
         </div>
 
-        {/* Liste des discussions */}
+        {/* Historique des discussions */}
         <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
-          <p className="px-2 py-1 text-[12px] font-medium text-[var(--color-text-secondary)]">
+          <p className="px-2 py-1 text-[12px] font-medium text-[#6B7280]">
             Historique
           </p>
-
-          {conversations.map((c) => {
-            const isActive = c.id === activeConvId;
+          {conversations.map((conv) => {
+            const isActive = conv.id === activeConvId;
             return (
               <button
-                key={c.id}
+                key={conv.id}
                 onClick={() => {
-                  setActiveConvId(c.id);
+                  setActiveConvId(conv.id);
                   setSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-md text-left transition-colors ${
+                className={`w-full flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-lg text-left transition-colors ${
                   isActive
-                    ? "bg-[var(--color-surface-subtle)] text-[var(--color-text)] font-medium"
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text)]"
+                    ? "bg-[#0F7B4F] text-white font-medium"
+                    : "text-[#4B5563] hover:bg-white hover:text-[#1F2937]"
                 }`}
               >
-                <MessageSquare className="w-3.5 h-3.5 shrink-0 opacity-60" />
-                <span className="truncate">{c.title}</span>
+                <MessageSquare
+                  className={`w-3.5 h-3.5 shrink-0 ${
+                    isActive ? "text-white" : "text-[#9CA3AF]"
+                  }`}
+                />
+                <span className="truncate">{conv.title}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Pied de la barre latérale */}
-        <div className="p-3 border-t border-[var(--color-border-subtle)] space-y-2">
-          <a
-            href="https://t.me"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-between px-2.5 py-1.5 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] rounded hover:bg-[var(--color-surface-subtle)] transition-colors"
-          >
-            <span className="flex items-center gap-2">
-              <Smartphone className="w-3.5 h-3.5 opacity-70" />
-              <span>Bot Telegram mobile</span>
-            </span>
-            <ExternalLink className="w-3 h-3 opacity-50" />
-          </a>
-
+        {/* Pied de sidebar */}
+        <div className="p-3 border-t border-[#E5E7EB]">
           {userEmail ? (
-            <div className="flex items-center justify-between px-2.5 py-1.5 text-[12.5px] text-[var(--color-text-secondary)]">
+            <div className="flex items-center justify-between px-2 py-1.5 text-[12.5px] text-[#4B5563]">
               <span className="truncate">{userEmail}</span>
+              <button
+                onClick={async () => {
+                  const supabase = createClient();
+                  await supabase.auth.signOut();
+                  setUserEmail(null);
+                }}
+                title="Se déconnecter"
+                className="text-[#6B7280] hover:text-red-600 p-1"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
             </div>
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-2 px-2.5 py-1.5 text-[13px] text-[var(--color-text)] hover:bg-[var(--color-surface-subtle)] rounded transition-colors"
+              className="flex items-center justify-center gap-2 py-2 px-3 text-[13px] font-medium text-[#1F2937] bg-white border border-[#E5E7EB] hover:bg-gray-50 rounded-lg transition-colors w-full"
             >
-              <User className="w-3.5 h-3.5 opacity-70" />
+              <User className="w-3.5 h-3.5 text-[#6B7280]" />
               <span>Connexion</span>
             </Link>
           )}
@@ -342,132 +291,118 @@ export default function ChatPage() {
       </aside>
 
       {/* ════════════════════════════════════════════
-          ZONE PRINCIPALE DE LECTURE & CONVERSATION
+          ZONE PRINCIPALE (FOND BLANC PUR #FFFFFF)
       ════════════════════════════════════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--color-bg)]">
+      <main className="flex-1 flex flex-col h-full overflow-hidden bg-white">
 
-        {/* En-tête supérieur sobre */}
-        <header className="shrink-0 h-13 border-b border-[var(--color-border)] px-4 flex items-center justify-between bg-[var(--color-surface)]">
+        {/* En-tête simple et aéré */}
+        <header className="shrink-0 h-13 border-b border-[#E5E7EB] px-4 sm:px-6 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              onClick={() => setSidebarOpen(true)}
               aria-label="Ouvrir le menu"
-              className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] rounded md:hidden"
+              className="p-1.5 text-[#6B7280] hover:text-[#1F2937] md:hidden"
             >
               <PanelLeftOpen className="w-4 h-4" />
             </button>
-
-            {/* Logo typographique franc avec point d'ancrage local */}
-            <div className="flex items-baseline gap-2">
-              <span className="font-bold text-[16px] tracking-tight text-[var(--color-text)]">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-[15px] text-[#1F2937]">
                 SenOrientation
               </span>
-              <span className="text-[12px] text-[var(--color-text-secondary)] hidden sm:inline">
-                Guide post-Bac au Sénégal
+              <span className="text-[#9CA3AF] hidden sm:inline">•</span>
+              <span className="text-[13px] text-[#6B7280] hidden sm:inline">
+                Orientation post-Bac au Sénégal
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowEmailModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-[var(--color-text)] bg-[var(--color-surface-subtle)] hover:bg-[var(--color-border)] rounded-md transition-colors"
-            >
-              <Mail className="w-3.5 h-3.5 opacity-70" />
-              <span className="hidden sm:inline">Recevoir mon bilan</span>
-            </button>
+            <span className="text-[12px] text-[#6B7280] bg-[#F7F7F8] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
+              Campusen &amp; Universités publiques
+            </span>
           </div>
         </header>
 
-        {/* Zone des messages (mobile-first, centrée, respiration fluide) */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 md:py-8">
-          <div className="max-w-[720px] mx-auto space-y-6">
+        {/* Zone des messages */}
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 md:py-8 bg-white">
+          <div className="max-w-[700px] mx-auto space-y-5">
 
-            {/* Écran d'accueil quand la conversation débute */}
-            {messages.length <= 1 && (
-              <section className="pt-4 pb-6 space-y-4">
-                <div className="space-y-1.5">
-                  <h1 className="text-[24px] sm:text-[30px] font-bold tracking-tight text-[var(--color-text)] leading-[1.25]">
-                    Trouve ta filière après le Bac.
-                  </h1>
-                  <p className="text-[15px] sm:text-[16px] text-[var(--color-text-secondary)] leading-relaxed max-w-[58ch]">
-                    Pose tes questions sur les universités publiques (UCAD, UGB, USSEIN...), les critères de sélection Campusen ou les bourses de l&apos;État.
-                  </p>
-                </div>
-
-                {/* Chips de suggestions simples en ligne compacte (pas 4 cartes identiques !) */}
-                <div className="pt-2">
-                  <p className="text-[12.5px] font-medium text-[var(--color-text-secondary)] mb-2.5">
-                    Questions fréquentes :
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {STARTER_CHIPS.map((chip, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleChipClick(chip)}
-                        className="text-left text-[13px] text-[var(--color-text)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] px-3 py-1.5 rounded-full transition-colors"
-                      >
-                        {chip}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* Fil des messages */}
+            {/* Fil des messages avec bulles classiques */}
             {messages.map((msg) => {
               const isBot = msg.role === "assistant";
 
               if (isBot) {
                 return (
-                  <article key={msg.id} className="pt-2">
-                    {/* Zéro trait vertical, zéro étincelle, typographie pure à 16.5px / interligne 1.6 */}
-                    <div className="bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-lg p-4 sm:p-6">
-                      <BotMessageContent content={msg.content} />
+                  <div key={msg.id} className="flex justify-start">
+                    <div className="max-w-[88%] sm:max-w-[82%] bg-[#F3F4F6] text-[#1F2937] rounded-2xl rounded-tl-sm px-4 sm:px-5 py-3.5 relative group">
+                      <BotMessageMarkdown content={msg.content} />
 
-                      {/* Barre d'action discrète en fin de message */}
-                      <div className="mt-4 pt-3 border-t border-[var(--color-border-subtle)] flex items-center justify-between text-[12px] text-[var(--color-text-secondary)]">
-                        <span>Sources officielles Campusen &amp; MESRI</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleCopy(msg.content, msg.id)}
-                            className="p-1 hover:text-[var(--color-text)] rounded transition-colors"
-                            title="Copier le texte"
-                          >
-                            {copiedId === msg.id ? (
-                              <Check className="w-3.5 h-3.5 text-[var(--color-accent)]" />
-                            ) : (
-                              <Copy className="w-3.5 h-3.5" />
-                            )}
-                          </button>
-                        </div>
+                      {/* Bouton copier discret */}
+                      <div className="mt-2 pt-1 flex justify-end">
+                        <button
+                          onClick={() => handleCopy(msg.content, msg.id)}
+                          className="text-[#9CA3AF] hover:text-[#4B5563] p-0.5 rounded transition-colors"
+                          title="Copier"
+                        >
+                          {copiedId === msg.id ? (
+                            <Check className="w-3 h-3 text-[#0F7B4F]" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </button>
                       </div>
                     </div>
-                  </article>
+                  </div>
                 );
               }
 
-              /* Message de l'élève : bulle droite, couleur foncée adoucie */
+              /* Message de l'élève (droite, fond vert profond #0F7B4F, texte blanc) */
               return (
-                <div key={msg.id} className="flex justify-end pt-1">
-                  <div className="max-w-[85%] sm:max-w-[75%] bg-[var(--color-user-bubble)] text-[var(--color-user-text)] rounded-lg px-4 py-2.5 text-[15px] leading-relaxed">
+                <div key={msg.id} className="flex justify-end">
+                  <div className="max-w-[85%] sm:max-w-[78%] bg-[#0F7B4F] text-white rounded-2xl rounded-tr-sm px-4 sm:px-5 py-3 text-[15px] leading-relaxed">
                     {msg.content}
                   </div>
                 </div>
               );
             })}
 
-            {/* Indicateur de rédaction sobre */}
+            {/* Indicateur de saisie/génération */}
             {isLoading && (
-              <div className="py-2 text-[14px] text-[var(--color-text-secondary)] italic">
-                L&apos;agent vérifie les filières et prépare sa réponse...
+              <div className="flex justify-start">
+                <div className="bg-[#F3F4F6] text-[#6B7280] rounded-2xl rounded-tl-sm px-4 py-3 text-[14px] flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#0F7B4F] animate-pulse" />
+                  <span>Recherche des filières officielles...</span>
+                </div>
               </div>
             )}
 
+            {/* Message d'erreur si la requête échoue */}
             {error && (
-              <div className="p-3 rounded bg-red-50 text-red-800 text-[13px] border border-red-200">
-                Une erreur est survenue lors de l&apos;envoi. Merci de réessayer.
+              <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-800 text-[13.5px] flex items-start gap-2.5">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <p>
+                  Une erreur est survenue lors de l&apos;envoi. Merci de vérifier votre connexion et de réessayer.
+                </p>
+              </div>
+            )}
+
+            {/* 4 Suggestions sous forme de petites bulles arrondies cliquables (chips) */}
+            {messages.length === 1 && !isLoading && (
+              <div className="pt-3">
+                <p className="text-[12.5px] font-medium text-[#6B7280] mb-2.5">
+                  Suggestions :
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {SUGGESTIONS.map((sug, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSuggestionClick(sug)}
+                      className="text-left text-[13px] text-[#374151] bg-[#F7F7F8] hover:bg-[#E5E7EB] hover:text-[#111827] border border-[#E5E7EB] px-3.5 py-1.5 rounded-full transition-colors"
+                    >
+                      {sug}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -476,13 +411,13 @@ export default function ChatPage() {
         </div>
 
         {/* ════════════════════════════════════════════
-            ZONE DE SAISIE (MOBILE D'ABORD 360px)
+            ZONE DE SAISIE FIXE EN BAS
         ════════════════════════════════════════════ */}
-        <div className="shrink-0 p-3 sm:p-4 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
-          <div className="max-w-[720px] mx-auto">
+        <div className="shrink-0 p-3 sm:p-4 bg-white border-t border-[#E5E7EB]">
+          <div className="max-w-[700px] mx-auto">
             <form
-              onSubmit={chatSubmit}
-              className="flex items-end gap-2 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-md p-2 focus-within:border-[var(--color-accent)] transition-colors"
+              onSubmit={handleSubmit}
+              className="flex items-end gap-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-2 focus-within:border-[#0F7B4F] focus-within:bg-white transition-colors"
             >
               <textarea
                 ref={textareaRef}
@@ -490,102 +425,29 @@ export default function ChatPage() {
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder={
-                  isListening
-                    ? "Écoute en cours, parle maintenant..."
-                    : "Pose ta question (ex: Quelles filières après un Bac S2 ?)..."
-                }
+                placeholder="Pose ta question d'orientation..."
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-0 text-[15px] text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none resize-none leading-snug py-1 px-1 max-h-32"
+                className="flex-1 bg-transparent border-0 text-[15px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none resize-none leading-relaxed py-1 px-1.5 max-h-32"
               />
 
-              {/* Bouton micro pour note vocale */}
-              <button
-                type="button"
-                onClick={toggleSpeech}
-                title="Dictée vocale"
-                className={`p-2 rounded text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors ${
-                  isListening ? "text-red-600 bg-red-100" : ""
-                }`}
-              >
-                <Mic className="w-4 h-4" />
-              </button>
-
-              {/* Bouton d'envoi principal sans dégradé, avec le vert profond d'accent */}
+              {/* Bouton d'envoi rond en vert profond #0F7B4F */}
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                aria-label="Envoyer"
-                className="p-2 rounded bg-[var(--color-accent)] text-[var(--color-accent-contrast)] hover:bg-[var(--color-accent-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors shrink-0"
+                aria-label="Envoyer le message"
+                className="w-9 h-9 rounded-lg bg-[#0F7B4F] hover:bg-[#0D6943] text-white flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
 
-            <p className="mt-1.5 text-center text-[11px] text-[var(--color-text-tertiary)]">
-              Informations basées sur les référentiels officiels Campusen.
+            {/* Pied de page discret en casse normale */}
+            <p className="mt-2 text-center text-[11px] text-[#9CA3AF]">
+              Données issues des universités publiques et de campusen.sec.gouv.sn
             </p>
           </div>
         </div>
       </main>
-
-      {/* ─── Modale d'envoi du bilan par email (Resend) ─── */}
-      {showEmailModal && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg max-w-sm w-full p-5 space-y-4">
-            <div className="space-y-1">
-              <h2 className="font-semibold text-[17px] text-[var(--color-text)]">
-                Recevoir ta fiche d&apos;orientation
-              </h2>
-              <p className="text-[13px] text-[var(--color-text-secondary)] leading-relaxed">
-                Renseigne ton adresse email pour recevoir le récapitulatif de tes échanges et les filières recommandées.
-              </p>
-            </div>
-
-            {emailSent ? (
-              <div className="p-3 rounded bg-emerald-50 text-emerald-800 text-[13px]">
-                Fiche envoyée avec succès sur ta boîte mail !
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <input
-                  type="email"
-                  placeholder="ton.email@gmail.com"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  className="w-full px-3 py-2 text-[14px] bg-[var(--color-bg)] border border-[var(--color-border)] rounded focus:outline-none focus:border-[var(--color-accent)]"
-                />
-
-                <div className="flex gap-2 justify-end pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setShowEmailModal(false)}
-                    className="px-3 py-1.5 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!emailInput) return;
-                      setEmailSent(true);
-                      setTimeout(() => {
-                        setShowEmailModal(false);
-                        setEmailSent(false);
-                        setEmailInput("");
-                      }, 2000);
-                    }}
-                    disabled={!emailInput}
-                    className="px-4 py-1.5 text-[13px] font-medium bg-[var(--color-accent)] text-[var(--color-accent-contrast)] hover:bg-[var(--color-accent-hover)] rounded transition-colors disabled:opacity-40"
-                  >
-                    Envoyer
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

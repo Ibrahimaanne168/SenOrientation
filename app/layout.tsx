@@ -1,22 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Sans, Newsreader } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const instrumentSans = Instrument_Sans({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  fallback: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-serif",
   weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
   display: "swap",
-  fallback: ["Georgia", "Cambria", "Times New Roman", "serif"],
+  fallback: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -40,11 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="fr"
-      className={`h-full ${instrumentSans.variable} ${newsreader.variable}`}
-    >
-      <body className="h-full antialiased font-sans bg-[var(--color-bg)] text-[var(--color-text)]">
+    <html lang="fr" className={`h-full ${plusJakartaSans.variable}`}>
+      <body className="h-full bg-white text-[#1F2937] font-sans antialiased">
         {children}
       </body>
     </html>

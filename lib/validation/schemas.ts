@@ -51,21 +51,25 @@ export type Message = z.infer<typeof messageSchema>;
 /**
  * Schéma de requête pour l'API /api/chat
  */
-export const chatRequestSchema = z.object({
-  messages: z
-    .array(
-      z.object({
-        role: z.enum(["user", "assistant", "system"]),
-        content: z
-          .string()
-          .min(1, "Le contenu ne peut être vide")
-          .max(3000, "Le message dépasse la limite autorisée"),
-      })
-    )
-    .min(1, "Au moins un message est requis")
-    .max(50, "Historique trop volumineux"),
-  conversationId: z.string().uuid().optional(),
-});
+export const chatRequestSchema = z
+  .object({
+    messages: z
+      .array(
+        z
+          .object({
+            role: z.enum(["user", "assistant", "system"]),
+            content: z
+              .string()
+              .min(1, "Le contenu ne peut être vide")
+              .max(3000, "Le message dépasse la limite autorisée"),
+          })
+          .passthrough()
+      )
+      .min(1, "Au moins un message est requis")
+      .max(50, "Historique trop volumineux"),
+    conversationId: z.string().optional(),
+  })
+  .passthrough();
 
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
 
