@@ -1,0 +1,220 @@
+[
+  {
+    "id": "comprendre_fonctionnement",
+    "intitule": "Comprendre le fonctionnement des choses",
+    "description": "Curiosité pour les mécanismes, le démontage, les technologies, les lois de la nature ou les systèmes.",
+    "exemples_clarification": [
+      "Comprendre comment fonctionnent les machines et objets techniques (mécanique, électronique)",
+      "Comprendre pourquoi certains phénomènes naturels ou biologiques se produisent (sciences)",
+      "Comprendre comment fonctionnent les systèmes informatiques et les algorithmes",
+      "Comprendre le comportement humain et les rouages de la société"
+    ],
+    "mots_cles": [
+      "comprendre",
+      "fonctionne",
+      "mécanisme",
+      "pourquoi",
+      "curiosité",
+      "système"
+    ]
+  },
+  {
+    "id": "resoudre_problemes",
+    "intitule": "Résoudre des problèmes et énigmes",
+    "description": "Goût du raisonnement logique, des énigmes, des calculs, de l'optimisation et des défis intellectuels.",
+    "exemples_clarification": [
+      "Résoudre des problèmes mathématiques ou logiques abstraits",
+      "Déboguer et concevoir des solutions informatiques ou logicielles",
+      "Résoudre des conflits juridiques ou des litiges d'intérêts",
+      "Optimiser des processus économiques ou des chaînes logistiques"
+    ],
+    "mots_cles": [
+      "problème",
+      "résoudre",
+      "logique",
+      "énigme",
+      "casse-tête",
+      "calcul",
+      "stratégie"
+    ]
+  },
+  {
+    "id": "creer_applications_objets",
+    "intitule": "Créer des objets ou des applications",
+    "description": "Volonté de fabriquer, coder, concevoir des produits concrets, des logiciels ou des prototypes.",
+    "exemples_clarification": [
+      "Programmer des sites web, des applications mobiles ou des jeux vidéo",
+      "Concevoir et modéliser des objets physiques, robots ou maquettes",
+      "Concevoir des architectures, plans de bâtiments et ouvrages d'art"
+    ],
+    "mots_cles": [
+      "créer",
+      "coder",
+      "programmer",
+      "fabriquer",
+      "bâtir",
+      "développer",
+      "inventer"
+    ]
+  },
+  {
+    "id": "aider_soigner_personnes",
+    "intitule": "Aider, soigner ou accompagner les personnes",
+    "description": "Orientation vers l'humain, la relation d'aide, les soins médicaux, l'écoute ou le service social.",
+    "exemples_clarification": [
+      "Soigner des patients, diagnostiquer et administrer des traitements (santé, médecine)",
+      "Accompagner des personnes en difficulté, soutien psychologique ou social",
+      "Défendre les droits des personnes et conseiller les citoyens (droit, justice)",
+      "Protéger les populations et assurer la sécurité publique"
+    ],
+    "mots_cles": [
+      "aider",
+      "soigner",
+      "écouter",
+      "accompagner",
+      "humain",
+      "santé",
+      "patients",
+      "social"
+    ]
+  },
+  {
+    "id": "etudier_vivants_nature",
+    "intitule": "Étudier les êtres vivants et la nature",
+    "description": "Intérêt pour la biologie, le corps humain, les animaux, les végétaux, l'agronomie et les écosystèmes.",
+    "exemples_clarification": [
+      "La biologie humaine, la physiologie et la génétique",
+      "Le monde animal et la médecine vétérinaire",
+      "Les plantes, l'agriculture, l'agronomie et l'aquaculture",
+      "L'écologie, la protection des forêts et des milieux marins"
+    ],
+    "mots_cles": [
+      "biologie",
+      "animaux",
+      "plantes",
+      "nature",
+      "forêt",
+      "mer",
+      "vivant",
+      "corps",
+      "svt"
+    ]
+  },
+  {
+    "id": "analyser_donnees_situations",
+    "intitule": "Analyser des données et des situations",
+    "description": "Goût de l'analyse méthodique, de l'investigation critique, des statistiques et de la recherche de régularités.",
+    "exemples_clarification": [
+      "Analyser de grands volumes de données et créer des tableaux de bord (data analyst)",
+      "Analyser les marchés financiers, les investissements et les flux économiques",
+      "Analyser des faits d'actualité, mener des enquêtes journalistiques ou documentaires"
+    ],
+    "mots_cles": [
+      "analyser",
+      "analyse",
+      "statistique",
+      "données",
+      "chiffres",
+      "enquêter",
+      "marché"
+    ]
+  },
+  {
+    "id": "construire_reparer_technique",
+    "intitule": "Construire ou réparer de ses mains",
+    "description": "Attrait pour les métiers pratiques, le génie civil, la maintenance technique, l'électricité ou la mécanique.",
+    "exemples_clarification": [
+      "Chantiers de construction, routes, ponts et bâtiments (génie civil / BTP)",
+      "Maintenance industrielle, moteurs, électromécanique et réseaux électriques",
+      "Réseaux télécoms, pose de fibre optique et câblage"
+    ],
+    "mots_cles": [
+      "construire",
+      "bricoler",
+      "réparer",
+      "mains",
+      "chantier",
+      "moteur",
+      "machine",
+      "btp"
+    ]
+  },
+  {
+    "id": "communiquer_argumenter_defendre",
+    "intitule": "Communiquer, argumenter et défendre",
+    "description": "Aptitude pour le verbe, l'expression écrite ou orale, la plaidoirie, les langues et les médias.",
+    "exemples_clarification": [
+      "Défendre une cause, plaider et argumenter juridiquement (droit, barreau)",
+      "Informer le public, rédiger des articles et présenter des reportages (journalisme)",
+      "Concevoir des campagnes de communication, relations publiques et publicité"
+    ],
+    "mots_cles": [
+      "communiquer",
+      "parler",
+      "écrire",
+      "rédiger",
+      "argumenter",
+      "débattre",
+      "défendre",
+      "plaider"
+    ]
+  },
+  {
+    "id": "organiser_gerer_entreprendre",
+    "intitule": "Organiser, gérer et entreprendre",
+    "description": "Leadership, sens de l'organisation, gestion de projet, comptabilité, finance et création d'entreprise.",
+    "exemples_clarification": [
+      "Créer et diriger sa propre entreprise ou startup (entrepreneuriat)",
+      "Gérer la comptabilité, les budgets et les finances d'une organisation",
+      "Organiser les équipes, piloter la logistique et manager les opérations"
+    ],
+    "mots_cles": [
+      "gérer",
+      "organiser",
+      "entreprendre",
+      "business",
+      "commerce",
+      "finance",
+      "comptabilité",
+      "projet"
+    ]
+  },
+  {
+    "id": "arts_design_creation",
+    "intitule": "Créer des œuvres, du design et du contenu",
+    "description": "Créativité visuelle, design graphique, audiovisuel, mode, architecture et expression artistique.",
+    "exemples_clarification": [
+      "Graphisme, interfaces numériques (UI/UX) et illustration",
+      "Production audiovisuelle, montage vidéo et photographie",
+      "Architecture d'intérieur et stylisme"
+    ],
+    "mots_cles": [
+      "art",
+      "design",
+      "dessin",
+      "vidéo",
+      "photo",
+      "visuel",
+      "graphisme",
+      "créatif"
+    ]
+  },
+  {
+    "id": "enseigner_transmettre_savoir",
+    "intitule": "Enseigner et transmettre des connaissances",
+    "description": "Vocation pédagogique, formation, recherche académique et transmission des savoirs aux autres.",
+    "exemples_clarification": [
+      "Enseigner au collège, au lycée ou à l'université",
+      "Former des professionnels et animer des ateliers pédagogiques",
+      "Mener des travaux de recherche scientifique académique"
+    ],
+    "mots_cles": [
+      "enseigner",
+      "professeur",
+      "transmettre",
+      "apprendre aux autres",
+      "pédagogie",
+      "formation"
+    ]
+  }
+]

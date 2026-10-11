@@ -1,7 +1,9 @@
 // ============================================================================
 // SENORIENTATION - DOSSIER CONVERSATIONNEL D'ORIENTATION PROFESSIONNELLE
-// Profil évolutif, mémoire structurée et moteur de sélection de la prochaine question
+// Profil évolutif, mémoire structurée, 4 niveaux de raisonnement et moteur anti-boucle
 // ============================================================================
+
+import domainesInteretData from "@/data/domaines_interet.json";
 
 export interface Indice {
   texte: string;
@@ -13,10 +15,34 @@ export interface Hypothese {
   confiance: "faible" | "moyenne" | "forte";
 }
 
+export type IntentId =
+  | "intent_demander_prenom"
+  | "intent_demander_situation_scolaire"
+  | "intent_reorientation"
+  | "intent_clarifier_comprendre"
+  | "intent_clarifier_reflechir"
+  | "intent_clarifier_chiffres"
+  | "intent_clarifier_aider"
+  | "intent_clarifier_creer"
+  | "intent_decouvrir_interets"
+  | "intent_exploration_concrete"
+  | "intent_approfondir_domaine"
+  | "intent_matieres_preferees"
+  | "intent_ambitions_pro"
+  | "intent_contraintes_duree_ville"
+  | "intent_presenter_bilan";
+
+export interface PreferenceGenerale {
+  type: "comprendre" | "chiffres" | "aider" | "creer" | "reflechir" | "autre";
+  texte: string;
+  statut: "en_clarification" | "clarifiee";
+}
+
 export interface ConversationProfile {
+  conversation_id?: string;
   prenom?: string | null;
   niveau?: string | null; // Collège, Lycée, Terminale, Bachelier, Université, Réorientation
-  serie: string | null;   // S1, S2, S3, L1, L2, L', G/STEG, T1, T2
+  serie: string | null;   // S1, S2, S3, L1, L2, L', G, T1, T2
   interets_principaux: string[];
   interets_secondaires: string[];
   matieres_aimees: string[];
@@ -35,10 +61,26 @@ export interface ConversationProfile {
   duree_souhaitee: string | null;
   priorites: string[];
   freins: string[];
-  questions_posees: string[];
+  questions_posees: string[]; // Historique textuel (legacy)
   domaines_explores: string[];
   formations_recommandees: string[];
-  etape: number; // 1 à 5
+  etape: number; // 1 à 5 (utilisé pour l'UI)
+  current_phase: number; // 1 à 8 (Partie 5)
+  current_question_id: string; // IntentId
+  questions_asked: string[]; // Liste ordonnée des IntentIds
+  questions_answered: Record<string, string>; // IntentId -> Réponse captée
+  known_facts: Record<string, any>;
+  unresolved_questions: string[];
+  preference_generale?: PreferenceGenerale | null;
+  explored_interests: string[];
+  confirmed_interests: string[];
+  tentative_hypotheses: string[];
+  rejected_or_corrected_hypotheses: string[];
+  profile_completeness: number; // 0 à 100%
+  recommendations_already_shown: string[];
+  last_assistant_message?: string;
+  conversation_status: "en_cours" | "bilan_propose" | "demande_directe_repondue" | "termine";
+  nb_je_ne_sais_pas: number;
   indices?: Indice[];
   hypotheses?: Hypothese[];
 }
@@ -69,13 +111,91 @@ export const INITIAL_PROFILE: ConversationProfile = {
   domaines_explores: [],
   formations_recommandees: [],
   etape: 1,
+  current_phase: 1,
+  current_question_id: "intent_demander_prenom",
+  questions_asked: [],
+  questions_answered: {},
+  known_facts: {},
+  unresolved_questions: [],
+  preference_generale: null,
+  explored_interests: [],
+  confirmed_interests: [],
+  tentative_hypotheses: [],
+  rejected_or_corrected_hypotheses: [],
+  profile_completeness: 0,
+  recommendations_already_shown: [],
+  conversation_status: "en_cours",
+  nb_je_ne_sais_pas: 0,
   indices: [],
   hypotheses: [],
 };
 
-/**
- * Fusionne la mise à jour du dossier dans le profil courant
- */
+// ─────────────────────────────────────────────────────────────────────────────
+// CALCUL DU NIVEAU DE COMPLÉTUDE DU PROFIL (Partie 4.1)
+// ─────────────────────────────────────────────────────────────────────────────
+export function calculateCompleteness(p: ConversationProfile): number {
+  let score = 0;
+  if (p.prenom && p.prenom !== "l'ami") score += 10;
+  if (p.niveau) score += 15;
+  if (p.serie) score += 20;
+  if (p.confirmed_interests.length > 0 || p.interets_principaux.length > 0) score += 25;
+  if (p.matieres_aimees.length > 0 || p.points_forts.length > 0) score += 15;
+  if (p.preferences_etudes || p.duree_souhaitee) score += 10;
+  if (p.ville || p.budget) score += 5;
+  return Math.min(100, score);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DÉTECTION DES PRÉFÉRENCES GÉNÉRALES (Niveau 1 — Partie 3.1 & 3.2)
+// ─────────────────────────────────────────────────────────────────────────────
+function detectGeneralPreference(text: string): PreferenceGenerale | null {
+  const t = text.toLowerCase();
+  if (
+    t.includes("comprendre les choses") ||
+    t.includes("comprendre comment") ||
+    t.includes("comprendre le fonctionnement") ||
+    t.includes("comprendre le monde") ||
+    (t.includes("comprendre") && !t.includes("informatique") && !t.includes("math"))
+  ) {
+    return { type: "comprendre", texte: "comprendre le fonctionnement des choses", statut: "en_clarification" };
+  }
+  if (
+    t.includes("réfléchir") ||
+    t.includes("reflechir") ||
+    t.includes("penser") ||
+    t.includes("cogiter")
+  ) {
+    return { type: "reflechir", texte: "réfléchir et analyser", statut: "en_clarification" };
+  }
+  if (
+    t.includes("chiffres") ||
+    t.includes("les nombres") ||
+    (t.includes("calcul") && !t.includes("cours de math"))
+  ) {
+    return { type: "chiffres", texte: "travailler avec les chiffres", statut: "en_clarification" };
+  }
+  if (
+    t.includes("aider les gens") ||
+    t.includes("aider les personnes") ||
+    t.includes("aider les autres") ||
+    t.includes("accompagner les gens")
+  ) {
+    return { type: "aider", texte: "aider et accompagner les personnes", statut: "en_clarification" };
+  }
+  if (
+    t.includes("créer") ||
+    t.includes("creer") ||
+    t.includes("inventer") ||
+    t.includes("concevoir des choses")
+  ) {
+    return { type: "creer", texte: "créer et concevoir", statut: "en_clarification" };
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FUSION DES MISES À JOUR DU DOSSIER
+// ─────────────────────────────────────────────────────────────────────────────
 export function mergeProfileUpdate(
   current: ConversationProfile,
   update?: Partial<ConversationProfile> | null,
@@ -100,6 +220,12 @@ export function mergeProfileUpdate(
     interets_secondaires: Array.from(
       new Set([...(current.interets_secondaires || []), ...(update.interets_secondaires || [])])
     ).filter(Boolean),
+    confirmed_interests: Array.from(
+      new Set([...(current.confirmed_interests || []), ...(update.confirmed_interests || [])])
+    ).filter(Boolean),
+    explored_interests: Array.from(
+      new Set([...(current.explored_interests || []), ...(update.explored_interests || [])])
+    ).filter(Boolean),
     matieres_aimees: Array.from(
       new Set([...(current.matieres_aimees || []), ...(update.matieres_aimees || [])])
     ).filter(Boolean),
@@ -121,42 +247,42 @@ export function mergeProfileUpdate(
     ambitions: Array.from(
       new Set([...(current.ambitions || []), ...(update.ambitions || [])])
     ).filter(Boolean),
-    environnement: Array.from(
-      new Set([...(current.environnement || []), ...(update.environnement || [])])
+    questions_asked: Array.from(
+      new Set([...(current.questions_asked || []), ...(update.questions_asked || [])])
     ).filter(Boolean),
-    priorites: Array.from(
-      new Set([...(current.priorites || []), ...(update.priorites || [])])
-    ).filter(Boolean),
-    freins: Array.from(
-      new Set([...(current.freins || []), ...(update.freins || [])])
-    ).filter(Boolean),
-    questions_posees: Array.from(
-      new Set([...(current.questions_posees || []), ...(update.questions_posees || [])])
-    ).filter(Boolean),
-    domaines_explores: Array.from(
-      new Set([...(current.domaines_explores || []), ...(update.domaines_explores || [])])
-    ).filter(Boolean),
-    formations_recommandees: Array.from(
-      new Set([...(current.formations_recommandees || []), ...(update.formations_recommandees || [])])
-    ).filter(Boolean),
+    questions_answered: {
+      ...(current.questions_answered || {}),
+      ...(update.questions_answered || {}),
+    },
+    known_facts: {
+      ...(current.known_facts || {}),
+      ...(update.known_facts || {}),
+    },
     indices: update.indices || current.indices || [],
     hypotheses: update.hypotheses || current.hypotheses || [],
-    etape: Math.min(
-      5,
-      Math.max(current.etape || 1, suggestedEtape || update.etape || current.etape || 1)
-    ),
+    preference_generale: update.preference_generale !== undefined ? update.preference_generale : current.preference_generale,
+    nb_je_ne_sais_pas: update.nb_je_ne_sais_pas !== undefined ? update.nb_je_ne_sais_pas : current.nb_je_ne_sais_pas,
+    current_phase: update.current_phase || current.current_phase || 1,
+    current_question_id: update.current_question_id || current.current_question_id || "intent_demander_prenom",
+    conversation_status: update.conversation_status || current.conversation_status || "en_cours",
   };
+
+  merged.profile_completeness = calculateCompleteness(merged);
+  merged.etape = Math.min(
+    5,
+    Math.max(current.etape || 1, suggestedEtape || update.etape || (merged.profile_completeness > 70 ? 5 : merged.profile_completeness > 45 ? 4 : merged.profile_completeness > 25 ? 3 : merged.profile_completeness > 10 ? 2 : 1))
+  );
 
   return merged;
 }
 
-/**
- * Analyse heuristique des indices du dossier
- */
+// ─────────────────────────────────────────────────────────────────────────────
+// ANALYSE HEURISTIQUE DES MESSAGES & ACTUALISATION D'ÉTAT (Parties 3, 4 & 5)
+// ─────────────────────────────────────────────────────────────────────────────
 export function heuristicUpdateProfile(
   arg1: ConversationProfile | string,
   arg2?: { role: string; content: string }[] | ConversationProfile | string,
-  arg3?: string | { role: string; content: string }[]
+  arg3?: string | { role: string; content: string }[] | ConversationProfile
 ): ConversationProfile {
   let current: ConversationProfile;
   let history: { role: string; content: string }[] = [];
@@ -164,10 +290,19 @@ export function heuristicUpdateProfile(
 
   if (typeof arg1 === "string") {
     latestMessage = arg1;
-    current = (typeof arg2 === "object" && arg2 !== null && !Array.isArray(arg2))
-      ? (arg2 as ConversationProfile)
-      : INITIAL_PROFILE;
-    if (Array.isArray(arg3)) history = arg3;
+    if (Array.isArray(arg2)) {
+      history = arg2;
+      current = (typeof arg3 === "object" && arg3 !== null && !Array.isArray(arg3))
+        ? (arg3 as ConversationProfile)
+        : INITIAL_PROFILE;
+    } else if (typeof arg2 === "object" && arg2 !== null && !Array.isArray(arg2)) {
+      current = arg2 as ConversationProfile;
+      if (Array.isArray(arg3)) history = arg3;
+    } else {
+      current = (typeof arg3 === "object" && arg3 !== null && !Array.isArray(arg3))
+        ? (arg3 as ConversationProfile)
+        : INITIAL_PROFILE;
+    }
   } else {
     current = arg1 || INITIAL_PROFILE;
     if (Array.isArray(arg2)) {
@@ -185,6 +320,8 @@ export function heuristicUpdateProfile(
     ...current,
     interets_principaux: [...(current.interets_principaux || [])],
     interets_secondaires: [...(current.interets_secondaires || [])],
+    confirmed_interests: [...(current.confirmed_interests || [])],
+    explored_interests: [...(current.explored_interests || [])],
     matieres_aimees: [...(current.matieres_aimees || [])],
     matieres_competentes: [...(current.matieres_competentes || [])],
     matieres_fuies: [...(current.matieres_fuies || [])],
@@ -192,32 +329,56 @@ export function heuristicUpdateProfile(
     activites: [...(current.activites || [])],
     competences_declarees: [...(current.competences_declarees || [])],
     ambitions: [...(current.ambitions || [])],
-    environnement: [...(current.environnement || [])],
-    priorites: [...(current.priorites || [])],
-    freins: [...(current.freins || [])],
-    questions_posees: [...(current.questions_posees || [])],
-    domaines_explores: [...(current.domaines_explores || [])],
-    formations_recommandees: [...(current.formations_recommandees || [])],
+    questions_asked: [...(current.questions_asked || [])],
+    questions_answered: { ...(current.questions_answered || {}) },
+    known_facts: { ...(current.known_facts || {}) },
     indices: [...(current.indices || [])],
     hypotheses: [...(current.hypotheses || [])],
+    rejected_or_corrected_hypotheses: [...(current.rejected_or_corrected_hypotheses || [])],
+    recommendations_already_shown: [...(current.recommendations_already_shown || [])],
   };
 
-  const text = (
-    history.map((h) => h.content).join(" ") + " " + latestMessage
-  ).toLowerCase();
-
   const latestLower = latestMessage.toLowerCase().trim();
+  const text = (history.map((h) => h.content).join(" ") + " " + latestMessage).toLowerCase();
 
-  // Gestion du cas où l'élève clique sur "Autre série ou réorientation"
-  if (latestLower.includes("autre série") || latestLower.includes("réorientation")) {
-    profile.serie = null;
-    profile.niveau = "Réorientation";
-    profile.hypotheses = [];
-    profile.etape = 1;
-    return profile;
+  // 1. Détection de "Je ne sais pas" (Partie 4.3)
+  if (
+    latestLower === "je ne sais pas" ||
+    latestLower === "je sais pas" ||
+    latestLower === "jsp" ||
+    latestLower === "aucune idée" ||
+    latestLower === "aucune idee" ||
+    latestLower.includes("je ne sais pas encore") ||
+    latestLower.includes("je suis perdu")
+  ) {
+    profile.nb_je_ne_sais_pas = (profile.nb_je_ne_sais_pas || 0) + 1;
   }
 
-  // 0. Détection du prénom si non renseigné
+  // 2. Gestion des changements d'avis (Partie 9 — Test 10)
+  if (
+    latestLower.includes("ne veux plus") ||
+    latestLower.includes("change d'avis") ||
+    latestLower.includes("en fait je préfère") ||
+    latestLower.includes("finalement") ||
+    latestLower.includes("plutôt que")
+  ) {
+    if (latestLower.includes("santé") || latestLower.includes("médecine")) {
+      profile.interets_principaux = profile.interets_principaux.filter((i) => !i.includes("Santé") && !i.includes("Médecine"));
+      profile.confirmed_interests = profile.confirmed_interests.filter((i) => !i.includes("Santé") && !i.includes("Médecine"));
+      if (!profile.rejected_or_corrected_hypotheses.includes("Médecine & Santé")) {
+        profile.rejected_or_corrected_hypotheses.push("Médecine & Santé");
+      }
+    }
+    if (latestLower.includes("informatique") || latestLower.includes("numérique")) {
+      profile.interets_principaux = profile.interets_principaux.filter((i) => !i.includes("Informatique"));
+      profile.confirmed_interests = profile.confirmed_interests.filter((i) => !i.includes("Informatique"));
+      if (!profile.rejected_or_corrected_hypotheses.includes("Informatique & Technologies")) {
+        profile.rejected_or_corrected_hypotheses.push("Informatique & Technologies");
+      }
+    }
+  }
+
+  // 3. Extraction du prénom
   if (!profile.prenom) {
     if (
       latestLower.includes("préfère ne pas le dire") ||
@@ -225,12 +386,15 @@ export function heuristicUpdateProfile(
       latestLower.includes("anonyme")
     ) {
       profile.prenom = "l'ami";
+      profile.questions_answered["intent_demander_prenom"] = "anonyme";
     } else {
       const explicitMatch = latestMessage.match(
         /(?:je m['’]appelle|moi c['’]est|mon pr[ée]nom est|mon nom est|c['’]est)\s+([A-Za-zÀ-ÿ\-]+(?:\s+[A-Za-zÀ-ÿ\-]+)?)/i
       );
       if (explicitMatch && explicitMatch[1]) {
-        const candidate = explicitMatch[1].trim();
+        let candidate = explicitMatch[1].trim();
+        // Éliminer les mots de liaison comme "Amadou et", "Fatou je"
+        candidate = candidate.replace(/\s+(?:et|je|j'|de|du|qui|moi|suis|dans)$/i, "").trim();
         const candLower = candidate.toLowerCase();
         if (
           !candLower.includes("bac") &&
@@ -239,6 +403,7 @@ export function heuristicUpdateProfile(
           !candLower.includes("élève")
         ) {
           profile.prenom = candidate.charAt(0).toUpperCase() + candidate.slice(1);
+          profile.questions_answered["intent_demander_prenom"] = profile.prenom;
         }
       } else if (
         history.length <= 2 &&
@@ -251,17 +416,37 @@ export function heuristicUpdateProfile(
         !latestLower.includes("bac") &&
         !latestLower.includes("terminale")
       ) {
-        // Réponse directe à la question du prénom
         const cleanName = latestMessage.replace(/[.!?,]/g, "").trim();
         const words = cleanName.split(/\s+/);
         if (words.length >= 1 && words.length <= 3 && words.every((w) => /^[A-Za-zÀ-ÿ\-]+$/.test(w))) {
           profile.prenom = words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+          profile.questions_answered["intent_demander_prenom"] = profile.prenom;
         }
       }
     }
   }
 
-  // 1. Détection de la série
+  // 4. Détection du niveau scolaire
+  if (!profile.niveau) {
+    if (text.includes("réorient") || text.includes("changer de filière") || text.includes("changement de parcours")) {
+      profile.niveau = "Réorientation / Étudiant";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Réorientation";
+    } else if (text.includes("terminale") || text.includes("tle")) {
+      profile.niveau = "Terminale";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Terminale";
+    } else if (text.includes("nouveau bachelier") || text.includes("bachelier")) {
+      profile.niveau = "Nouveau Bachelier";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Nouveau Bachelier";
+    } else if (text.includes("lycée") || text.includes("première") || text.includes("seconde")) {
+      profile.niveau = "Lycée";
+    } else if (text.includes("collège")) {
+      profile.niveau = "Collège";
+    } else if (text.includes("université") || text.includes("licence") || text.includes("étudiant")) {
+      profile.niveau = "Université";
+    }
+  }
+
+  // 5. Détection de la série
   if (!profile.serie) {
     if (/\b(s1)\b/i.test(text)) profile.serie = "S1";
     else if (/\b(s2)\b/i.test(text)) profile.serie = "S2";
@@ -272,74 +457,108 @@ export function heuristicUpdateProfile(
     else if (/\b(steg|bac\s*g|terminale\s*g|série\s*g|série\s*de\s*bac\s*g|\bg\b)/i.test(text)) profile.serie = "G";
     else if (/\b(t1)\b/i.test(text)) profile.serie = "T1";
     else if (/\b(t2)\b/i.test(text)) profile.serie = "T2";
-  }
 
-  // 2. Détection du niveau scolaire
-  if (!profile.niveau) {
-    if (text.includes("réorient") || text.includes("changer de filière") || text.includes("changement de parcours")) {
-      profile.niveau = "Réorientation / Étudiant";
-    } else if (text.includes("terminale") || text.includes("tle")) {
-      profile.niveau = "Terminale";
-    } else if (text.includes("nouveau bachelier") || text.includes("bachelier")) {
-      profile.niveau = "Nouveau Bachelier";
-    } else if (text.includes("lycée") || text.includes("première") || text.includes("seconde")) {
-      profile.niveau = "Lycée";
-    } else if (text.includes("collège")) {
-      profile.niveau = "Collège";
-    } else if (text.includes("université") || text.includes("licence") || text.includes("étudiant")) {
-      profile.niveau = "Université";
+    if (profile.serie) {
+      profile.questions_answered["intent_demander_situation_scolaire"] = `${profile.niveau || "Bac"} ${profile.serie}`;
     }
   }
 
-  // 3. Détection des grands domaines d'intérêt
-  const DOMAIN_MAP: Record<string, string> = {
+  // 6. Gestion du Niveau 1 : Préférence générale (Partie 3.1 & 3.2)
+  // RÈGLE ABSOLUE : Si l'utilisateur exprime une préférence générale, ne PAS affecter de domaine directement
+  const genPref = detectGeneralPreference(latestMessage);
+  if (profile.preference_generale && profile.preference_generale.statut === "en_clarification") {
+    // L'utilisateur répond à la question de clarification (Niveau 2 : Type d'activité)
+    profile.preference_generale.statut = "clarifiee";
+    profile.questions_answered[`intent_clarifier_${profile.preference_generale.type}`] = latestMessage;
+
+    // Déduction de l'activité clarifiée (Niveau 2 -> Niveau 3)
+    if (profile.preference_generale.type === "comprendre") {
+      if (latestLower.includes("machine") || latestLower.includes("objet") || latestLower.includes("mécanique")) {
+        profile.activites.push("Comprendre le fonctionnement des machines et objets techniques");
+        profile.confirmed_interests.push("Ingénierie & BTP");
+      } else if (latestLower.includes("nature") || latestLower.includes("phénomène") || latestLower.includes("biologie") || latestLower.includes("science")) {
+        profile.activites.push("Comprendre les phénomènes naturels et la biologie");
+        profile.confirmed_interests.push("Sciences & Technologies");
+      } else if (latestLower.includes("humain") || latestLower.includes("société") || latestLower.includes("pensent")) {
+        profile.activites.push("Comprendre le comportement humain et la société");
+        profile.confirmed_interests.push("Droit, Lettres & Sciences Sociales");
+      } else if (latestLower.includes("problème") || latestLower.includes("logique") || latestLower.includes("calcul")) {
+        profile.points_forts.push("Résolution de problèmes logiques");
+        profile.confirmed_interests.push("Informatique & Technologies");
+      }
+    } else if (profile.preference_generale.type === "chiffres") {
+      if (latestLower.includes("finance") || latestLower.includes("gestion") || latestLower.includes("compta") || latestLower.includes("banque")) {
+        profile.confirmed_interests.push("Commerce & Gestion");
+      } else if (latestLower.includes("statistique") || latestLower.includes("données") || latestLower.includes("data")) {
+        profile.confirmed_interests.push("Statistique & Analyse de données");
+      } else if (latestLower.includes("math") || latestLower.includes("pur") || latestLower.includes("calcul")) {
+        profile.confirmed_interests.push("Mathématiques & Sciences");
+      } else if (latestLower.includes("économie") || latestLower.includes("commerce")) {
+        profile.confirmed_interests.push("Sciences Économiques");
+      }
+    } else if (profile.preference_generale.type === "aider") {
+      if (latestLower.includes("santé") || latestLower.includes("soin") || latestLower.includes("médic")) {
+        profile.confirmed_interests.push("Médecine & Santé");
+      } else if (latestLower.includes("enseign") || latestLower.includes("transmett") || latestLower.includes("prof")) {
+        profile.confirmed_interests.push("Enseignement & Recherche");
+      } else if (latestLower.includes("droit") || latestLower.includes("justice") || latestLower.includes("conseil")) {
+        profile.confirmed_interests.push("Droit & Sciences Politiques");
+      } else if (latestLower.includes("social") || latestLower.includes("écout")) {
+        profile.confirmed_interests.push("Action Sociale & Accompagnement");
+      }
+    }
+  } else if (genPref && !profile.preference_generale) {
+    profile.preference_generale = genPref;
+  }
+
+  // 7. Détection des grands domaines confirmés si mention explicite (Niveau 3)
+  const DOMAIN_EXPLICIT_MAP: Record<string, string> = {
     informatique: "Informatique & Technologies",
-    code: "Informatique & Technologies",
+    "programmation informatique": "Informatique & Technologies",
     logiciel: "Informatique & Technologies",
-    ia: "Informatique & Technologies",
-    "intelligence artificielle": "Informatique & Technologies",
     cybersécurité: "Informatique & Technologies",
-    math: "Mathématiques & Sciences",
-    calcul: "Mathématiques & Sciences",
     santé: "Médecine & Santé",
     médecine: "Médecine & Santé",
     biologie: "Médecine & Santé",
-    svt: "Médecine & Santé",
     pharmacie: "Médecine & Santé",
     droit: "Droit & Sciences Politiques",
-    justice: "Droit & Sciences Politiques",
-    gestion: "Commerce & Gestion",
     commerce: "Commerce & Gestion",
+    gestion: "Commerce & Gestion",
+    comptabilité: "Commerce & Gestion",
     finance: "Commerce & Gestion",
-    comptab: "Commerce & Gestion",
-    marketing: "Commerce & Gestion",
-    communication: "Communication & Médias",
     journalisme: "Communication & Médias",
-    médias: "Communication & Médias",
-    ingénierie: "Ingénierie & BTP",
-    btp: "Ingénierie & BTP",
-    "génie civil": "Ingénierie & BTP",
     agronomie: "Agriculture & Environnement",
     agriculture: "Agriculture & Environnement",
-    environnement: "Agriculture & Environnement",
-    enseignement: "Enseignement & Recherche",
-    art: "Arts & Design",
-    design: "Arts & Design",
+    bâtiment: "Ingénierie & BTP",
+    "génie civil": "Ingénierie & BTP",
   };
 
-  for (const [key, domain] of Object.entries(DOMAIN_MAP)) {
+  for (const [key, domain] of Object.entries(DOMAIN_EXPLICIT_MAP)) {
+    // Si l'élève a expressément rejeté ce domaine, ne JAMAIS le réassigner
+    if (profile.rejected_or_corrected_hypotheses.includes(domain)) {
+      continue;
+    }
+    // Ne pas ajouter le domaine si mentionné dans une formule de rejet
+    if (
+      latestLower.includes(`ne veux plus de ${key}`) ||
+      latestLower.includes(`ne veux plus faire de ${key}`) ||
+      latestLower.includes(`pas de ${key}`) ||
+      latestLower.includes(`abandonne ${key}`)
+    ) {
+      continue;
+    }
     if (text.includes(key) && !profile.interets_principaux.includes(domain)) {
       profile.interets_principaux.push(domain);
-      if (!profile.domaines_explores.includes(domain)) {
-        profile.domaines_explores.push(domain);
+      if (!profile.confirmed_interests.includes(domain)) {
+        profile.confirmed_interests.push(domain);
       }
+      profile.questions_answered["intent_decouvrir_interets"] = domain;
     }
   }
 
-  // 4. Détection des matières aimées, compétentes et fuies
+  // 8. Matières aimées et compétences déclarées (Partie 5 — Phase 4)
   const MATIERES_MAP: Record<string, string> = {
     math: "Mathématiques",
-    calcul: "Mathématiques",
     physique: "Sciences Physiques",
     chimie: "Chimie",
     svt: "SVT / Biologie",
@@ -349,44 +568,24 @@ export function heuristicUpdateProfile(
     français: "Français",
     anglais: "Anglais",
     histoire: "Histoire-Géographie",
-    géo: "Histoire-Géographie",
     économie: "Économie",
     gestion: "Gestion",
-    informatique: "Informatique",
   };
 
   for (const [key, label] of Object.entries(MATIERES_MAP)) {
-    if (text.includes(`fuis ${key}`) || text.includes(`déteste ${key}`) || text.includes(`nul en ${key}`) || text.includes(`nulle en ${key}`)) {
+    if (text.includes(`fuis ${key}`) || text.includes(`déteste ${key}`) || text.includes(`nul en ${key}`)) {
       if (!profile.matieres_fuies.includes(label)) profile.matieres_fuies.push(label);
-    } else if (text.includes(`à l'aise en ${key}`) || text.includes(`bon en ${key}`) || text.includes(`bonne en ${key}`) || text.includes(`fort en ${key}`)) {
+    } else if (text.includes(`à l'aise en ${key}`) || text.includes(`bon en ${key}`) || text.includes(`fort en ${key}`)) {
       if (!profile.matieres_competentes.includes(label)) profile.matieres_competentes.push(label);
       if (!profile.matieres_aimees.includes(label)) profile.matieres_aimees.push(label);
+      profile.questions_answered["intent_matieres_preferees"] = label;
     } else if (text.includes(key) && !profile.matieres_aimees.includes(label) && !profile.matieres_fuies.includes(label)) {
       profile.matieres_aimees.push(label);
+      profile.questions_answered["intent_matieres_preferees"] = label;
     }
   }
 
-  // 5. Activités et points forts
-  if ((text.includes("fifa") || text.includes("jeux vidéo") || text.includes("gaming")) && !profile.activites.includes("Jeux vidéo / Stratégie numérique")) {
-    profile.activites.push("Jeux vidéo / Stratégie numérique");
-  }
-  if ((text.includes("calcul") || text.includes("logique") || text.includes("énigme")) && !profile.points_forts.includes("Calcul et raisonnement logique")) {
-    profile.points_forts.push("Calcul et raisonnement logique");
-    if (!profile.competences_declarees.includes("Résolution de problèmes complexes")) {
-      profile.competences_declarees.push("Résolution de problèmes complexes");
-    }
-  }
-  if ((text.includes("rédiger") || text.includes("écrire") || text.includes("argumenter")) && !profile.points_forts.includes("Écriture et argumentation")) {
-    profile.points_forts.push("Écriture et argumentation");
-  }
-  if ((text.includes("bricoler") || text.includes("réparer") || text.includes("mains")) && !profile.points_forts.includes("Technique et bricolage")) {
-    profile.points_forts.push("Technique et bricolage");
-  }
-  if ((text.includes("aider") || text.includes("soigner") || text.includes("écouter")) && !profile.points_forts.includes("Aide et écoute active")) {
-    profile.points_forts.push("Aide et écoute active");
-  }
-
-  // 6. Moyenne générale
+  // 9. Moyenne scolaire déclarée
   if (!profile.moyenne) {
     const moyMatch =
       text.match(/(?:avec|environ|eu|ma|de)\s+(\d{1,2}(?:[.,]\d+)?)(?:\s*(?:\/20|de moyenne|moyenne))/i) ||
@@ -397,90 +596,259 @@ export function heuristicUpdateProfile(
     }
   }
 
-  // 7. Ambitions et préférences d'études
+  // 10. Contraintes et préférences d'études (Partie 5 — Phase 6)
   if (text.includes("courte") || text.includes("dut") || text.includes("bts") || text.includes("licence pro") || text.includes("2 ans") || text.includes("3 ans")) {
     profile.preferences_etudes = "Courte (Bac+2 / Bac+3)";
     profile.duree_souhaitee = "2 à 3 ans";
+    profile.questions_answered["intent_contraintes_duree_ville"] = "Courte (2-3 ans)";
   } else if (text.includes("longue") || text.includes("master") || text.includes("ingénieur") || text.includes("bac+5") || text.includes("doctorat")) {
     profile.preferences_etudes = "Longue (Bac+5 et plus)";
     profile.duree_souhaitee = "5 ans";
+    profile.questions_answered["intent_contraintes_duree_ville"] = "Longue (Bac+5)";
   }
 
-  // 7. Ville & Budget
   if (!profile.ville) {
     if (text.includes("dakar")) profile.ville = "Dakar";
     else if (text.includes("saint-louis") || text.includes("saint louis")) profile.ville = "Saint-Louis";
     else if (text.includes("thiès") || text.includes("thies")) profile.ville = "Thiès";
   }
+
   if (!profile.budget) {
-    if (text.includes("public") || text.includes("campusen") || text.includes("25 000")) profile.budget = "Public Campusen (25 000 FCFA/an)";
-    else if (text.includes("privé")) profile.budget = "Établissement privé accrédité";
+    if (text.includes("public") || text.includes("campusen") || text.includes("25 000")) {
+      profile.budget = "Public Campusen (25 000 FCFA/an)";
+    } else if (text.includes("privé") || text.includes("prive")) {
+      profile.budget = "Établissement privé accrédité";
+    }
   }
 
-  // 8. Calcul de l'étape de la conversation
-  let computedEtape = profile.etape || 1;
+  profile.profile_completeness = calculateCompleteness(profile);
 
-  if (profile.prenom) {
-    computedEtape = Math.max(computedEtape, 1);
-  }
-  if (profile.serie || profile.niveau) {
-    computedEtape = Math.max(computedEtape, 2);
-  }
-  if ((profile.serie || profile.niveau) && (profile.interets_principaux.length > 0 || profile.matieres_aimees.length > 0)) {
-    computedEtape = Math.max(computedEtape, 3);
-  }
-  if (
-    (profile.serie || profile.niveau) &&
-    profile.interets_principaux.length > 0 &&
-    (profile.points_forts.length > 0 || profile.matieres_competentes.length > 0 || profile.preferences_etudes)
-  ) {
-    computedEtape = Math.max(computedEtape, 4);
-  }
-  // Passer au bilan final si profil solide et cohérent
-  if (
-    (profile.serie || profile.niveau) &&
-    profile.interets_principaux.length > 0 &&
-    (profile.matieres_aimees.length > 0 || profile.points_forts.length > 0) &&
-    (profile.preferences_etudes || profile.duree_souhaitee || profile.budget || profile.ville || profile.projet)
-  ) {
-    computedEtape = Math.max(computedEtape, 5);
+  // Synchronisation avec l'étape UI (1 à 5)
+  if (profile.profile_completeness >= 75) {
+    profile.etape = 5;
+    profile.current_phase = 8;
+  } else if (profile.profile_completeness >= 50) {
+    profile.etape = 4;
+    profile.current_phase = 6;
+  } else if (profile.profile_completeness >= 30) {
+    profile.etape = 3;
+    profile.current_phase = 4;
+  } else if (profile.profile_completeness >= 15) {
+    profile.etape = 2;
+    profile.current_phase = 2;
+  } else {
+    profile.etape = 1;
+    profile.current_phase = 1;
   }
 
-  profile.etape = Math.min(5, Math.max(current.etape || 1, computedEtape));
   return profile;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MOTEUR DE DÉCISION ADAPTATIF : SÉLECTION DE LA PROCHAINE QUESTION (SECTION 6)
+// MOTEUR DE DÉCISION ANTI-BOUCLE ET SÉLECTION DE LA QUESTION (Parties 3, 4 & 5)
 // ─────────────────────────────────────────────────────────────────────────────
-
 export interface OrientationDecision {
   type: "question" | "bilan";
+  intent_id: IntentId;
   question: string;
   suggestions: string[];
   vise: string;
+  phase: number;
   etape: number;
 }
 
 export function getNextOrientationQuestion(profile: ConversationProfile): OrientationDecision {
   const namePart = profile.prenom && profile.prenom !== "l'ami" ? profile.prenom : "";
   const nameGreet = namePart ? `${namePart}, ` : "";
+  const lastAskedIntent = profile.questions_asked[profile.questions_asked.length - 1];
 
-  // 1. Prénom non renseigné
-  if (!profile.prenom) {
+  // RÈGLE ANTI-BOUCLE : Ne jamais poser deux fois consécutivement la même intention
+  const isAsked = (intent: IntentId) =>
+    profile.questions_asked.includes(intent) && Boolean(profile.questions_answered[intent]);
+
+  // ── PRIORITÉ 1 ABSOLUE : CLARIFICATION DES PRÉFÉRENCES GÉNÉRALES (Parties 3.1 & 3.3) ──
+  // Si l'utilisateur a exprimé une préférence générale de Niveau 1, lever l'ambiguïté avant toute orientation
+  if (profile.preference_generale && profile.preference_generale.statut === "en_clarification") {
+    const pType = profile.preference_generale.type;
+    const intentClarif: IntentId = `intent_clarifier_${pType}` as IntentId;
+
+    if (lastAskedIntent !== intentClarif) {
+      if (pType === "comprendre") {
+        return {
+          type: "question",
+          intent_id: "intent_clarifier_comprendre",
+          question: "C'est intéressant. Quand tu dis que tu aimes comprendre les choses, tu parles plutôt de comprendre comment fonctionnent les objets et les machines, pourquoi certains phénomènes naturels ou biologiques se produisent, comment les gens pensent et la société fonctionne, ou comment résoudre des problèmes ?",
+          suggestions: [
+            "Le fonctionnement des machines et objets",
+            "Les phénomènes naturels et la biologie",
+            "Le comportement humain et la société",
+            "Résoudre des problèmes logiques",
+          ],
+          vise: "Clarifier la préférence générale 'comprendre' sans conclure prématurément",
+          phase: 3,
+          etape: 2,
+        };
+      }
+
+      if (pType === "reflechir") {
+        return {
+          type: "question",
+          intent_id: "intent_clarifier_reflechir",
+          question: "Quel type de réflexion apprécies-tu le plus au quotidien : résoudre des problèmes logiques et scientifiques, analyser des idées et des textes, ou réfléchir à comment organiser des projets réels ?",
+          suggestions: [
+            "Problèmes logiques et calculs",
+            "Analyser des idées et argumenter",
+            "Organiser et planifier des projets",
+            "Je ne sais pas encore",
+          ],
+          vise: "Clarifier la préférence générale 'réfléchir'",
+          phase: 3,
+          etape: 2,
+        };
+      }
+
+      if (pType === "chiffres") {
+        return {
+          type: "question",
+          intent_id: "intent_clarifier_chiffres",
+          question: "Les chiffres ouvrent beaucoup de voies différentes. Ce qui t'attire le plus, c'est le calcul et la logique pure (maths), la finance et la comptabilité en entreprise, l'analyse de données (statistique), ou l'économie générale ?",
+          suggestions: [
+            "Mathématiques et logique pure",
+            "Finance, gestion et comptabilité",
+            "Statistiques et analyse de données",
+            "Économie et commerce",
+          ],
+          vise: "Clarifier la passion pour les chiffres sans présumer d'un domaine",
+          phase: 3,
+          etape: 2,
+        };
+      }
+
+      if (pType === "aider") {
+        return {
+          type: "question",
+          intent_id: "intent_clarifier_aider",
+          question: "Aider les autres est une belle motivation. Pour toi, cela passe plutôt par soigner des personnes et veiller sur la santé, enseigner et transmettre du savoir, conseiller et défendre des droits (justice), ou accompagner des personnes dans le travail social ?",
+          suggestions: [
+            "Soins médicaux et santé",
+            "Enseigner et transmettre",
+            "Défendre les droits et conseiller",
+            "Accompagnement social et écoute",
+          ],
+          vise: "Clarifier la volonté d'aider sans la restreindre à la médecine",
+          phase: 3,
+          etape: 2,
+        };
+      }
+
+      if (pType === "creer") {
+        return {
+          type: "question",
+          intent_id: "intent_clarifier_creer",
+          question: "La création prend plein de formes. Préfères-tu concevoir des applications ou solutions techniques, inventer des visuels et du design, fabriquer des objets concrets, ou créer des projets d'entreprise ?",
+          suggestions: [
+            "Applications et outils numériques",
+            "Design, graphisme et visuels",
+            "Objets concrets et mécanique",
+            "Projets d'entreprise",
+          ],
+          vise: "Clarifier le type de création souhaité",
+          phase: 3,
+          etape: 2,
+        };
+      }
+    }
+  }
+
+  // ── DÉBLOCAGE SI "JE NE SAIS PAS" RÉPÉTÉ (Partie 4.3 — Règle anti-boucle) ──
+  if (profile.nb_je_ne_sais_pas >= 2 && !isAsked("intent_exploration_concrete") && lastAskedIntent !== "intent_exploration_concrete") {
     return {
       type: "question",
+      intent_id: "intent_exploration_concrete",
+      question: "C'est tout à fait normal d'hésiter à ce stade, pas d'inquiétude. Pour y voir plus clair, imagine une journée de travail idéale : dans quelle situation te verrais-tu le plus ?",
+      suggestions: [
+        "Sur un ordinateur à concevoir des solutions",
+        "En contact direct avec des gens à les conseiller ou soigner",
+        "Sur le terrain ou en atelier à manipuler des équipements",
+        "À gérer des documents, organiser et négocier",
+      ],
+      vise: "Débloquer l'indécision par des situations concrètes du quotidien professionnel",
+      phase: 2,
+      etape: 2,
+    };
+  }
+
+  // ── APPROFONDISSEMENT D'UN DOMAINE CONFIRMÉ (Partie 9 — Test 7) ───────────
+  // Si un domaine précis est confirmé mais sans projet sous-jacent détaillé
+  const topDomain = profile.confirmed_interests[0] || profile.interets_principaux[0];
+  if (topDomain && !profile.projet && !isAsked("intent_approfondir_domaine") && lastAskedIntent !== "intent_approfondir_domaine") {
+    if (topDomain.includes("Informatique")) {
+      return {
+        type: "question",
+        intent_id: "intent_approfondir_domaine",
+        question: `${nameGreet}dans le numérique et l'informatique, qu'est-ce qui te plairait le plus : concevoir des applications, analyser des données et l'IA, ou sécuriser les systèmes (cybersécurité) ?`,
+        suggestions: [
+          "Créer des applications et logiciels",
+          "Intelligence Artificielle & Data",
+          "Cybersécurité & Réseaux",
+          "Je ne sais pas",
+        ],
+        vise: "Approfondir le sous-domaine informatique",
+        phase: 5,
+        etape: 3,
+      };
+    }
+    if (topDomain.includes("Santé") || topDomain.includes("Médecine")) {
+      return {
+        type: "question",
+        intent_id: "intent_approfondir_domaine",
+        question: `${nameGreet}dans le domaine de la santé, es-tu plutôt attiré(e) par la médecine générale, la pharmacie, les soins infirmiers, ou la recherche en laboratoire ?`,
+        suggestions: [
+          "Médecine ou odontologie",
+          "Pharmacie & Laboratoires",
+          "Soins infirmiers / Santé publique",
+          "Je ne sais pas",
+        ],
+        vise: "Approfondir la filière santé",
+        phase: 5,
+        etape: 3,
+      };
+    }
+    if (topDomain.includes("Commerce") || topDomain.includes("Gestion")) {
+      return {
+        type: "question",
+        intent_id: "intent_approfondir_domaine",
+        question: `${nameGreet}en gestion et commerce, qu'est-ce qui t'attire le plus : la comptabilité et la finance, le marketing et la vente, la logistique, ou la création d'entreprise ?`,
+        suggestions: [
+          "Comptabilité & Finance",
+          "Marketing & Vente",
+          "Création d'entreprise & Management",
+          "Je ne sais pas",
+        ],
+        vise: "Approfondir le secteur gestion et commerce",
+        phase: 5,
+        etape: 3,
+      };
+    }
+  }
+
+  // ── PHASE 1 : SITUATION SCOLAIRE (Prénom, niveau, série) ──────────────────
+  if (!profile.prenom && lastAskedIntent !== "intent_demander_prenom") {
+    return {
+      type: "question",
+      intent_id: "intent_demander_prenom",
       question: "Bonjour ! Je suis ton conseiller d'orientation SenOrientation. Pour faire connaissance et personnaliser notre échange, comment puis-je t'appeler ?",
       suggestions: ["Je préfère ne pas le dire"],
       vise: "Faire connaissance en demandant le prénom",
+      phase: 1,
       etape: 1,
     };
   }
 
-  // 2. Niveau ou série de Bac non renseigné
-  if (!profile.serie && !profile.niveau) {
+  if (!profile.serie && !profile.niveau && lastAskedIntent !== "intent_demander_situation_scolaire") {
     return {
       type: "question",
+      intent_id: "intent_demander_situation_scolaire",
       question: `Ravi de faire ta connaissance${namePart ? " " + namePart : ""} ! Où en es-tu actuellement dans tes études (lycée, classe de Terminale, nouveau bachelier, ou réorientation) et quelle est ta série ?`,
       suggestions: [
         "Terminale S1 ou S2",
@@ -489,30 +857,33 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
         "Autre série ou réorientation",
       ],
       vise: "Identifier le niveau scolaire et la série de Bac",
+      phase: 1,
       etape: 1,
     };
   }
 
-  // 3. Cas de la réorientation
-  if (profile.niveau === "Réorientation" && profile.interets_principaux.length === 0) {
+  if (profile.niveau === "Réorientation / Étudiant" && !isAsked("intent_reorientation") && lastAskedIntent !== "intent_reorientation") {
     return {
       type: "question",
-      question: `${namePart ? namePart + ", " : ""}qu'est-ce qui ne t'a pas convenu dans ton parcours précédent, et vers quel type de domaine aimerais-tu te diriger cette fois-ci ?`,
+      intent_id: "intent_reorientation",
+      question: `${nameGreet}qu'est-ce qui ne t'a pas convenu dans ton parcours précédent, et vers quel type de domaine aimerais-tu te diriger cette fois-ci ?`,
       suggestions: [
-        "Sciences et informatique",
-        "Commerce et gestion",
-        "Santé ou social",
+        "Vers l'informatique et les technologies",
+        "Vers le commerce et la gestion",
+        "Vers la santé ou l'action sociale",
         "Je ne sais pas encore",
       ],
       vise: "Comprendre les motifs de réorientation et le nouveau cap",
+      phase: 1,
       etape: 2,
     };
   }
 
-  // 4. Découverte des centres d'intérêt principaux
-  if (profile.interets_principaux.length === 0 && profile.matieres_aimees.length === 0) {
+  // ── PHASE 2 : DÉCOUVERTE DES CENTRES D'INTÉRÊT (Partie 5) ────────────────
+  if (profile.confirmed_interests.length === 0 && profile.interets_principaux.length === 0 && !isAsked("intent_decouvrir_interets") && lastAskedIntent !== "intent_decouvrir_interets") {
     return {
       type: "question",
+      intent_id: "intent_decouvrir_interets",
       question: `Intéressant avec ta série ${profile.serie || "actuelle"}. Pour cibler les formations qui te correspondent vraiment, quels sont les domaines qui t'attirent le plus au quotidien ?`,
       suggestions: [
         "Sciences, maths & informatique",
@@ -522,45 +893,16 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
         "Je ne sais pas encore",
       ],
       vise: "Découvrir les centres d'intérêt majeurs",
+      phase: 2,
       etape: 2,
     };
   }
 
-  // 5. Approfondissement ciblé d'un domaine sélectionné
-  if (profile.interets_principaux.includes("Informatique & Technologies") && !profile.projet) {
+  // ── PHASE 4 : MATIÈRES ET APTITUDES (Partie 5) ───────────────────────────
+  if (profile.matieres_aimees.length === 0 && profile.points_forts.length === 0 && !isAsked("intent_matieres_preferees") && lastAskedIntent !== "intent_matieres_preferees") {
     return {
       type: "question",
-      question: `${nameGreet}dans le numérique et l'informatique, qu'est-ce qui te plairait le plus : concevoir des applications, analyser des données et l'IA, ou sécuriser les systèmes (cybersécurité) ?`,
-      suggestions: [
-        "Créer des applications et logiciels",
-        "Intelligence Artificielle & Data",
-        "Cybersécurité & Réseaux",
-        "Je ne sais pas",
-      ],
-      vise: "Approfondir le sous-domaine informatique",
-      etape: 3,
-    };
-  }
-
-  if (profile.interets_principaux.includes("Médecine & Santé") && !profile.projet) {
-    return {
-      type: "question",
-      question: `${nameGreet}dans le domaine de la santé, es-tu plutôt attiré(e) par la médecine générale, la pharmacie, les soins infirmiers, ou la recherche en laboratoire ?`,
-      suggestions: [
-        "Médecine ou odontologie",
-        "Pharmacie & Laboratoires",
-        "Soins infirmiers / Santé publique",
-        "Je ne sais pas",
-      ],
-      vise: "Approfondir la filière santé",
-      etape: 3,
-    };
-  }
-
-  // 6. Matières de prédilection et compétences déclarées
-  if (profile.points_forts.length === 0 && profile.matieres_competentes.length === 0) {
-    return {
-      type: "question",
+      intent_id: "intent_matieres_preferees",
       question: "Dans quelles matières ou façons d'agir te sens-tu le plus à l'aise : résoudre des problèmes de calcul, rédiger et argumenter, ou manipuler et pratiquer ?",
       suggestions: [
         "Calcul, logique et rigueur",
@@ -568,15 +910,17 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
         "Pratique, manipulation et terrain",
         "Je ne sais pas",
       ],
-      vise: "Identifier les aptitudes et points forts concrets",
+      vise: "Identifier les aptitudes et matières fortes déclarées",
+      phase: 4,
       etape: 3,
     };
   }
 
-  // 7. Durée des études et type de formation (courte vs longue)
-  if (!profile.preferences_etudes && !profile.duree_souhaitee) {
+  // ── PHASE 6 : CONTRAINTES DE DURÉE ET LOCALISATION (Partie 5) ─────────────
+  if (!profile.preferences_etudes && !profile.duree_souhaitee && !isAsked("intent_contraintes_duree_ville") && lastAskedIntent !== "intent_contraintes_duree_ville") {
     return {
       type: "question",
+      intent_id: "intent_contraintes_duree_ville",
       question: "Envisages-tu plutôt des études courtes pour t'insérer rapidement dans l'emploi (2 à 3 ans : BTS, DUT, Licence pro) ou un cursus universitaire long (Bac+5 : Master, école d'ingénieurs) ?",
       suggestions: [
         "Études courtes (2 à 3 ans)",
@@ -585,29 +929,15 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
         "Je ne sais pas",
       ],
       vise: "Cerner la durée et le format d'études envisagés",
+      phase: 6,
       etape: 4,
     };
   }
 
-  // 8. Contraintes de budget ou de ville (si tout le reste est renseigné)
-  if (!profile.budget && !profile.ville) {
-    return {
-      type: "question",
-      question: "As-tu une préférence entre les universités publiques (Campusen) et les instituts privés, ou une ville spécifique au Sénégal où tu souhaites étudier ?",
-      suggestions: [
-        "Public Campusen en priorité",
-        "Dakar en priorité",
-        "Peu importe, le meilleur cursus",
-        "Je ne sais pas",
-      ],
-      vise: "Identifier les contraintes de budget et de localisation",
-      etape: 4,
-    };
-  }
-
-  // 9. Profil suffisant pour le Bilan Final (Étape 5)
+  // ── PHASE 8 : BILAN FINAL STRUCTURÉ (Partie 5 & Partie 9) ─────────────────
   return {
     type: "bilan",
+    intent_id: "intent_presenter_bilan",
     question: "Parmi ces parcours recommandés, lequel aimerais-tu approfondir en premier ?",
     suggestions: [
       "Approfondir la première option",
@@ -616,6 +946,7 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
       "Je souhaite ajuster mon profil",
     ],
     vise: "Présenter le bilan final structuré et orienter les démarches",
+    phase: 8,
     etape: 5,
   };
 }

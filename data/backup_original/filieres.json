@@ -1,0 +1,5401 @@
+[
+  {
+    "id": "informatique",
+    "title": "INFORMATIQUE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en informatique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Développeur web",
+      "Développeur mobile",
+      "Développeur logiciel",
+      "Ingénieur logiciel",
+      "Ingénieur informatique",
+      "Analyste programmeur",
+      "Administrateur systèmes",
+      "Administrateur réseaux",
+      "Ingénieur réseaux",
+      "Ingénieur systèmes",
+      "Architecte systèmes",
+      "Ingénieur cybersécurité",
+      "Analyste cybersécurité",
+      "Pentester",
+      "Analyste SOC",
+      "Consultant en cybersécurité",
+      "Data analyst",
+      "Data scientist",
+      "Ingénieur data",
+      "Ingénieur IA",
+      "Ingénieur machine learning",
+      "Administrateur bases de données",
+      "Architecte bases de données",
+      "DevOps",
+      "Cloud engineer",
+      "Technicien informatique",
+      "Technicien support informatique",
+      "Chef de projet informatique",
+      "Consultant informatique",
+      "Ingénieur systèmes d'information",
+      "Analyste fonctionnel",
+      "Consultant ERP",
+      "Développeur BI",
+      "Consultant Business Intelligence"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "informatique_de_gestion",
+    "title": "INFORMATIQUE DE GESTION",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en informatique de gestion dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Analyste programmeur",
+      "Développeur d'applications",
+      "Développeur systèmes d'information",
+      "Administrateur systèmes",
+      "Administrateur bases de données",
+      "Analyste fonctionnel",
+      "Consultant SI",
+      "Chef de projet SI",
+      "Consultant ERP",
+      "Data analyst",
+      "Business analyst",
+      "Responsable informatique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "reseaux_et_telecommunications",
+    "title": "RÉSEAUX ET TÉLÉCOMMUNICATIONS",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "L1",
+      "L2",
+      "L'",
+      "G",
+      "S2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en réseaux et télécommunications dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UKB (Saint-Louis)"
+    ],
+    "careers": [
+      "Technicien réseaux",
+      "Administrateur réseaux",
+      "Ingénieur réseaux",
+      "Ingénieur télécoms",
+      "Technicien télécommunications",
+      "Administrateur systèmes et réseaux",
+      "Ingénieur infrastructure",
+      "Ingénieur VoIP",
+      "Ingénieur fibre optique",
+      "Technicien fibre optique",
+      "Network engineer",
+      "Consultant réseaux",
+      "Expert sécurité réseaux"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers L1, L2, L' ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "genie_informatique",
+    "title": "GÉNIE INFORMATIQUE",
+    "domain": "Sciences & Technologies",
+    "level": "Diplôme d'Ingénieur / Master",
+    "duration": "5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en génie informatique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Ingénieur informatique",
+      "Développeur logiciel",
+      "Développeur web",
+      "Développeur mobile",
+      "Ingénieur systèmes",
+      "Ingénieur réseaux",
+      "Ingénieur cybersécurité",
+      "Data engineer",
+      "DevOps",
+      "Chef de projet informatique",
+      "Consultant IT"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "cybersecurite_securite_des_systemes",
+    "title": "CYBERSÉCURITÉ / SÉCURITÉ DES SYSTÈMES",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en cybersécurité / sécurité des systèmes dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Analyste cybersécurité",
+      "Ingénieur cybersécurité",
+      "Pentester",
+      "Ethical hacker",
+      "Analyste SOC",
+      "Consultant sécurité",
+      "Auditeur sécurité informatique",
+      "Responsable sécurité des SI",
+      "Ingénieur sécurité réseaux",
+      "Forensic analyst",
+      "Risk analyst cybersécurité"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "mathematiques",
+    "title": "MATHÉMATIQUES",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en mathématiques dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Enseignant de mathématiques",
+      "Professeur de mathématiques",
+      "Statisticien",
+      "Data analyst",
+      "Data scientist",
+      "Actuaire",
+      "Analyste quantitatif",
+      "Chercheur en mathématiques",
+      "Chargé d'études statistiques",
+      "Analyste de données",
+      "Modélisateur mathématique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "statistiques_analyse_economique",
+    "title": "STATISTIQUES / ANALYSE ÉCONOMIQUE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en statistiques / analyse économique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Statisticien",
+      "Ingénieur statisticien",
+      "Data analyst",
+      "Data scientist",
+      "Chargé d'études statistiques",
+      "Analyste économique",
+      "Économètre",
+      "Chargé d'études économiques",
+      "Analyste de données",
+      "Consultant en statistiques",
+      "Chargé d'études de marché"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "economie",
+    "title": "ÉCONOMIE",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en économie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Économiste",
+      "Analyste économique",
+      "Chargé d'études économiques",
+      "Économètre",
+      "Analyste financier",
+      "Chargé d'études",
+      "Consultant économique",
+      "Chargé de développement économique",
+      "Conseiller économique",
+      "Analyste de marché"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "gestion",
+    "title": "GESTION",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en gestion dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Gestionnaire",
+      "Assistant de gestion",
+      "Contrôleur de gestion",
+      "Responsable administratif",
+      "Responsable financier",
+      "Responsable administratif et financier",
+      "Chef d'entreprise",
+      "Manager",
+      "Consultant en gestion",
+      "Chargé de projet",
+      "Auditeur",
+      "Comptable"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "comptabilite",
+    "title": "COMPTABILITÉ",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en comptabilité dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Comptable",
+      "Assistant comptable",
+      "Chef comptable",
+      "Auditeur comptable",
+      "Auditeur financier",
+      "Contrôleur de gestion",
+      "Expert-comptable",
+      "Responsable comptable",
+      "Analyste financier",
+      "Responsable administratif et financier"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "finance",
+    "title": "FINANCE",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en finance dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Analyste financier",
+      "Gestionnaire financier",
+      "Responsable financier",
+      "Contrôleur de gestion",
+      "Chargé d'investissement",
+      "Analyste crédit",
+      "Gestionnaire de portefeuille",
+      "Trésorier",
+      "Conseiller financier",
+      "Auditeur financier"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "banque",
+    "title": "BANQUE",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en banque dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Chargé de clientèle bancaire",
+      "Conseiller bancaire",
+      "Analyste crédit",
+      "Gestionnaire de comptes",
+      "Chargé d'affaires",
+      "Analyste financier",
+      "Responsable d'agence bancaire",
+      "Gestionnaire de risques",
+      "Conseiller en investissement",
+      "Chargé de conformité"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "assurance",
+    "title": "ASSURANCE",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en assurance dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Conseiller en assurance",
+      "Chargé de clientèle",
+      "Gestionnaire de sinistres",
+      "Souscripteur",
+      "Actuaire",
+      "Analyste risques",
+      "Gestionnaire de contrats",
+      "Expert assurance",
+      "Chargé de conformité"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "management",
+    "title": "MANAGEMENT",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en management dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Manager",
+      "Chef de projet",
+      "Responsable administratif",
+      "Responsable commercial",
+      "Responsable marketing",
+      "Responsable des opérations",
+      "Consultant en management",
+      "Business developer",
+      "Directeur d'entreprise",
+      "Responsable stratégie"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "ressources_humaines",
+    "title": "RESSOURCES HUMAINES",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en ressources humaines dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Assistant RH",
+      "Chargé de recrutement",
+      "Responsable recrutement",
+      "Gestionnaire RH",
+      "Responsable RH",
+      "Chargé de formation",
+      "Responsable formation",
+      "Gestionnaire de paie",
+      "Responsable administration du personnel",
+      "Consultant RH",
+      "Talent manager"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "marketing",
+    "title": "MARKETING",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en marketing dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Responsable marketing",
+      "Chargé marketing",
+      "Chef de produit",
+      "Brand manager",
+      "Responsable communication",
+      "Chargé d'études marketing",
+      "Community manager",
+      "Traffic manager",
+      "Digital marketer",
+      "Consultant marketing",
+      "Responsable e-commerce"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "marketing_digital",
+    "title": "MARKETING DIGITAL",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en marketing digital dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Community manager",
+      "Social media manager",
+      "Traffic manager",
+      "SEO manager",
+      "SEA manager",
+      "Content manager",
+      "Digital marketer",
+      "Growth marketer",
+      "Responsable e-commerce",
+      "Consultant marketing digital",
+      "Chef de projet digital"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "commerce",
+    "title": "COMMERCE",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en commerce dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Commercial",
+      "Attaché commercial",
+      "Responsable commercial",
+      "Business developer",
+      "Account manager",
+      "Chef de secteur",
+      "Responsable grands comptes",
+      "Technico-commercial",
+      "Conseiller clientèle",
+      "Directeur commercial"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "commerce_international",
+    "title": "COMMERCE INTERNATIONAL",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en commerce international dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Import-export manager",
+      "Responsable import-export",
+      "Commercial international",
+      "Acheteur international",
+      "Assistant import-export",
+      "Responsable logistique internationale",
+      "Chargé d'affaires internationales",
+      "Business developer international",
+      "Consultant commerce international"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "droit",
+    "title": "DROIT",
+    "domain": "Droit & Sciences Politiques",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "L1",
+      "L2",
+      "L'",
+      "G",
+      "S2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en droit dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UAHB (Dakar)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Juriste",
+      "Juriste d'entreprise",
+      "Avocat",
+      "Notaire",
+      "Huissier / Commissaire de justice",
+      "Conseiller juridique",
+      "Fiscaliste",
+      "Juriste social",
+      "Juriste en droit des affaires",
+      "Juriste en droit administratif",
+      "Juriste en droit international",
+      "Contract manager"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers L1, L2, L' ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "justice",
+    "title": "JUSTICE",
+    "domain": "Droit & Sciences Politiques",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "L1",
+      "L2",
+      "L'",
+      "G",
+      "S2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en justice dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UAHB (Dakar)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Magistrat",
+      "Juge",
+      "Procureur",
+      "Greffier",
+      "Avocat",
+      "Commissaire de justice",
+      "Administrateur judiciaire",
+      "Conseiller juridique",
+      "Assistant juridique",
+      "Officier de justice"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers L1, L2, L' ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "administration_publique",
+    "title": "ADMINISTRATION PUBLIQUE",
+    "domain": "Droit & Sciences Politiques",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "L1",
+      "L2",
+      "L'",
+      "G",
+      "S2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en administration publique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UAHB (Dakar)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Administrateur civil",
+      "Attaché d'administration",
+      "Inspecteur de l'administration",
+      "Conseiller administratif",
+      "Chargé de mission",
+      "Gestionnaire administratif",
+      "Responsable administratif",
+      "Directeur administratif",
+      "Agent des services publics",
+      "Consultant en politiques publiques"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers L1, L2, L' ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "science_politique",
+    "title": "SCIENCE POLITIQUE",
+    "domain": "Droit & Sciences Politiques",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "L1",
+      "L2",
+      "L'",
+      "G",
+      "S2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en science politique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UAHB (Dakar)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Politologue",
+      "Analyste politique",
+      "Chargé de mission",
+      "Conseiller politique",
+      "Consultant en politiques publiques",
+      "Chargé de relations institutionnelles",
+      "Diplomate",
+      "Chargé de coopération internationale",
+      "Chercheur",
+      "Enseignant-chercheur"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers L1, L2, L' ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "relations_internationales_diplomatie",
+    "title": "RELATIONS INTERNATIONALES / DIPLOMATIE",
+    "domain": "Droit & Sciences Politiques",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "L1",
+      "L2",
+      "L'",
+      "G",
+      "S2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en relations internationales / diplomatie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UAHB (Dakar)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Diplomate",
+      "Conseiller diplomatique",
+      "Chargé de coopération internationale",
+      "Analyste géopolitique",
+      "Chargé de mission internationale",
+      "Consultant international",
+      "Responsable relations internationales",
+      "Chargé de programme ONG",
+      "Expert en développement international"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers L1, L2, L' ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "communication",
+    "title": "COMMUNICATION",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "L1",
+      "L2",
+      "L'",
+      "G",
+      "S2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en communication dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UKB (Saint-Louis)"
+    ],
+    "careers": [
+      "Chargé de communication",
+      "Responsable communication",
+      "Directeur communication",
+      "Attaché de presse",
+      "Community manager",
+      "Social media manager",
+      "Chargé des relations publiques",
+      "Chargé de communication digitale",
+      "Consultant communication",
+      "Chef de projet communication"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers L1, L2, L' ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "journalisme",
+    "title": "JOURNALISME",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "L1",
+      "L2",
+      "L'",
+      "G",
+      "S2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en journalisme dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UKB (Saint-Louis)"
+    ],
+    "careers": [
+      "Journaliste",
+      "Reporter",
+      "Journaliste web",
+      "Rédacteur",
+      "Correspondant",
+      "Éditorialiste",
+      "Présentateur",
+      "Chroniqueur",
+      "Journaliste reporter d'images",
+      "Producteur de contenus"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers L1, L2, L' ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "audiovisuel",
+    "title": "AUDIOVISUEL",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en audiovisuel dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UKB (Saint-Louis)"
+    ],
+    "careers": [
+      "Réalisateur",
+      "Assistant réalisateur",
+      "Producteur audiovisuel",
+      "Cadreur",
+      "Monteur vidéo",
+      "Ingénieur du son",
+      "Technicien audiovisuel",
+      "Motion designer",
+      "Infographiste",
+      "Scénariste",
+      "Photographe",
+      "Directeur artistique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "multimedia",
+    "title": "MULTIMÉDIA",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en multimédia dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Designer multimédia",
+      "Webdesigner",
+      "Motion designer",
+      "Infographiste",
+      "UX/UI designer",
+      "Créateur de contenu",
+      "Community manager",
+      "Monteur vidéo",
+      "Producteur multimédia",
+      "Développeur multimédia"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "infographie",
+    "title": "INFOGRAPHIE",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en infographie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UKB (Saint-Louis)"
+    ],
+    "careers": [
+      "Infographiste",
+      "Graphiste",
+      "Designer graphique",
+      "Directeur artistique",
+      "Webdesigner",
+      "Motion designer",
+      "Illustrateur",
+      "Maquettiste",
+      "Designer multimédia"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "genie_civil",
+    "title": "GÉNIE CIVIL",
+    "domain": "Ingénierie & BTP",
+    "level": "Diplôme d'Ingénieur / Master",
+    "duration": "5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en génie civil dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur génie civil",
+      "Conducteur de travaux",
+      "Chef de chantier",
+      "Ingénieur structures",
+      "Ingénieur BTP",
+      "Technicien BTP",
+      "Ingénieur ouvrages d'art",
+      "Ingénieur hydraulique",
+      "Responsable travaux",
+      "Contrôleur technique",
+      "Chargé d'études BTP",
+      "Métreur",
+      "Économiste de la construction"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "batiment_et_travaux_publics",
+    "title": "BÂTIMENT ET TRAVAUX PUBLICS",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en bâtiment et travaux publics dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Conducteur de travaux",
+      "Chef de chantier",
+      "Technicien bâtiment",
+      "Ingénieur BTP",
+      "Contrôleur technique",
+      "Métreur",
+      "Dessinateur-projeteur",
+      "Responsable chantier",
+      "Coordinateur travaux",
+      "Économiste de la construction"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "architecture",
+    "title": "ARCHITECTURE",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en architecture dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Architecte",
+      "Architecte urbaniste",
+      "Architecte d'intérieur",
+      "Dessinateur-projeteur",
+      "Assistant architecte",
+      "Chef de projet architectural",
+      "Urbaniste",
+      "Consultant en aménagement"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "urbanisme_amenagement",
+    "title": "URBANISME / AMÉNAGEMENT",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en urbanisme / aménagement dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Urbaniste",
+      "Aménageur",
+      "Chargé d'études urbaines",
+      "Consultant en aménagement",
+      "Planificateur territorial",
+      "Chargé de développement territorial",
+      "Chef de projet urbain",
+      "Géomaticien"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "geomatique",
+    "title": "GÉOMATIQUE",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en géomatique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Géomaticien",
+      "Cartographe",
+      "Analyste SIG",
+      "Ingénieur SIG",
+      "Technicien SIG",
+      "Géomètre-topographe",
+      "Cartographe numérique",
+      "Analyste géospatial",
+      "Topographe"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "geometre_topographe",
+    "title": "GÉOMÈTRE-TOPOGRAPHE",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en géomètre-topographe dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Géomètre-topographe",
+      "Topographe",
+      "Technicien topographe",
+      "Géomètre foncier",
+      "Cartographe",
+      "Technicien SIG",
+      "Géomaticien",
+      "Expert foncier"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "geologie",
+    "title": "GÉOLOGIE",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en géologie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Géologue",
+      "Ingénieur géologue",
+      "Géologue minier",
+      "Hydrogéologue",
+      "Géotechnicien",
+      "Ingénieur géotechnique",
+      "Géologue environnemental",
+      "Consultant géologique",
+      "Chercheur en géosciences"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "geotechnique",
+    "title": "GÉOTECHNIQUE",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en géotechnique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur géotechnicien",
+      "Géotechnicien",
+      "Ingénieur sols",
+      "Technicien géotechnique",
+      "Chargé d'études géotechniques",
+      "Ingénieur fondations",
+      "Consultant géotechnique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "hydrogeologie",
+    "title": "HYDROGÉOLOGIE",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en hydrogéologie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Hydrogéologue",
+      "Ingénieur hydraulique",
+      "Technicien hydraulique",
+      "Expert en ressources en eau",
+      "Chargé d'études hydrogéologiques",
+      "Consultant eau",
+      "Gestionnaire des ressources hydriques"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "hydraulique",
+    "title": "HYDRAULIQUE",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en hydraulique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Ingénieur hydraulique",
+      "Technicien hydraulique",
+      "Ingénieur eau et assainissement",
+      "Chargé d'études hydrauliques",
+      "Responsable réseaux d'eau",
+      "Consultant hydraulique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "environnement",
+    "title": "ENVIRONNEMENT",
+    "domain": "Énergie, Mines & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S4",
+      "S5",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en environnement dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)"
+    ],
+    "careers": [
+      "Ingénieur environnement",
+      "Chargé d'études environnementales",
+      "Consultant environnement",
+      "Responsable environnement",
+      "Responsable QHSE",
+      "Chargé de développement durable",
+      "Gestionnaire des déchets",
+      "Écologue",
+      "Expert biodiversité"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S4 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "qhse",
+    "title": "QHSE",
+    "domain": "Énergie, Mines & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en qhse dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)"
+    ],
+    "careers": [
+      "Responsable QHSE",
+      "Animateur QHSE",
+      "Ingénieur QHSE",
+      "Auditeur QHSE",
+      "Coordinateur sécurité",
+      "Responsable environnement",
+      "Contrôleur qualité",
+      "Préventeur sécurité"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "energies_renouvelables",
+    "title": "ÉNERGIES RENOUVELABLES",
+    "domain": "Énergie, Mines & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en énergies renouvelables dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)"
+    ],
+    "careers": [
+      "Ingénieur énergies renouvelables",
+      "Technicien solaire",
+      "Installateur photovoltaïque",
+      "Technicien éolien",
+      "Ingénieur énergétique",
+      "Technicien énergie",
+      "Chargé de projet énergétique",
+      "Consultant en efficacité énergétique",
+      "Expert transition énergétique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "genie_electrique",
+    "title": "GÉNIE ÉLECTRIQUE",
+    "domain": "Sciences & Technologies",
+    "level": "Diplôme d'Ingénieur / Master",
+    "duration": "5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en génie électrique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur électrotechnicien",
+      "Technicien électricien",
+      "Ingénieur électricité",
+      "Automaticien",
+      "Technicien maintenance électrique",
+      "Responsable maintenance",
+      "Ingénieur énergie",
+      "Électricien industriel"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "electronique",
+    "title": "ÉLECTRONIQUE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en électronique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur électronique",
+      "Technicien électronique",
+      "Ingénieur systèmes embarqués",
+      "Ingénieur hardware",
+      "Technicien maintenance électronique",
+      "Automaticien",
+      "Ingénieur instrumentation"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "electromecanique",
+    "title": "ÉLECTROMÉCANIQUE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en électromécanique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur électromécanicien",
+      "Technicien électromécanique",
+      "Responsable maintenance",
+      "Technicien maintenance industrielle",
+      "Automaticien",
+      "Ingénieur maintenance",
+      "Technicien équipements industriels"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "mecanique",
+    "title": "MÉCANIQUE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en mécanique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur mécanique",
+      "Technicien mécanique",
+      "Technicien maintenance",
+      "Ingénieur maintenance",
+      "Responsable maintenance industrielle",
+      "Concepteur mécanique",
+      "Dessinateur industriel",
+      "Technicien méthodes"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "automatisme",
+    "title": "AUTOMATISME",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en automatisme dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Automaticien",
+      "Ingénieur automatisme",
+      "Technicien automatisme",
+      "Ingénieur contrôle-commande",
+      "Technicien instrumentation",
+      "Ingénieur systèmes industriels"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "maintenance_industrielle",
+    "title": "MAINTENANCE INDUSTRIELLE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en maintenance industrielle dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Technicien maintenance",
+      "Ingénieur maintenance",
+      "Responsable maintenance",
+      "Technicien électromécanicien",
+      "Technicien automatisme",
+      "Responsable maintenance industrielle",
+      "Technicien de production"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "genie_chimique",
+    "title": "GÉNIE CHIMIQUE",
+    "domain": "Sciences & Technologies",
+    "level": "Diplôme d'Ingénieur / Master",
+    "duration": "5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en génie chimique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur chimiste",
+      "Technicien chimiste",
+      "Ingénieur procédés",
+      "Technicien procédés",
+      "Responsable production",
+      "Ingénieur qualité",
+      "Ingénieur R&D",
+      "Technicien laboratoire"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "chimie",
+    "title": "CHIMIE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en chimie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Chimiste",
+      "Technicien chimiste",
+      "Analyste laboratoire",
+      "Ingénieur chimiste",
+      "Chercheur",
+      "Technicien contrôle qualité",
+      "Responsable laboratoire",
+      "Ingénieur R&D"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "biologie",
+    "title": "BIOLOGIE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en biologie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Biologiste",
+      "Technicien biologiste",
+      "Technicien laboratoire",
+      "Microbiologiste",
+      "Biologiste médical",
+      "Chercheur",
+      "Ingénieur recherche",
+      "Responsable laboratoire"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "biochimie",
+    "title": "BIOCHIMIE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en biochimie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Biochimiste",
+      "Technicien biochimiste",
+      "Biologiste",
+      "Technicien laboratoire",
+      "Chercheur",
+      "Analyste laboratoire",
+      "Responsable contrôle qualité"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "agronomie",
+    "title": "AGRONOMIE",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S4",
+      "S5",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en agronomie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UAHB (Dakar)"
+    ],
+    "careers": [
+      "Ingénieur agronome",
+      "Conseiller agricole",
+      "Technicien agricole",
+      "Chargé de développement rural",
+      "Responsable exploitation agricole",
+      "Expert agricole",
+      "Consultant agricole",
+      "Chercheur en agronomie"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S4 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "agriculture",
+    "title": "AGRICULTURE",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S4",
+      "S5",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en agriculture dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UAHB (Dakar)"
+    ],
+    "careers": [
+      "Exploitant agricole",
+      "Technicien agricole",
+      "Conseiller agricole",
+      "Ingénieur agronome",
+      "Responsable exploitation agricole",
+      "Chef de culture",
+      "Technicien irrigation",
+      "Chargé de projet agricole",
+      "Entrepreneur agricole"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S4 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "production_vegetale",
+    "title": "PRODUCTION VÉGÉTALE",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en production végétale dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur agronome",
+      "Responsable production végétale",
+      "Technicien agricole",
+      "Chef de culture",
+      "Conseiller agricole",
+      "Responsable exploitation",
+      "Expert phytosanitaire"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "production_animale_elevage",
+    "title": "PRODUCTION ANIMALE / ÉLEVAGE",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en production animale / élevage dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UAHB (Dakar)"
+    ],
+    "careers": [
+      "Éleveur",
+      "Technicien élevage",
+      "Ingénieur zootechnicien",
+      "Conseiller en élevage",
+      "Responsable exploitation animale",
+      "Technicien alimentation animale",
+      "Chargé de développement de l'élevage"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "agroforesterie",
+    "title": "AGROFORESTERIE",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en agroforesterie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UAHB (Dakar)"
+    ],
+    "careers": [
+      "Ingénieur agroforestier",
+      "Technicien forestier",
+      "Gestionnaire des ressources naturelles",
+      "Chargé de projet environnement",
+      "Expert biodiversité",
+      "Conseiller agroforestier"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "aquaculture",
+    "title": "AQUACULTURE",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en aquaculture dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UAHB (Dakar)"
+    ],
+    "careers": [
+      "Aquaculteur",
+      "Technicien aquacole",
+      "Ingénieur aquacole",
+      "Responsable production aquacole",
+      "Technicien piscicole",
+      "Chargé de développement aquacole"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "agroalimentaire",
+    "title": "AGROALIMENTAIRE",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en agroalimentaire dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UAHB (Dakar)"
+    ],
+    "careers": [
+      "Ingénieur agroalimentaire",
+      "Technicien agroalimentaire",
+      "Responsable production",
+      "Responsable qualité",
+      "Technicien contrôle qualité",
+      "Responsable hygiène",
+      "Technologue alimentaire",
+      "Responsable recherche et développement",
+      "Chef de produit agroalimentaire"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "nutrition_dietetique",
+    "title": "NUTRITION / DIÉTÉTIQUE",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en nutrition / diététique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UAHB (Dakar)"
+    ],
+    "careers": [
+      "Diététicien",
+      "Nutritionniste",
+      "Assistant nutrition",
+      "Conseiller en nutrition",
+      "Chargé de programme nutrition",
+      "Responsable nutrition",
+      "Consultant nutrition"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "sante_medecine",
+    "title": "SANTÉ / MÉDECINE",
+    "domain": "Santé & Médecine",
+    "level": "Doctorat d'État",
+    "duration": "7 à 8 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 90,
+    "description": "Programme d'excellence en santé / médecine dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Médecin généraliste",
+      "Médecin spécialiste",
+      "Médecin de santé publique",
+      "Médecin chercheur",
+      "Médecin du travail"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "pharmacie",
+    "title": "PHARMACIE",
+    "domain": "Santé & Médecine",
+    "level": "Doctorat d'État",
+    "duration": "7 à 8 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 90,
+    "description": "Programme d'excellence en pharmacie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UEIN / SCIMD (Dakar)"
+    ],
+    "careers": [
+      "Pharmacien",
+      "Pharmacien hospitalier",
+      "Pharmacien d'officine",
+      "Pharmacien industriel",
+      "Responsable qualité pharmaceutique",
+      "Responsable affaires réglementaires",
+      "Délégué médical"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "chirurgie_dentaire",
+    "title": "CHIRURGIE DENTAIRE",
+    "domain": "Santé & Médecine",
+    "level": "Doctorat d'État",
+    "duration": "7 à 8 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 90,
+    "description": "Programme d'excellence en chirurgie dentaire dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UEIN / SCIMD (Dakar)"
+    ],
+    "careers": [
+      "Chirurgien-dentiste",
+      "Dentiste",
+      "Odontologiste",
+      "Assistant dentaire",
+      "Chercheur en odontologie"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "soins_infirmiers",
+    "title": "SOINS INFIRMIERS",
+    "domain": "Santé & Médecine",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 90,
+    "description": "Programme d'excellence en soins infirmiers dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UEIN / SCIMD (Dakar)"
+    ],
+    "careers": [
+      "Infirmier diplômé d'État",
+      "Infirmier hospitalier",
+      "Infirmier de santé publique",
+      "Infirmier communautaire",
+      "Cadre infirmier"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "sage_femme",
+    "title": "SAGE-FEMME",
+    "domain": "Santé & Médecine",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 90,
+    "description": "Programme d'excellence en sage-femme dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UEIN / SCIMD (Dakar)"
+    ],
+    "careers": [
+      "Sage-femme",
+      "Sage-femme hospitalière",
+      "Sage-femme communautaire",
+      "Responsable maternité",
+      "Coordinatrice santé reproductive"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "travail_social",
+    "title": "TRAVAIL SOCIAL",
+    "domain": "Santé & Médecine",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 90,
+    "description": "Programme d'excellence en travail social dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UEIN / SCIMD (Dakar)"
+    ],
+    "careers": [
+      "Assistant social",
+      "Travailleur social",
+      "Éducateur spécialisé",
+      "Conseiller social",
+      "Chargé de projet social",
+      "Animateur social",
+      "Chargé de développement communautaire"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "sante_publique",
+    "title": "SANTÉ PUBLIQUE",
+    "domain": "Santé & Médecine",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 90,
+    "description": "Programme d'excellence en santé publique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Chargé de santé publique",
+      "Épidémiologiste",
+      "Biostatisticien",
+      "Coordinateur de programme de santé",
+      "Chargé de projet santé",
+      "Responsable santé communautaire",
+      "Consultant santé publique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "logistique",
+    "title": "LOGISTIQUE",
+    "domain": "Transport, Logistique & Industrie",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en logistique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UCAO / ISG Saint-Michel (Dakar)",
+      "URDFS (Sénégal (Campus Franco-Sénégalais))",
+      "ESP (Dakar)"
+    ],
+    "careers": [
+      "Responsable logistique",
+      "Logisticien",
+      "Gestionnaire des stocks",
+      "Supply chain manager",
+      "Responsable approvisionnement",
+      "Planificateur logistique",
+      "Gestionnaire d'entrepôt",
+      "Coordinateur logistique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "transport",
+    "title": "TRANSPORT",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en transport dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UCAO / ISG Saint-Michel (Dakar)",
+      "URDFS (Sénégal (Campus Franco-Sénégalais))",
+      "ESP (Dakar)"
+    ],
+    "careers": [
+      "Responsable transport",
+      "Gestionnaire transport",
+      "Exploitant transport",
+      "Coordinateur transport",
+      "Planificateur transport",
+      "Responsable flotte",
+      "Agent d'exploitation transport"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "transport_ferroviaire",
+    "title": "TRANSPORT FERROVIAIRE",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en transport ferroviaire dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UCAO / ISG Saint-Michel (Dakar)",
+      "URDFS (Sénégal (Campus Franco-Sénégalais))",
+      "ESP (Dakar)"
+    ],
+    "careers": [
+      "Technicien ferroviaire",
+      "Responsable exploitation ferroviaire",
+      "Gestionnaire transport ferroviaire",
+      "Technicien maintenance ferroviaire",
+      "Responsable maintenance ferroviaire",
+      "Agent d'exploitation ferroviaire",
+      "Conducteur ferroviaire"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "automobile",
+    "title": "AUTOMOBILE",
+    "domain": "Transport, Logistique & Industrie",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en automobile dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))",
+      "UCAO / ISG Saint-Michel (Dakar)",
+      "URDFS (Sénégal (Campus Franco-Sénégalais))",
+      "ESP (Dakar)"
+    ],
+    "careers": [
+      "Mécanicien automobile",
+      "Technicien automobile",
+      "Électromécanicien automobile",
+      "Diagnostic automobile",
+      "Responsable atelier",
+      "Technicien maintenance automobile",
+      "Expert automobile"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "mines",
+    "title": "MINES",
+    "domain": "Énergie, Mines & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en mines dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)"
+    ],
+    "careers": [
+      "Ingénieur minier",
+      "Ingénieur géologue",
+      "Technicien minier",
+      "Géologue minier",
+      "Ingénieur exploitation minière",
+      "Responsable production minière",
+      "Responsable sécurité minière",
+      "Technicien laboratoire minier"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "energie",
+    "title": "ÉNERGIE",
+    "domain": "Énergie, Mines & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en énergie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur énergétique",
+      "Technicien énergie",
+      "Ingénieur électricité",
+      "Responsable énergie",
+      "Chargé de projet énergétique",
+      "Consultant énergétique",
+      "Technicien énergies renouvelables"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "petrole_et_gaz",
+    "title": "PÉTROLE ET GAZ",
+    "domain": "Énergie, Mines & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en pétrole et gaz dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UASZ (Ziguinchor)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USSEIN (Kaolack / Fatick / Kaffrine)"
+    ],
+    "careers": [
+      "Ingénieur pétrolier",
+      "Ingénieur gaz",
+      "Technicien pétrole et gaz",
+      "Géologue pétrolier",
+      "Ingénieur forage",
+      "Ingénieur production",
+      "HSE officer",
+      "Responsable opérations"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "eau_et_assainissement",
+    "title": "EAU ET ASSAINISSEMENT",
+    "domain": "Énergie, Mines & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S4",
+      "S5",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en eau et assainissement dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur hydraulique",
+      "Technicien hydraulique",
+      "Ingénieur eau et assainissement",
+      "Technicien assainissement",
+      "Responsable réseau d'eau",
+      "Chargé d'études hydrauliques",
+      "Gestionnaire des ressources en eau"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S4 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 800 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "tourisme",
+    "title": "TOURISME",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en tourisme dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Guide touristique",
+      "Agent de voyage",
+      "Responsable agence de voyage",
+      "Chef de produit touristique",
+      "Chargé de développement touristique",
+      "Responsable tourisme",
+      "Conseiller voyages",
+      "Animateur touristique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "hotellerie",
+    "title": "HÔTELLERIE",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en hôtellerie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Directeur hôtel",
+      "Responsable hébergement",
+      "Réceptionniste",
+      "Responsable réception",
+      "Gouvernant",
+      "Responsable restauration",
+      "Chef de cuisine",
+      "Responsable événementiel"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "restauration",
+    "title": "RESTAURATION",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en restauration dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Chef cuisinier",
+      "Cuisinier",
+      "Pâtissier",
+      "Responsable restauration",
+      "Manager restaurant",
+      "Maître d'hôtel",
+      "Traiteur",
+      "Entrepreneur en restauration"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "sport",
+    "title": "SPORT",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en sport dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Professeur d'EPS",
+      "Éducateur sportif",
+      "Coach sportif",
+      "Préparateur physique",
+      "Entraîneur",
+      "Manager sportif",
+      "Responsable d'activités sportives",
+      "Animateur sportif",
+      "Conseiller sportif"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "art_culture",
+    "title": "ART / CULTURE",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en art / culture dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Artiste",
+      "Médiateur culturel",
+      "Chargé de projets culturels",
+      "Responsable culturel",
+      "Conservateur",
+      "Animateur culturel",
+      "Producteur culturel",
+      "Gestionnaire de patrimoine"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "patrimoine",
+    "title": "PATRIMOINE",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en patrimoine dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Conservateur du patrimoine",
+      "Archiviste",
+      "Médiateur culturel",
+      "Chargé de valorisation du patrimoine",
+      "Guide culturel",
+      "Chercheur",
+      "Responsable musée"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "documentation_bibliotheconomie",
+    "title": "DOCUMENTATION / BIBLIOTHÉCONOMIE",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "G",
+      "STEG",
+      "S1",
+      "S2",
+      "L2"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en documentation / bibliothéconomie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Bibliothécaire",
+      "Documentaliste",
+      "Archiviste",
+      "Gestionnaire documentaire",
+      "Chargé de veille documentaire",
+      "Records manager",
+      "Responsable centre de documentation"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers G, STEG, S1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "enseignement",
+    "title": "ENSEIGNEMENT",
+    "domain": "Sciences de l'Éducation & Recherche",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en enseignement dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "ENSAE (Dakar)",
+      "Groupe ISM (Dakar (Campus : Thiès, Saint-Louis, Louga, Ziguinchor))",
+      "BEM Dakar (Dakar (Campus : Sacré-Cœur III & Place de l'Indépendance))",
+      "HEC Dakar (Dakar)"
+    ],
+    "careers": [
+      "Enseignant",
+      "Professeur",
+      "Formateur",
+      "Conseiller pédagogique",
+      "Inspecteur de l'éducation",
+      "Enseignant-chercheur",
+      "Chercheur",
+      "Responsable pédagogique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "recherche",
+    "title": "RECHERCHE",
+    "domain": "Sciences de l'Éducation & Recherche",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en recherche dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "ENSAE (Dakar)",
+      "Groupe ISM (Dakar (Campus : Thiès, Saint-Louis, Louga, Ziguinchor))",
+      "BEM Dakar (Dakar (Campus : Sacré-Cœur III & Place de l'Indépendance))",
+      "HEC Dakar (Dakar)"
+    ],
+    "careers": [
+      "Chercheur",
+      "Enseignant-chercheur",
+      "Ingénieur de recherche",
+      "Assistant de recherche",
+      "Chargé d'études",
+      "Responsable laboratoire",
+      "Doctorant / chercheur"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "defense",
+    "title": "DÉFENSE",
+    "domain": "Droit & Sciences Politiques",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en défense dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Officier",
+      "Sous-officier",
+      "Militaire",
+      "Ingénieur militaire",
+      "Technicien militaire",
+      "Analyste défense",
+      "Responsable opérations"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "securite",
+    "title": "SÉCURITÉ",
+    "domain": "Droit & Sciences Politiques",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en sécurité dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Agent de sécurité",
+      "Responsable sécurité",
+      "Expert sécurité",
+      "Analyste sécurité",
+      "Responsable sûreté",
+      "Consultant sécurité",
+      "Coordinateur sécurité"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "aeronautique",
+    "title": "AÉRONAUTIQUE",
+    "domain": "Transport, Logistique & Industrie",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "S3",
+      "T1"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en aéronautique dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Ingénieur aéronautique",
+      "Technicien aéronautique",
+      "Technicien maintenance aéronautique",
+      "Contrôleur aérien",
+      "Agent d'exploitation aérienne",
+      "Ingénieur avionique",
+      "Technicien avionique"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, S3 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "meteorologie",
+    "title": "MÉTÉOROLOGIE",
+    "domain": "Sciences & Technologies",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en météorologie dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Météorologue",
+      "Technicien météorologue",
+      "Prévisionniste météo",
+      "Climatologue",
+      "Analyste climat",
+      "Chercheur en climatologie"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "peche_maritime",
+    "title": "PÊCHE MARITIME",
+    "domain": "Agriculture & Environnement",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en pêche maritime dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)"
+    ],
+    "careers": [
+      "Technicien des pêches",
+      "Gestionnaire des ressources halieutiques",
+      "Inspecteur des pêches",
+      "Conseiller pêche",
+      "Chargé de développement halieutique",
+      "Responsable exploitation maritime"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "artisanat",
+    "title": "ARTISANAT",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en artisanat dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Artisan",
+      "Responsable atelier",
+      "Designer produit",
+      "Créateur",
+      "Entrepreneur artisanal",
+      "Formateur en artisanat"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "habillement_mode",
+    "title": "HABILLEMENT / MODE",
+    "domain": "Arts, Médias & Sciences Humaines",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en habillement / mode dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Styliste",
+      "Modéliste",
+      "Couturier",
+      "Designer textile",
+      "Responsable atelier",
+      "Chef de production textile",
+      "Entrepreneur mode"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "architecture_d_interieur_design",
+    "title": "ARCHITECTURE D'INTÉRIEUR / DESIGN",
+    "domain": "Ingénierie & BTP",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en architecture d'intérieur / design dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UIDT (Thiès)",
+      "UAM (Diamniadio)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "USO (Tambacounda (Antennes : Kédougou, Bakel))"
+    ],
+    "careers": [
+      "Architecte d'intérieur",
+      "Designer d'intérieur",
+      "Décorateur",
+      "Designer mobilier",
+      "Dessinateur-projeteur",
+      "Chef de projet design"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "450 000 à 1 400 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "transit_douane",
+    "title": "TRANSIT / DOUANE",
+    "domain": "Transport, Logistique & Industrie",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en transit / douane dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UN-CHK (Diamniadio & Réseau national ENO)",
+      "UAHB (Dakar)",
+      "UDB (Dakar)"
+    ],
+    "careers": [
+      "Déclarant en douane",
+      "Agent de transit",
+      "Responsable transit",
+      "Commissionnaire en douane",
+      "Assistant import-export",
+      "Gestionnaire douane",
+      "Responsable opérations douanières"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "300 000 à 900 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  },
+  {
+    "id": "entrepreneuriat",
+    "title": "ENTREPRENEURIAT",
+    "domain": "Commerce & Gestion",
+    "level": "Licence (Bac+3) / Master (Bac+5)",
+    "duration": "3 à 5 ans",
+    "bacRecommended": [
+      "S1",
+      "S2",
+      "L1",
+      "L2",
+      "G"
+    ],
+    "compatibilityScore": 85,
+    "description": "Programme d'excellence en entrepreneuriat dispensé au Sénégal, axé sur l'acquisition de compétences pratiques, professionnalisantes et directement recherchées sur le marché de l'emploi.",
+    "whyRecommended": "Offre d'excellentes opportunités de carrière au Sénégal, dans la sous-région et à l'international, avec un réseau d'établissements accrédités ANAQ-Sup / CAMES.",
+    "importantSubjects": [
+      {
+        "name": "Matière Principale de Spécialité",
+        "weight": "Coefficient 5"
+      },
+      {
+        "name": "Méthodologie & Travaux Dirigés",
+        "weight": "Coefficient 4"
+      },
+      {
+        "name": "Langue & Communication Professionnelle",
+        "weight": "Coefficient 3"
+      }
+    ],
+    "universities": [
+      "UCAD (Dakar)",
+      "UGB (Saint-Louis)",
+      "UADB (Bambey)",
+      "UIDT (Thiès)",
+      "UASZ (Ziguinchor)",
+      "UAM (Diamniadio)"
+    ],
+    "careers": [
+      "Entrepreneur",
+      "Chef d'entreprise",
+      "Startuper",
+      "Business developer",
+      "Consultant",
+      "Gestionnaire de projet",
+      "Responsable PME",
+      "Entrepreneur social"
+    ],
+    "admissionConditions": "Orientation via Campusen pour bacheliers S1, S2, L1 ou concours direct d'entrée.",
+    "marketDemand": "Forte demande de recrutement dans les entreprises et institutions au Sénégal",
+    "averageSalary": "350 000 à 1 200 000 FCFA / mois",
+    "keySkills": [
+      "Expertise Technique",
+      "Gestion de Projet",
+      "Résolution de Problèmes",
+      "Travail d'Équipe"
+    ]
+  }
+]

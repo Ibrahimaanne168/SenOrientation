@@ -486,8 +486,70 @@ function generateLocalOrientationPayload(
   knowledge: KnowledgeMatch[],
   profile: ConversationProfile
 ): TechnicalOutput {
-  // 1. Consulter le moteur de décision adaptatif (Section 6)
+  const lowerQuery = query.toLowerCase().trim();
+
+  // 1. CAS D'UNE DEMANDE DIRECTE FACTUELLE (Partie 5 & Test 12)
+  const isDirectRequest =
+    lowerQuery.includes("quelles universités") ||
+    lowerQuery.includes("quelles sont les universités") ||
+    lowerQuery.includes("quelles écoles") ||
+    lowerQuery.includes("où peut-on étudier") ||
+    lowerQuery.includes("conditions du concours") ||
+    lowerQuery.includes("conditions d'accès") ||
+    lowerQuery.includes("concours ept") ||
+    lowerQuery.includes("concours esp") ||
+    lowerQuery.includes("frais de scolarité") ||
+    lowerQuery.includes("comment devenir");
+
+  if (isDirectRequest) {
+    if (!knowledge || knowledge.length === 0) {
+      // Test 8 : Information inexistante dans les données officielles
+      return {
+        reply: "Je ne dispose pas d'informations officielles documentées à ce sujet dans mes bases actuelles. Les formations et parcours accrédités au Sénégal sont recensés sur la plateforme officielle Campusen (campusen.sec.gouv.sn). Souhaites-tu explorer les filières disponibles dans un autre domaine ?",
+        suggestions: [
+          "Explorer les filières scientifiques",
+          "Voir les formations en gestion",
+          "Consulter les démarches Campusen",
+          "Je ne sais pas",
+        ],
+        dossier: profile,
+        indices: [],
+        hypotheses: [],
+        prochaine_question_vise: "Signaler l'absence de donnée et proposer une alternative",
+        pistes: [],
+        etablissements: [],
+        etape: profile.etape,
+      };
+    }
+
+    const topDoc = knowledge[0];
+    const reply = `Voici les informations officielles documentées dans mes bases :\n\n${topDoc.content}\n\nSouhaites-tu vérifier si ce parcours correspond à ton profil et à ta série de Bac ?`;
+
+    return {
+      reply,
+      suggestions: [
+        "Vérifier mon profil pour ce parcours",
+        "Voir les autres établissements",
+        "Conditions de bourse DGES",
+        "Je ne sais pas",
+      ],
+      dossier: profile,
+      indices: [{ texte: `Recherche : ${query.slice(0, 50)}`, statut: "certain" }],
+      hypotheses: [],
+      prochaine_question_vise: "Répondre directement à la question factuelle puis proposer la suite",
+      pistes: [],
+      etablissements: [],
+      etape: profile.etape,
+    };
+  }
+
+  // 2. Consultation du moteur de décision adaptatif (Parties 3, 4, 5)
   const decision = getNextOrientationQuestion(profile);
+
+  if (!profile.questions_asked.includes(decision.intent_id)) {
+    profile.questions_asked.push(decision.intent_id);
+  }
+  profile.current_question_id = decision.intent_id;
 
   if (decision.type === "question") {
     return {
@@ -495,7 +557,7 @@ function generateLocalOrientationPayload(
       suggestions: decision.suggestions,
       dossier: profile,
       indices: profile.serie ? [{ texte: `Série ${profile.serie}`, statut: "certain" }] : [],
-      hypotheses: (profile.interets_principaux || []).map((dom) => ({ domaine: dom, confiance: "moyenne" as const })),
+      hypotheses: (profile.confirmed_interests.length > 0 ? profile.confirmed_interests : profile.interets_principaux).map((dom) => ({ domaine: dom, confiance: "moyenne" as const })),
       prochaine_question_vise: decision.vise,
       pistes: [],
       etablissements: [],
@@ -503,38 +565,40 @@ function generateLocalOrientationPayload(
     };
   }
 
-  // 2. Si prêt pour le Bilan Final (Étape 5) : récupérer les vraies formations matchées
+  // 3. Si prêt pour le Bilan Final (Étape 5 / Phase 8) : récupérer les vraies formations matchées
   const matched = findMatchingFormations(profile);
   const displayName = profile.prenom && profile.prenom !== "l'ami" ? `${profile.prenom}` : "Élève";
 
-  const domainesRec = profile.interets_principaux.length > 0
-    ? profile.interets_principaux.slice(0, 3)
-    : ["Sciences & Technologies", "Gestion & Économie"];
+  const domainesRec = profile.confirmed_interests.length > 0
+    ? profile.confirmed_interests.slice(0, 3)
+    : profile.interets_principaux.length > 0
+      ? profile.interets_principaux.slice(0, 3)
+      : ["Sciences & Technologies", "Gestion & Économie"];
 
   const formationsListMarkdown = matched.map((m) => {
-    return `- **${m.nom}, ${m.etablissements.slice(0, 2).join(" / ")}**
+    return `- **${m.nom}, ${m.etablissement}**
   - Diplôme & Durée : ${m.diplome} (${m.duree})
   - Conditions d'accès : ${m.conditions}
   - Pourquoi pour toi : ${m.pourquoi}
-  - Source : ${m.source}`;
+  - Source officielle : ${m.source}`;
   }).join("\n\n");
 
   const reply = `**A. Résumé de ton profil**
 - Élève : ${displayName}
 - Série / Niveau : ${profile.serie ? `Bac ${profile.serie}` : (profile.niveau || "Enseignement secondaire")}
-- Domaines d'intérêt : ${domainesRec.join(", ")}
-- Points forts déclarés : ${profile.points_forts.join(", ") || profile.matieres_competentes.join(", ") || "Aptitudes scientifiques et analytiques"}
+- Domaines d'intérêt confirmés : ${domainesRec.join(", ")}
+- Points forts déclarés : ${profile.points_forts.join(", ") || profile.matieres_competentes.join(", ") || profile.matieres_aimees.join(", ") || "Aptitudes scientifiques et analytiques"}
 - Format souhaité : ${profile.preferences_etudes || "Études supérieures au Sénégal"}
 
 **B. Domaines recommandés**
-${domainesRec.map((d) => `- **${d}** : en adéquation avec tes centres d'intérêt et tes compétences déclarées.`).join("\n")}
+${domainesRec.map((d) => `- **${d}** : en adéquation avec tes centres d'intérêt confirmés et tes compétences déclarées.`).join("\n")}
 
 **C. Formations adaptées (données officielles du Sénégal)**
 ${formationsListMarkdown}
 
 **D. Comparaison & Alternatives**
 - Les cursus universitaires à l'UCAD, l'UGB ou l'UIDT mènent aux diplômes longs (Licence, Master, Ingénieur).
-- Si tu préfères une insertion rapide sur le marché de l'emploi, les cycles courts (DUT à l'ESP, BTS ou Licence professionnelle) offrent d'excellentes opportunités.
+- Si tu préfères une insertion rapide sur le marché de l'emploi, les cycles courts (DUT à l'ESP, BTS ou Licence professionnelle) offrent d'excellentes opportunités professionnalisantes.
 
 **E. Démarches et plan d'action officiel**
 - Orientation Campusen : inscription obligatoire sur campusen.sec.gouv.sn dès les résultats du Bac (droits d'inscription fixés à 25 000 FCFA/an).
@@ -550,7 +614,7 @@ Parmi ces parcours, lequel aimerais-tu approfondir en premier ?`;
     dossier: profile,
     indices: [
       { texte: `Série ${profile.serie || "validée"}`, statut: "certain" },
-      { texte: profile.interets_principaux.join(", ") || "Intérêts identifiés", statut: "certain" },
+      { texte: domainesRec.join(", ") || "Intérêts confirmés", statut: "certain" },
     ],
     hypotheses: domainesRec.map((dom) => ({ domaine: dom, confiance: "forte" as const })),
     prochaine_question_vise: "Présenter le bilan final et orienter vers les démarches officielles",
@@ -561,7 +625,7 @@ Parmi ces parcours, lequel aimerais-tu approfondir en premier ?`;
       debouches: m.debouches.join(", "),
       indice_retenu: m.pourquoi,
     })),
-    etablissements: matched.flatMap((m) => m.etablissements),
+    etablissements: matched.map((m) => m.etablissement),
     etape: 5,
   };
 }
