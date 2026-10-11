@@ -31,8 +31,9 @@ RÈGLES CRITIQUES ET ABSOLUES :
  */
 export function getAIModel() {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey || apiKey.trim() === "" || apiKey === "sk-placeholder") {
-    // Mode démo/simulation si aucune clé n'est encore configurée
+  // Une clé OpenAI valide commence par "sk-" ou "sk-proj-"
+  if (!apiKey || apiKey.trim() === "" || apiKey === "sk-placeholder" || !apiKey.startsWith("sk-")) {
+    // Mode local officiel basé sur le RAG documentaire sénégalais si aucune clé OpenAI valide n'est configurée
     return null;
   }
   return openai("gpt-4o-mini");

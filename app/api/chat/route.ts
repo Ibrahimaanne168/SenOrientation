@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { streamText } from "ai";
+import { streamText, createDataStreamResponse, formatDataStreamPart } from "ai";
 import { chatRequestSchema } from "@/lib/validation/schemas";
 import { sanitizeUserInput } from "@/lib/security/sanitize";
 import { checkRateLimit } from "@/lib/security/rate-limit";
@@ -109,40 +109,30 @@ RAPPEL : Réponds UNIQUEMENT en t'appuyant sur ce contexte documentaire officiel
       // Ne bloque pas la réponse si la session n'est pas active
     }
 
-    // 7. Appel du modèle IA via Vercel AI SDK
+    // 7. Appel du modèle IA ou moteur local de secours
     const model = getAIModel();
 
     if (!model) {
-      // Mode Fallback intelligent (si OPENAI_API_KEY n'est pas encore saisie dans .env)
-      // Permet de tester l'application immédiatement sans crash
+      // Mode local officiel basé sur le RAG sénégalais (quand aucune clé OpenAI valide n'est configurée)
       const fallbackResponse = generateLocalOrientationResponse(
         sanitized.cleanText,
         knowledgeMatches
       );
 
-      // Simuler un ReadableStream conforme au protocole Vercel AI SDK
-      const stream = new ReadableStream({
-        async start(controller) {
-          const encoder = new TextEncoder();
+      return createDataStreamResponse({
+        execute: async (dataStream) => {
           const chunks = fallbackResponse.split(" ");
           for (const chunk of chunks) {
-            controller.enqueue(encoder.encode(`0:${JSON.stringify(chunk + " ")}\n`));
-            await new Promise((resolve) => setTimeout(resolve, 30));
+            dataStream.write(formatDataStreamPart("text", chunk + " "));
+            await new Promise((resolve) => setTimeout(resolve, 20));
           }
-          controller.close();
         },
-      });
-
-      return new Response(stream, {
         headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "X-Vercel-AI-Data-Stream": "v1",
           "X-RateLimit-Remaining": String(rateLimit.remaining),
         },
       });
     }
 
-    // Mode Vercel AI SDK streamText avec modèle OpenAI / LLM
     try {
       const result = streamText({
         model,
@@ -160,17 +150,22 @@ RAPPEL : Réponds UNIQUEMENT en t'appuyant sur ce contexte documentaire officiel
           "X-RateLimit-Remaining": String(rateLimit.remaining),
         },
       });
-    } catch (modelError) {
-      // Erreur spécifique au modèle LLM — jamais de chunk brut exposé
-      // eslint-disable-next-line no-console
-      console.error("[ERREUR MODÈLE IA]", {
-        timestamp: new Date().toISOString(),
-        message: modelError instanceof Error ? modelError.message : "Erreur modèle inconnue",
-      });
-      return NextResponse.json(
-        { error: "Le modèle d'IA est temporairement indisponible. Veuillez réessayer dans quelques instants." },
-        { status: 503 }
+    } catch {
+      // Si l'appel externe OpenAI échoue, basculer de manière transparente sur la base officielle
+      const fallbackResponse = generateLocalOrientationResponse(
+        sanitized.cleanText,
+        knowledgeMatches
       );
+
+      return createDataStreamResponse({
+        execute: async (dataStream) => {
+          const chunks = fallbackResponse.split(" ");
+          for (const chunk of chunks) {
+            dataStream.write(formatDataStreamPart("text", chunk + " "));
+            await new Promise((resolve) => setTimeout(resolve, 20));
+          }
+        },
+      });
     }
   } catch (error) {
     // Journalisation structurée côté serveur SANS exposer de données sensibles
