@@ -52,9 +52,9 @@ interface ParsedAssistantMessage {
 }
 
 const ETAPE_LABELS: Record<number, string> = {
-  1: "Accueil et série",
-  2: "Découverte",
-  3: "Pistes et devinette",
+  1: "Accueil et présentation",
+  2: "Série et découverte",
+  3: "Pistes d'orientation",
   4: "Approfondissement",
   5: "Plan d'action",
 };
@@ -188,12 +188,9 @@ export default function ChatPage() {
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Bonjour ! Je suis l'Enquêteur de SenOrientation. Mon affaire du jour, c'est toi : découvrir qui tu es vraiment pour dénicher les filières qui te correspondent le mieux. Pour ouvrir le dossier, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
+            "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
           suggestions: [
-            "Bac S1 ou S2",
-            "Bac L1 ou L2",
-            "Bac G ou STEG",
-            "Autre série ou réorientation",
+            "Je préfère ne pas le dire",
           ],
           etape: 1,
         }),
@@ -292,12 +289,9 @@ export default function ChatPage() {
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Bonjour ! Je suis l'Enquêteur de SenOrientation. Mon affaire du jour, c'est toi : découvrir qui tu es vraiment pour dénicher les filières qui te correspondent le mieux. Pour ouvrir le dossier, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?",
+            "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
           suggestions: [
-            "Bac S1 ou S2",
-            "Bac L1 ou L2",
-            "Bac G ou STEG",
-            "Autre série ou réorientation",
+            "Je préfère ne pas le dire",
           ],
           etape: 1,
         }),
@@ -336,6 +330,7 @@ Plateforme officielle : campusen.sec.gouv.sn
 ============================================================
 
 1. PROFIL DE L'ELEVE
+- Prenom / Nom : ${profile.prenom && profile.prenom !== "l'ami" ? profile.prenom : "Non precise"}
 - Serie de Bac : ${profile.serie || "Non precisee"}
 - Niveau : ${profile.niveau || "Terminale / Bachelier"}
 - Moyenne generale : ${profile.moyenne ? `${profile.moyenne}/20` : "Non precisee"}
@@ -359,7 +354,8 @@ Plateforme officielle : campusen.sec.gouv.sn
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `Recapitulatif_Orientation_${profile.serie || "Senegal"}.txt`;
+    const namePart = profile.prenom && profile.prenom !== "l'ami" ? profile.prenom.replace(/\s+/g, "_") : (profile.serie || "Senegal");
+    link.download = `Recapitulatif_Orientation_${namePart}.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -455,8 +451,13 @@ Plateforme officielle : campusen.sec.gouv.sn
           <p className="text-[11.5px] text-[#6B7280]">
             {ETAPE_LABELS[profile.etape] || "En cours"}
           </p>
-          {profile.serie && (
+          {profile.prenom && profile.prenom !== "l'ami" && (
             <div className="pt-1 text-[11.5px] text-[#4B5563]">
+              <span className="font-medium">Élève :</span> {profile.prenom}
+            </div>
+          )}
+          {profile.serie && (
+            <div className={`${profile.prenom && profile.prenom !== "l'ami" ? "" : "pt-1"} text-[11.5px] text-[#4B5563]`}>
               <span className="font-medium">Série :</span> {profile.serie}
             </div>
           )}
@@ -577,6 +578,12 @@ Plateforme officielle : campusen.sec.gouv.sn
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[13px] bg-white p-3 rounded-lg border border-[#E2E8F0]">
+                  {profile.prenom && profile.prenom !== "l'ami" && (
+                    <div>
+                      <span className="text-[#64748B] block text-[11.5px]">Élève</span>
+                      <strong className="text-[#0F172A]">{profile.prenom}</strong>
+                    </div>
+                  )}
                   <div>
                     <span className="text-[#64748B] block text-[11.5px]">Série de Bac</span>
                     <strong className="text-[#0F172A]">{profile.serie || "Non précisée"}</strong>

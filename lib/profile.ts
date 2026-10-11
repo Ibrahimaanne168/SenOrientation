@@ -13,6 +13,7 @@ export interface Hypothese {
 }
 
 export interface ConversationProfile {
+  prenom?: string | null;
   serie: string | null;
   niveau: string | null;
   matieres_aimees: string[];
@@ -33,6 +34,7 @@ export interface ConversationProfile {
 }
 
 export const INITIAL_PROFILE: ConversationProfile = {
+  prenom: null,
   serie: null,
   niveau: null,
   matieres_aimees: [],
@@ -64,6 +66,7 @@ export function mergeProfileUpdate(
 
   const merged: ConversationProfile = {
     ...current,
+    prenom: update.prenom || current.prenom,
     serie: update.serie || current.serie,
     niveau: update.niveau || current.niveau,
     projet: update.projet || current.projet,
@@ -137,6 +140,50 @@ export function heuristicUpdateProfile(
     profile.hypotheses = [];
     profile.etape = 1;
     return profile;
+  }
+
+  // 0. Détection du prénom si non renseigné
+  if (!profile.prenom) {
+    if (
+      latestLower.includes("préfère ne pas le dire") ||
+      latestLower.includes("prefere pas") ||
+      latestLower.includes("anonyme")
+    ) {
+      profile.prenom = "l'ami";
+    } else {
+      const explicitMatch = latestMessage.match(
+        /(?:je m['’]appelle|moi c['’]est|mon pr[ée]nom est|mon nom est|c['’]est)\s+([A-Za-zÀ-ÿ\-]+(?:\s+[A-Za-zÀ-ÿ\-]+)?)/i
+      );
+      if (explicitMatch && explicitMatch[1]) {
+        const candidate = explicitMatch[1].trim();
+        const candLower = candidate.toLowerCase();
+        if (
+          !candLower.includes("bac") &&
+          !candLower.includes("terminale") &&
+          !candLower.includes("perdu") &&
+          !candLower.includes("élève")
+        ) {
+          profile.prenom = candidate.charAt(0).toUpperCase() + candidate.slice(1);
+        }
+      } else if (
+        history.length <= 2 &&
+        !latestLower.includes("bonjour") &&
+        !latestLower.includes("salut") &&
+        !latestLower.includes("s1") &&
+        !latestLower.includes("s2") &&
+        !latestLower.includes("l1") &&
+        !latestLower.includes("l2") &&
+        !latestLower.includes("bac") &&
+        !latestLower.includes("terminale")
+      ) {
+        // Réponse directe à la question du prénom
+        const cleanName = latestMessage.replace(/[.!?,]/g, "").trim();
+        const words = cleanName.split(/\s+/);
+        if (words.length >= 1 && words.length <= 3 && words.every((w) => /^[A-Za-zÀ-ÿ\-]+$/.test(w))) {
+          profile.prenom = words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+        }
+      }
+    }
   }
 
   // 1. Détection de la série

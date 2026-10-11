@@ -196,12 +196,17 @@ export async function POST(req: NextRequest) {
     // ─────────────────────────────────────────────────────────────────────────
     const intent = detectIntent(sanitized.cleanText);
 
-    if (intent === "greeting") {
+    // Détection si l'utilisateur vient de donner son nom / prénom
+    const justGaveName =
+      (!incomingProfile.prenom && Boolean(updatedProfile.prenom) && !updatedProfile.serie && !updatedProfile.niveau) ||
+      (incomingProfile.prenom && !incomingProfile.serie && !updatedProfile.serie && !updatedProfile.niveau && intent !== "emotion" && intent !== "dont_know");
+
+    if (justGaveName) {
+      const displayName = updatedProfile.prenom && updatedProfile.prenom !== "l'ami" ? ` ${updatedProfile.prenom}` : "";
       // eslint-disable-next-line no-console
-      console.log("[RAG Pipeline] Routage : Salutation détectée -> Accroche détective sans recherche RAG.");
+      console.log(`[RAG Pipeline] Prénom identifié : "${updatedProfile.prenom}" -> Demande de la série.`);
       const payload: TechnicalOutput = {
-        reply:
-          "Bonjour ! Je mène l'enquête pour t'aider à trouver ta voie. Pour ouvrir le dossier, quelle est ta série de Bac ou ta situation actuelle ?",
+        reply: `Ravi de faire ta connaissance${displayName} ! Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?`,
         suggestions: [
           "Bac S1 ou S2",
           "Bac L1 ou L2",
@@ -209,7 +214,7 @@ export async function POST(req: NextRequest) {
           "Autre série ou réorientation",
         ],
         dossier: updatedProfile,
-        indices: [],
+        indices: updatedProfile.prenom && updatedProfile.prenom !== "l'ami" ? [{ texte: `Prénom : ${updatedProfile.prenom}`, statut: "certain" }] : [],
         hypotheses: [],
         prochaine_question_vise: "Connaître la série de Bac ou le niveau",
         pistes: [],
@@ -219,12 +224,54 @@ export async function POST(req: NextRequest) {
       return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
     }
 
+    if (intent === "greeting") {
+      // eslint-disable-next-line no-console
+      console.log("[RAG Pipeline] Routage : Salutation détectée -> Accueil et demande du prénom.");
+      if (!updatedProfile.prenom) {
+        const payload: TechnicalOutput = {
+          reply:
+            "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
+          suggestions: [
+            "Je préfère ne pas le dire",
+          ],
+          dossier: updatedProfile,
+          indices: [],
+          hypotheses: [],
+          prochaine_question_vise: "Faire connaissance en demandant le prénom",
+          pistes: [],
+          etablissements: [],
+          etape: 1,
+        };
+        return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
+      } else {
+        const displayName = updatedProfile.prenom !== "l'ami" ? ` ${updatedProfile.prenom}` : "";
+        const payload: TechnicalOutput = {
+          reply:
+            `Ravi de te revoir${displayName} ! Pour qu'on avance ensemble, quelle est ta série de Bac ou ta situation actuelle ?`,
+          suggestions: [
+            "Bac S1 ou S2",
+            "Bac L1 ou L2",
+            "Bac G ou STEG",
+            "Autre série ou réorientation",
+          ],
+          dossier: updatedProfile,
+          indices: [],
+          hypotheses: [],
+          prochaine_question_vise: "Connaître la série de Bac ou le niveau",
+          pistes: [],
+          etablissements: [],
+          etape: 1,
+        };
+        return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
+      }
+    }
+
     if (intent === "gratitude") {
       // eslint-disable-next-line no-console
-      console.log("[RAG Pipeline] Routage : Remerciement détecté -> Reprise de l'enquête.");
+      console.log("[RAG Pipeline] Routage : Remerciement détecté.");
       const payload: TechnicalOutput = {
         reply:
-          "Je t'en prie ! Chaque élément compte dans notre enquête. Y a-t-il un autre point que tu aimerais explorer ?",
+          "Je t'en prie ! Y a-t-il un autre point que tu aimerais approfondir ou explorer ensemble ?",
         suggestions: [
           "Voir les démarches Campusen",
           "Les bourses disponibles",
@@ -457,11 +504,30 @@ function generateLocalOrientationPayload(
     realIndices.push(`tu as en tête ${profile.projet}`);
   }
 
-  // ÉTAPE 1 : Si pas de série ni de niveau
-  if (!hasSeries) {
+  // ÉTAPE 0 : Si pas de prénom, demander d'abord le prénom/nom
+  if (!profile.prenom) {
     return {
       reply:
-        "Bonjour ! Je mène l'enquête pour t'aider à trouver ta voie. Pour ouvrir le dossier, quelle est ta série de Bac ou ta situation actuelle ?",
+        "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
+      suggestions: [
+        "Je préfère ne pas le dire",
+      ],
+      dossier: profile,
+      indices: [],
+      hypotheses: [],
+      prochaine_question_vise: "Connaître le prénom de l'élève pour faire connaissance",
+      pistes: [],
+      etablissements: [],
+      etape: 1,
+    };
+  }
+
+  // ÉTAPE 1 : Si prénom connu mais pas de série ni de niveau
+  if (!hasSeries) {
+    const displayName = profile.prenom && profile.prenom !== "l'ami" ? ` ${profile.prenom}` : "";
+    return {
+      reply:
+        `Ravi de faire ta connaissance${displayName} ! Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?`,
       suggestions: [
         "Bac S1 ou S2",
         "Bac L1 ou L2",
@@ -469,7 +535,7 @@ function generateLocalOrientationPayload(
         "Autre série ou réorientation",
       ],
       dossier: profile,
-      indices: [],
+      indices: profile.prenom && profile.prenom !== "l'ami" ? [{ texte: `Prénom : ${profile.prenom}`, statut: "certain" }] : [],
       hypotheses: [],
       prochaine_question_vise: "Connaître la série de Bac ou le niveau",
       pistes: [],
@@ -480,8 +546,9 @@ function generateLocalOrientationPayload(
 
   // ÉTAPE 2 : Si la série est connue mais MOINS de deux indices certains (Section 3 : règle d'or)
   if (realIndices.length < 2) {
+    const displayName = profile.prenom && profile.prenom !== "l'ami" ? ` ${profile.prenom}` : "";
     return {
-      reply: `Intéressant. J'ai un premier indice avec ta série ${profile.serie || ""}, mais il m'en faut encore un ou deux pour cerner ce qui te correspond vraiment. Quelles matières te donnent envie d'ouvrir ton cahier, et lesquelles tu fuis ?`,
+      reply: `Intéressant${displayName}. Ta série ${profile.serie || ""} est un bon point de départ, mais il me faut encore un ou deux éléments pour cerner ce qui te correspond vraiment. Quelles matières te donnent envie d'ouvrir ton cahier, et lesquelles tu fuis ?`,
       suggestions: [
         "J'aime le calcul et la logique",
         "Je préfère les SVT et la santé",
@@ -501,10 +568,11 @@ function generateLocalOrientationPayload(
   // ÉTAPE 3 : RÈGLES DE LA SECTION 3 REMPLIES -> LE VERDICT ET LES PISTES
   const isScientifique = profile.serie?.startsWith("S") || profile.matieres_aimees.includes("Mathématiques");
   const citedIndices = realIndices.join(", ");
+  const namePrefix = profile.prenom && profile.prenom !== "l'ami" ? `${profile.prenom}, avec` : "Avec";
 
   if (isScientifique) {
     return {
-      reply: `Mes indices : ${citedIndices}. Je penche pour l'informatique ou les mathématiques appliquées. Dis-moi si je me trompe.
+      reply: `${namePrefix} tes indices (${citedIndices}), je penche pour l'informatique ou les mathématiques appliquées. Dis-moi si je me trompe.
 
 **Génie logiciel, ESP Dakar**
 - Durée : 5 ans (concours)
@@ -556,7 +624,7 @@ Laquelle t'attire, ou tu veux que j'affine ?`,
 
   // Littéraire ou Gestion
   return {
-    reply: `Mes indices : ${citedIndices}. Je penche pour les carrières juridiques ou le management. Dis-moi si je me trompe.
+    reply: `${namePrefix} tes indices (${citedIndices}), je penche pour les carrières juridiques ou le management. Dis-moi si je me trompe.
 
 **Droit et sciences politiques, FSJP UCAD**
 - Durée : 3 à 5 ans (Campusen)
