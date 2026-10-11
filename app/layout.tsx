@@ -1,18 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Source_Serif_4, Inter } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 
-const sourceSerif = Source_Serif_4({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-serif-var",
-  weight: ["400", "600", "700"],
+  variable: "--font-fraunces",
+  weight: ["300", "400", "600", "700", "900"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans-var",
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -50,9 +50,12 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`h-full ${sourceSerif.variable} ${inter.variable}`}
+      className={`h-full ${fraunces.variable} ${inter.variable}`}
     >
-      <body className="h-full antialiased bg-[#FBFAF7] text-[#1A1A1A]" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+      <body
+        className="h-full antialiased bg-[#FAFAFA] text-gray-900"
+        style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
+      >
         {children}
       </body>
     </html>
