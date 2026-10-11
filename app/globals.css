@@ -27,24 +27,30 @@
   /* Largeur de lecture confortable */
   --max-reading-ch: 65ch;
 
-  /* Couleurs : Fond blanc, gris très foncé, 1 seul accent vert profond */
+  /* Couleurs de la charte du logo SenOrientation */
   --color-bg: #FFFFFF;
-  --color-sidebar: #F7F7F8;
-  --color-border: #E5E7EB;
-  --color-border-subtle: #F0F0F2;
+  --color-sidebar: #F8FAFC;
+  --color-border: #E2E8F0;
+  --color-border-subtle: #F1F5F9;
 
-  --color-text: #1F2937;           /* Gris très foncé lisible (WCAG AAA) */
-  --color-text-muted: #6B7280;     /* Gris doux pour métadonnées */
-  --color-text-light: #9CA3AF;
+  --color-text: #1E293B;           /* Ardoise très foncé lisible */
+  --color-text-muted: #64748B;     /* Métadonnées */
+  --color-text-light: #94A3B8;
 
-  --color-accent: #0F7B4F;         /* Vert profond unique */
-  --color-accent-hover: #0D6943;
+  /* Couleur signature du logo : Bleu profond */
+  --color-accent: #0B4282;
+  --color-accent-hover: #083264;
   --color-accent-contrast: #FFFFFF;
 
-  /* Bulles de message classiques */
-  --color-bot-bubble: #F3F4F6;
-  --color-bot-text: #1F2937;
-  --color-user-bubble: #0F7B4F;
+  /* Couleurs secondaires des flèches d'orientation du logo */
+  --color-logo-blue: #0B67D3;
+  --color-logo-green: #16A34A;
+  --color-logo-gold: #F59E0B;
+
+  /* Bulles de message */
+  --color-bot-bubble: #F1F5F9;
+  --color-bot-text: #1E293B;
+  --color-user-bubble: #0B4282;
   --color-user-text: #FFFFFF;
 }
 
