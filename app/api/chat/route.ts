@@ -9,6 +9,7 @@ import {
   searchKnowledge,
   formatKnowledgeForPrompt,
   KnowledgeMatch,
+  findMatchingFormations,
 } from "@/lib/rag";
 import { SYSTEM_PROMPT_TEMPLATE, getAIModel } from "@/lib/ai";
 import { createClient } from "@/lib/supabase/server";
@@ -17,6 +18,7 @@ import {
   INITIAL_PROFILE,
   heuristicUpdateProfile,
   mergeProfileUpdate,
+  getNextOrientationQuestion,
 } from "@/lib/profile";
 
 export const maxDuration = 30; // 30 secondes max
@@ -433,7 +435,7 @@ export async function POST(req: NextRequest) {
           role: m.role,
           content: m.content,
         })),
-        maxTokens: 250,
+        maxTokens: 800,
         temperature: 0.3,
       });
 
@@ -476,193 +478,90 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * Générateur local de l'Enquêteur respectant les règles d'or de la Section 3
- * (Ne conclut PAS sans série/niveau ET au moins 2 indices certains).
+ * Générateur local adaptatif respectant scrupuleusement la méthode SenOrientation
+ * (Une question principale par message, ou Bilan Final structuré avec données officielles).
  */
 function generateLocalOrientationPayload(
   query: string,
   knowledge: KnowledgeMatch[],
   profile: ConversationProfile
 ): TechnicalOutput {
-  const hasSeries = Boolean(profile.serie || profile.niveau);
+  // 1. Consulter le moteur de décision adaptatif (Section 6)
+  const decision = getNextOrientationQuestion(profile);
 
-  // Décompte strict des indices réels déclarés par l'élève
-  const realIndices: string[] = [];
-  if (profile.matieres_aimees.length > 0) {
-    realIndices.push(`tu m'as dit aimer ${profile.matieres_aimees.join(" et ")}`);
-  }
-  if (profile.points_forts.length > 0) {
-    realIndices.push(`tu as mentionné ${profile.points_forts.join(" et ")}`);
-  }
-  if (profile.activites.length > 0) {
-    realIndices.push(`tu passes du temps sur ${profile.activites.join(" et ")}`);
-  }
-  if (profile.environnement.length > 0) {
-    realIndices.push(`tu te vois plutôt ${profile.environnement.join(" ou ")}`);
-  }
-  if (profile.projet) {
-    realIndices.push(`tu as en tête ${profile.projet}`);
-  }
-
-  // ÉTAPE 0 : Si pas de prénom, demander d'abord le prénom/nom
-  if (!profile.prenom) {
+  if (decision.type === "question") {
     return {
-      reply:
-        "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
-      suggestions: [
-        "Je préfère ne pas le dire",
-      ],
+      reply: decision.question,
+      suggestions: decision.suggestions,
       dossier: profile,
-      indices: [],
-      hypotheses: [],
-      prochaine_question_vise: "Connaître le prénom de l'élève pour faire connaissance",
+      indices: profile.serie ? [{ texte: `Série ${profile.serie}`, statut: "certain" }] : [],
+      hypotheses: (profile.interets_principaux || []).map((dom) => ({ domaine: dom, confiance: "moyenne" as const })),
+      prochaine_question_vise: decision.vise,
       pistes: [],
       etablissements: [],
-      etape: 1,
+      etape: decision.etape,
     };
   }
 
-  // ÉTAPE 1 : Si prénom connu mais pas de série ni de niveau
-  if (!hasSeries) {
-    const displayName = profile.prenom && profile.prenom !== "l'ami" ? ` ${profile.prenom}` : "";
-    return {
-      reply:
-        `Ravi de faire ta connaissance${displayName} ! Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?`,
-      suggestions: [
-        "Bac S1 ou S2",
-        "Bac L1 ou L2",
-        "Bac G ou STEG",
-        "Autre série ou réorientation",
-      ],
-      dossier: profile,
-      indices: profile.prenom && profile.prenom !== "l'ami" ? [{ texte: `Prénom : ${profile.prenom}`, statut: "certain" }] : [],
-      hypotheses: [],
-      prochaine_question_vise: "Connaître la série de Bac ou le niveau",
-      pistes: [],
-      etablissements: [],
-      etape: 1,
-    };
-  }
+  // 2. Si prêt pour le Bilan Final (Étape 5) : récupérer les vraies formations matchées
+  const matched = findMatchingFormations(profile);
+  const displayName = profile.prenom && profile.prenom !== "l'ami" ? `${profile.prenom}` : "Élève";
 
-  // ÉTAPE 2 : Si la série est connue mais MOINS de deux indices certains (Section 3 : règle d'or)
-  if (realIndices.length < 2) {
-    const displayName = profile.prenom && profile.prenom !== "l'ami" ? ` ${profile.prenom}` : "";
-    return {
-      reply: `Intéressant${displayName}. Ta série ${profile.serie || ""} est un bon point de départ, mais il me faut encore un ou deux éléments pour cerner ce qui te correspond vraiment. Quelles matières te donnent envie d'ouvrir ton cahier, et lesquelles tu fuis ?`,
-      suggestions: [
-        "J'aime le calcul et la logique",
-        "Je préfère les SVT et la santé",
-        "J'aime écrire et argumenter",
-        "Je ne sais pas",
-      ],
-      dossier: profile,
-      indices: [{ texte: `Série ${profile.serie || "déclarée"}`, statut: "certain" }],
-      hypotheses: [],
-      prochaine_question_vise: "Découvrir les matières aimées ou fuies",
-      pistes: [],
-      etablissements: [],
-      etape: 2,
-    };
-  }
+  const domainesRec = profile.interets_principaux.length > 0
+    ? profile.interets_principaux.slice(0, 3)
+    : ["Sciences & Technologies", "Gestion & Économie"];
 
-  // ÉTAPE 3 : RÈGLES DE LA SECTION 3 REMPLIES -> LE VERDICT ET LES PISTES
-  const isScientifique = profile.serie?.startsWith("S") || profile.matieres_aimees.includes("Mathématiques");
-  const citedIndices = realIndices.join(", ");
-  const namePrefix = profile.prenom && profile.prenom !== "l'ami" ? `${profile.prenom}, avec` : "Avec";
+  const formationsListMarkdown = matched.map((m) => {
+    return `- **${m.nom}, ${m.etablissements.slice(0, 2).join(" / ")}**
+  - Diplôme & Durée : ${m.diplome} (${m.duree})
+  - Conditions d'accès : ${m.conditions}
+  - Pourquoi pour toi : ${m.pourquoi}
+  - Source : ${m.source}`;
+  }).join("\n\n");
 
-  if (isScientifique) {
-    return {
-      reply: `${namePrefix} tes indices (${citedIndices}), je penche pour l'informatique ou les mathématiques appliquées. Dis-moi si je me trompe.
+  const reply = `**A. Résumé de ton profil**
+- Élève : ${displayName}
+- Série / Niveau : ${profile.serie ? `Bac ${profile.serie}` : (profile.niveau || "Enseignement secondaire")}
+- Domaines d'intérêt : ${domainesRec.join(", ")}
+- Points forts déclarés : ${profile.points_forts.join(", ") || profile.matieres_competentes.join(", ") || "Aptitudes scientifiques et analytiques"}
+- Format souhaité : ${profile.preferences_etudes || "Études supérieures au Sénégal"}
 
-**Génie logiciel, ESP Dakar**
-- Durée : 5 ans (concours)
-- Débouchés : développeur, ingénieur IA
-- Indice retenu : ${realIndices[0] || "tu as choisi une filière scientifique"}
+**B. Domaines recommandés**
+${domainesRec.map((d) => `- **${d}** : en adéquation avec tes centres d'intérêt et tes compétences déclarées.`).join("\n")}
 
-**Informatique et mathématiques, UGB Saint-Louis**
-- Durée : 3 à 5 ans (Campusen)
-- Débouchés : data analyst, administrateur systèmes
-- Indice retenu : ${realIndices[1] || realIndices[0] || "ton intérêt pour les sciences"}
+**C. Formations adaptées (données officielles du Sénégal)**
+${formationsListMarkdown}
 
-Laquelle t'attire, ou tu veux que j'affine ?`,
-      suggestions: [
-        "Génie logiciel à l'ESP",
-        "Mathématiques à l'UGB",
-        "Je veux que tu affines",
-        "Je ne sais pas",
-      ],
-      dossier: profile,
-      indices: [
-        { texte: `Série ${profile.serie}`, statut: "certain" },
-        { texte: profile.matieres_aimees.join(", ") || "Goût scientifique", statut: "certain" },
-      ],
-      hypotheses: [
-        { domaine: "Informatique & Data", confiance: "forte" },
-        { domaine: "Mathématiques appliquées", confiance: "moyenne" },
-      ],
-      prochaine_question_vise: "Départager entre développement logiciel (ESP) et modélisation/data (UGB)",
-      pistes: [
-        {
-          nom: "Génie logiciel",
-          etablissements: ["esp"],
-          duree: "5 ans",
-          debouches: "développeur, ingénieur IA",
-          indice_retenu: realIndices[0] || "profil scientifique",
-        },
-        {
-          nom: "Informatique et mathématiques",
-          etablissements: ["ugb"],
-          duree: "3 à 5 ans",
-          debouches: "data analyst, administrateur systèmes",
-          indice_retenu: realIndices[1] || realIndices[0] || "intérêt pour le calcul",
-        },
-      ],
-      etablissements: ["esp", "ugb"],
-      etape: 3,
-    };
-  }
+**D. Comparaison & Alternatives**
+- Les cursus universitaires à l'UCAD, l'UGB ou l'UIDT mènent aux diplômes longs (Licence, Master, Ingénieur).
+- Si tu préfères une insertion rapide sur le marché de l'emploi, les cycles courts (DUT à l'ESP, BTS ou Licence professionnelle) offrent d'excellentes opportunités.
 
-  // Littéraire ou Gestion
+**E. Démarches et plan d'action officiel**
+- Orientation Campusen : inscription obligatoire sur campusen.sec.gouv.sn dès les résultats du Bac (droits d'inscription fixés à 25 000 FCFA/an).
+- Bourses nationales DGES : dépôt de demande (demi-bourse de 20 000 FCFA/mois ou bourse entière de 40 000 FCFA/mois).
+- Écoles d'excellence sur concours (ESP, EPT, CESTI, EMS) : dépôts de dossiers entre mai et juillet.
+
+**F. Question de suivi**
+Parmi ces parcours, lequel aimerais-tu approfondir en premier ?`;
+
   return {
-    reply: `${namePrefix} tes indices (${citedIndices}), je penche pour les carrières juridiques ou le management. Dis-moi si je me trompe.
-
-**Droit et sciences politiques, FSJP UCAD**
-- Durée : 3 à 5 ans (Campusen)
-- Débouchés : juriste d'entreprise, avocat, magistrat
-- Indice retenu : ${realIndices[0] || "ton profil de filière"}
-
-**Gestion et finance, FASEG UCAD ou CESAG**
-- Durée : 3 ans (Licence)
-- Débouchés : gestionnaire, auditeur, analyste financier
-- Indice retenu : ${realIndices[1] || realIndices[0] || "tes priorités déclarées"}
-
-Laquelle t'attire, ou tu veux que j'affine ?`,
-    suggestions: [
-      "Droit à l'UCAD",
-      "Gestion au CESAG",
-      "Je veux que tu affines",
-      "Je ne sais pas",
-    ],
+    reply,
+    suggestions: decision.suggestions,
     dossier: profile,
     indices: [
-      { texte: `Série ${profile.serie}`, statut: "certain" },
-      { texte: profile.matieres_aimees.join(", ") || "Intérêts déclarés", statut: "certain" },
+      { texte: `Série ${profile.serie || "validée"}`, statut: "certain" },
+      { texte: profile.interets_principaux.join(", ") || "Intérêts identifiés", statut: "certain" },
     ],
-    hypotheses: [
-      { domaine: "Droit & Justice", confiance: "forte" },
-      { domaine: "Gestion & Finance", confiance: "moyenne" },
-    ],
-    prochaine_question_vise: "Départager entre carrières juridiques et gestion d'entreprise",
-    pistes: [
-      {
-        nom: "Droit et sciences politiques",
-        etablissements: ["ucad"],
-        duree: "3 à 5 ans",
-        debouches: "juriste d'entreprise, avocat",
-        indice_retenu: realIndices[0] || "intérêt déclaré",
-      },
-    ],
-    etablissements: ["ucad", "cesag"],
-    etape: 3,
+    hypotheses: domainesRec.map((dom) => ({ domaine: dom, confiance: "forte" as const })),
+    prochaine_question_vise: "Présenter le bilan final et orienter vers les démarches officielles",
+    pistes: matched.map((m) => ({
+      nom: m.nom,
+      etablissements: m.etablissements,
+      duree: m.duree,
+      debouches: m.debouches.join(", "),
+      indice_retenu: m.pourquoi,
+    })),
+    etablissements: matched.flatMap((m) => m.etablissements),
+    etape: 5,
   };
 }

@@ -6,6 +6,7 @@
 import etablissementsData from "@/data/etablissements.json";
 import filieresData from "@/data/filieres.json";
 import concoursData from "@/data/concours.json";
+import type { ConversationProfile } from "./profile";
 
 export interface KnowledgeMatch {
   id?: string;
@@ -324,6 +325,33 @@ if (Array.isArray(filieresData)) {
   }
 }
 
+// Ingestion des concours d'excellence officiels (EPT, ESP, CESTI, EMS, ENSAE, etc.)
+if (Array.isArray(concoursData)) {
+  for (const c of concoursData) {
+    const matieresStr = Array.isArray(c.matieres_concours)
+      ? c.matieres_concours.join(", ")
+      : typeof c.matieres_concours === "string"
+        ? c.matieres_concours
+        : "";
+    const content = `CONCOURS OFFICIEL : ${c.nom_concours} (${c.organisme_organisateur})
+- Domaine : ${c.domaine || "Enseignement Supérieur"}
+- Niveau requis : ${c.niveau_requis || "Terminale / Baccalauréat"}
+- Conditions d'accès : ${c.conditions_admission || ""}
+- Période des dépôts : ${c.date_ouverture_cloture || "Entre mai et juillet"}
+- Date des épreuves : ${c.date_epreuves || "Selon calendrier annuel"}
+- Frais de dossier : ${c.frais_inscription || "Variables"}
+- Matières au concours : ${matieresStr}
+- Débouchés : ${c.debouches || ""}`;
+
+    KNOWLEDGE_CORPUS.push({
+      id: `concours_${c.id}`,
+      source: "concours_officiels_senegal",
+      content,
+      tokens: tokenize(content),
+    });
+  }
+}
+
 // Calcul de l'Inverse Document Frequency (IDF) pour tout le corpus
 const VOCABULARY_IDF = new Map<string, number>();
 const TOTAL_DOCS = KNOWLEDGE_CORPUS.length;
@@ -435,3 +463,179 @@ export function formatKnowledgeForPrompt(matches: KnowledgeMatch[]): string {
 
   return formatted.trim();
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 7. MOTEUR DE MATCHING STRUCTURE DES FORMATIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface MatchedFormation {
+  id: string;
+  nom: string;
+  domaine: string;
+  etablissements: string[];
+  etablissement: string;
+  localisation: string;
+  diplome: string;
+  duree: string;
+  conditions: string;
+  pourquoi: string;
+  score_correspondance: number;
+  debouches: string[];
+  source: string;
+  isAlternative?: boolean;
+}
+
+export function findMatchingFormations(profile: Partial<ConversationProfile>): MatchedFormation[] {
+  if (!Array.isArray(filieresData) || filieresData.length === 0) {
+    return [];
+  }
+
+  const userSerie = (profile.serie || "").toUpperCase().trim();
+  const interests = [
+    ...(profile.matieres_aimees || []),
+    ...(profile.points_forts || []),
+    ...(profile.activites || []),
+    profile.projet || "",
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  const scored: Array<{ f: typeof filieresData[0]; score: number; reason: string }> = [];
+
+  for (const f of filieresData) {
+    let score = 0;
+    const reasons: string[] = [];
+
+    // 1. Compatibilité série de bac
+    const bacList = (f.bacRecommended || []).map((b: string) => b.toUpperCase());
+    const isBacCompatible = userSerie ? bacList.some((b: string) => userSerie.includes(b) || b.includes(userSerie)) : true;
+
+    if (userSerie) {
+      if (isBacCompatible) {
+        score += 40;
+        reasons.push(`compatible avec ta série ${userSerie}`);
+      } else {
+        score -= 20; // pénalité sans élimination absolue
+      }
+    }
+
+    // 2. Correspondance des centres d'intérêt et matières
+    const fDomain = (f.domain || "").toLowerCase();
+    const fTitle = (f.title || "").toLowerCase();
+    const fDesc = (f.description || "").toLowerCase();
+
+    // Détection thématique
+    if (interests.includes("math") || interests.includes("calcul") || interests.includes("logique")) {
+      if (fDomain.includes("sciences") || fTitle.includes("math") || fTitle.includes("informatique") || fTitle.includes("génie")) {
+        score += 25;
+        reasons.push("valorise ton goût pour le calcul et la logique");
+      }
+    }
+    if (interests.includes("info") || interests.includes("code") || interests.includes("jeu") || interests.includes("fifa") || interests.includes("écran")) {
+      if (fTitle.includes("informatique") || fDomain.includes("technologie") || fTitle.includes("logiciel") || fTitle.includes("télécom")) {
+        score += 30;
+        reasons.push("répond à ton intérêt pour les technologies et le numérique");
+      }
+    }
+    if (interests.includes("santé") || interests.includes("médecin") || interests.includes("soign") || interests.includes("biologie") || interests.includes("svt")) {
+      if (fDomain.includes("santé") || fTitle.includes("médecine") || fTitle.includes("pharmacie") || fTitle.includes("biologie")) {
+        score += 30;
+        reasons.push("aligné avec ta vocation pour les sciences de la santé");
+      }
+    }
+    if (interests.includes("droit") || interests.includes("justice") || interests.includes("rédig") || interests.includes("argument") || interests.includes("écri")) {
+      if (fDomain.includes("droit") || fTitle.includes("juridique") || fTitle.includes("politique") || fTitle.includes("journalisme")) {
+        score += 25;
+        reasons.push("mobilise tes aptitudes d'argumentation et de rédaction");
+      }
+    }
+    if (interests.includes("gestion") || interests.includes("compta") || interests.includes("finance") || interests.includes("banque") || interests.includes("commerce")) {
+      if (fDomain.includes("commerce") || fDomain.includes("gestion") || fTitle.includes("gestion") || fTitle.includes("finance")) {
+        score += 25;
+        reasons.push("correspond à ton intérêt pour la gestion et l'économie");
+      }
+    }
+    if (interests.includes("bricol") || interests.includes("répar") || interests.includes("mains") || interests.includes("machine")) {
+      if (fDomain.includes("ingénierie") || fDomain.includes("btp") || fTitle.includes("mécanique") || fTitle.includes("électrique")) {
+        score += 25;
+        reasons.push("correspond à ton profil pratique et technique");
+      }
+    }
+    if (interests.includes("agri") || interests.includes("nature") || interests.includes("animaux") || interests.includes("eau")) {
+      if (fDomain.includes("agri") || fDomain.includes("environnement") || fTitle.includes("agro")) {
+        score += 25;
+        reasons.push("en phase avec ton intérêt pour l'environnement et l'agronomie");
+      }
+    }
+
+    // 3. Préférence géographique si précisée
+    if (profile.ville) {
+      const userCity = profile.ville.toLowerCase();
+      const unis = (f.universities || []).join(" ").toLowerCase();
+      if (unis.includes(userCity)) {
+        score += 10;
+        reasons.push(`disponible dans ta ville de préférence (${profile.ville})`);
+      }
+    }
+
+    // 4. Pénalité pour matières fuies
+    if (profile.matieres_fuies && profile.matieres_fuies.length > 0) {
+      for (const mf of profile.matieres_fuies) {
+        if (mf.toLowerCase().includes("math") && (fTitle.includes("math") || fTitle.includes("statistique"))) {
+          score -= 30;
+        }
+      }
+    }
+
+    // 5. Préférence de durée d'études (formations courtes DUT/BTS/Licence pro 2 à 3 ans)
+    if (
+      profile.preferences_etudes?.toLowerCase().includes("court") ||
+      profile.duree_souhaitee?.includes("2") ||
+      profile.duree_souhaitee?.includes("3") ||
+      (profile.projet && /court|dut|bts|licence pro/i.test(profile.projet))
+    ) {
+      if (
+        (f.level && (f.level.toLowerCase().includes("dut") || f.level.toLowerCase().includes("bts") || f.level.toLowerCase().includes("licence"))) ||
+        (f.duration && (f.duration.includes("2") || f.duration.includes("3"))) ||
+        fTitle.includes("dut") ||
+        fTitle.includes("bts")
+      ) {
+        score += 35;
+        reasons.push("cycle court universitaire et professionnalisant (Bac+2 / Bac+3)");
+      } else if (f.level && (f.level.includes("Ingénieur") || f.duration?.includes("5"))) {
+        score -= 25; // Dé-priorise les filières longues de 5 ans
+      }
+    }
+
+    if (score > 15) {
+      scored.push({
+        f,
+        score,
+        reason: reasons.length > 0 ? reasons.slice(0, 2).join(", ") : "En adéquation avec tes centres d'intérêt",
+      });
+    }
+  }
+
+  scored.sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, 4).map(({ f, score, reason }, idx) => {
+    const unis = Array.isArray(f.universities) ? f.universities : [];
+    return {
+      id: f.id,
+      nom: f.title,
+      domaine: f.domain,
+      etablissements: unis,
+      etablissement: unis[0] || "Universités du Sénégal",
+      localisation: unis.join(", ") || "Sénégal",
+      diplome: f.level || "Licence / Master",
+      duree: f.duration || "3 à 5 ans",
+      conditions: f.admissionConditions || "Campusen / Concours",
+      pourquoi: reason,
+      score_correspondance: Math.min(Math.round(score), 98),
+      debouches: (f.careers || []).slice(0, 5),
+      source: "Référentiel MESRI & Campusen Sénégal",
+      isAlternative: idx >= 2,
+    };
+  });
+}
+

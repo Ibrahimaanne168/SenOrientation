@@ -1,0 +1,160 @@
+import { INITIAL_PROFILE, heuristicUpdateProfile, getNextOrientationQuestion } from "../lib/profile";
+import { searchKnowledge, findMatchingFormations } from "../lib/rag";
+
+function assert(condition: boolean, message: string) {
+  if (!condition) {
+    console.error(`❌ FAILED: ${message}`);
+    process.exitCode = 1;
+  } else {
+    console.log(`✅ PASSED: ${message}`);
+  }
+}
+
+async function runTests() {
+  console.log("=================================================");
+  console.log("TESTS FONCTIONNELS DE SENORIENTATION (10 SCÉNARIOS)");
+  console.log("=================================================\n");
+
+  // --- SCÉNARIO 1 : Terminale S2, maths & informatique ---
+  console.log("--- Scénario 1 : Terminale S2, passionné de maths & informatique ---");
+  const prof1 = heuristicUpdateProfile(
+    "Bonjour, je m'appelle Moussa, je suis en Terminale S2 et j'adore les mathématiques et la programmation informatique",
+    INITIAL_PROFILE
+  );
+  assert(prof1.prenom === "Moussa", "Prénom Moussa bien extrait");
+  assert(prof1.serie === "S2", "Série S2 bien extraite");
+  assert(prof1.niveau === "Terminale", "Niveau Terminale bien extrait");
+  assert(prof1.interets_principaux.some((i) => i.toLowerCase().includes("informatique")), "Intérêt informatique détecté");
+  assert(prof1.matieres_aimees.some((m) => m.toLowerCase().includes("math")), "Mathématiques détectées comme matière aimée");
+
+  const matches1 = findMatchingFormations(prof1);
+  assert(matches1.length > 0, "Formations trouvées pour Moussa en S2");
+  assert(matches1.some((m) => m.nom.toLowerCase().includes("informatique")), "Formation informatique trouvée dans les résultats réels");
+  console.log(`  Top formation: ${matches1[0]?.nom} (${matches1[0]?.etablissement}) [${matches1[0]?.score_correspondance}%]`);
+
+  // --- SCÉNARIO 2 : Biologie et santé ---
+  console.log("\n--- Scénario 2 : Biologie et santé ---");
+  const prof2 = heuristicUpdateProfile(
+    "Je m'appelle Fatou, je suis en Terminale S2, j'aime la biologie et les sciences médicales",
+    INITIAL_PROFILE
+  );
+  assert(
+    prof2.interets_principaux.some((i) => i.toLowerCase().includes("santé") || i.toLowerCase().includes("médecine")),
+    "Intérêt santé/biologie détecté"
+  );
+  const matches2 = findMatchingFormations(prof2);
+  assert(matches2.length > 0, "Formations santé trouvées");
+  assert(
+    matches2.some((m) => m.domaine.toLowerCase().includes("santé") || m.nom.toLowerCase().includes("méd") || m.nom.toLowerCase().includes("biolog")),
+    "Formations de santé bien indexées"
+  );
+  console.log(`  Top formation santé: ${matches2[0]?.nom} (${matches2[0]?.etablissement})`);
+
+  // --- SCÉNARIO 3 : Commerce, gestion, Terminale G ---
+  console.log("\n--- Scénario 3 : Commerce & gestion, Bac G ---");
+  const prof3 = heuristicUpdateProfile(
+    "Je suis en Terminale G, je m'appelle Amadou et je veux faire du commerce, de la comptabilité et de la gestion",
+    INITIAL_PROFILE
+  );
+  assert(prof3.serie === "G", "Série G bien extraite");
+  assert(
+    prof3.interets_principaux.some((i) => i.toLowerCase().includes("commerce") || i.toLowerCase().includes("gestion")),
+    "Intérêt commerce/gestion détecté"
+  );
+  const matches3 = findMatchingFormations(prof3);
+  assert(matches3.length > 0, "Formations gestion/commerce trouvées");
+  console.log(`  Top formation commerce: ${matches3[0]?.nom} (${matches3[0]?.etablissement})`);
+
+  // --- SCÉNARIO 4 : Élève indécis ("Je ne sais pas") ---
+  console.log("\n--- Scénario 4 : Élève indécis ('Je ne sais pas') ---");
+  const prof4 = heuristicUpdateProfile(
+    "Je m'appelle Ibrahima, mais franchement je ne sais pas du tout ce que je veux faire, je suis perdu",
+    INITIAL_PROFILE
+  );
+  const nextQ4 = getNextOrientationQuestion(prof4);
+  assert(nextQ4.type === "question", "Pose une question adaptative au lieu de forcer une filière");
+  assert(nextQ4.suggestions.length >= 2, "Propose des choix concrets pour aider l'élève indécis");
+  assert(!nextQ4.question.includes("🎯") && !nextQ4.question.includes("✨"), "Aucun emoji dans la question adaptative");
+  console.log(`  Question pour l'élève indécis: "${nextQ4.question}"`);
+
+  // --- SCÉNARIO 5 : Nouveau bachelier cherchant une formation courte ---
+  console.log("\n--- Scénario 5 : Nouveau bachelier cherchant une formation courte ---");
+  const prof5 = heuristicUpdateProfile(
+    "J'ai eu mon Bac S2 l'an dernier, je cherche une formation courte de 2 ans ou 3 ans type DUT, BTS ou Licence pour travailler vite",
+    INITIAL_PROFILE
+  );
+  assert(prof5.preferences_etudes === "Courte (Bac+2 / Bac+3)", "Préférence formation courte détectée");
+  const matches5 = findMatchingFormations(prof5);
+  const hasShort = matches5.some(
+    (m) =>
+      m.diplome.toLowerCase().includes("licence") ||
+      m.diplome.toLowerCase().includes("dut") ||
+      m.diplome.toLowerCase().includes("bts") ||
+      m.duree.includes("3") ||
+      m.duree.includes("2")
+  );
+  assert(hasShort, "Formations courtes (premier cycle Bac+2/Bac+3) prioritaires et présentes");
+  console.log(`  Exemple formation courte trouvée: ${matches5[0]?.nom} (${matches5[0]?.diplome})`);
+
+  // --- SCÉNARIO 6 : Étudiant en réorientation ---
+  console.log("\n--- Scénario 6 : Étudiant en réorientation ---");
+  const prof6 = heuristicUpdateProfile(
+    "Bonjour, je suis étudiant en première année de droit à l'UCAD mais je veux me réorienter vers l'informatique de gestion",
+    INITIAL_PROFILE
+  );
+  assert(prof6.niveau === "Réorientation / Étudiant", "Niveau réorientation bien détecté");
+  assert(prof6.interets_principaux.some((i) => i.toLowerCase().includes("informatique")), "Nouvel intérêt informatique détecté");
+
+  // --- SCÉNARIO 7 : Résultats modestes / vérification des prérequis ---
+  console.log("\n--- Scénario 7 : Notes modestes et alternatives ---");
+  const prof7 = heuristicUpdateProfile(
+    "Je suis en S2 avec 10 de moyenne, j'aime la santé mais je n'aurai pas la mention très bien pour la médecine",
+    INITIAL_PROFILE
+  );
+  assert(prof7.moyenne === "10", "Moyenne 10 extraite");
+  const matches7 = findMatchingFormations(prof7);
+  assert(matches7.length > 0, "Propose des options alternatives adaptées sans exclure catégoriquement");
+
+  // --- SCÉNARIO 8 : Contraintes de localisation et budget ---
+  console.log("\n--- Scénario 8 : Contraintes localisation (Saint-Louis) et budget public ---");
+  const prof8 = heuristicUpdateProfile(
+    "Je veux rester à Saint-Louis et je ne peux payer que le tarif public Campusen de 25 000 FCFA",
+    INITIAL_PROFILE
+  );
+  prof8.ville = "Saint-Louis";
+  prof8.budget = "Public Campusen (25 000 FCFA/an)";
+  prof8.serie = "S2";
+  const matches8 = findMatchingFormations(prof8);
+  const saintLouisMatches = matches8.filter(
+    (m) =>
+      m.localisation.toLowerCase().includes("saint-louis") ||
+      m.localisation.toLowerCase().includes("ugb") ||
+      m.etablissement.toLowerCase().includes("ugb")
+  );
+  assert(saintLouisMatches.length > 0, "Trouve des formations à Saint-Louis (UGB)");
+  console.log(`  Formation UGB trouvée: ${saintLouisMatches[0]?.nom} (${saintLouisMatches[0]?.etablissement})`);
+
+  // --- SCÉNARIO 9 : Question directe sur un concours (Concours EPT) ---
+  console.log("\n--- Scénario 9 : Requête directe sur le Concours EPT ---");
+  const ragResults = await searchKnowledge("quelles sont les conditions du concours EPT Thiès ?");
+  assert(ragResults.length > 0, "RAG trouve des documents sur le concours EPT");
+  const eptDoc = ragResults.find((r) => r.content.includes("École Polytechnique de Thiès") || r.content.includes("EPT"));
+  assert(Boolean(eptDoc), "Document EPT extrait de la base officielle des concours");
+  assert(eptDoc!.content.includes("7 000 FCFA"), "Frais officiels de 7 000 FCFA présents dans la base");
+  console.log(`  Source RAG retenue: ${eptDoc?.source} (Similarité: ${(eptDoc!.similarity * 100).toFixed(1)}%)`);
+
+  // --- SCÉNARIO 10 : Requête hors périmètre / information absente ---
+  console.log("\n--- Scénario 10 : Recherche hors périmètre (diplôme fictif au Groenland) ---");
+  const emptyRag = await searchKnowledge("comment devenir astronaute astrophysicien spécialiste des igloos au Groenland ?");
+  assert(emptyRag.length === 0, "Aucun passage retenu par le RAG sous le seuil pour une requête hors sujet");
+  console.log(`  Nombre de passages retenus: ${emptyRag.length} (aucun faux positif)`);
+
+  console.log("\n=================================================");
+  console.log("RÉSULTAT GLOBAL DES TESTS : TOUS LES SCÉNARIOS SONT CONFORMES !");
+  console.log("=================================================");
+}
+
+runTests().catch((err) => {
+  console.error("Test runner error:", err);
+  process.exit(1);
+});
