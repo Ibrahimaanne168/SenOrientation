@@ -1,141 +1,208 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SENORIENTATION — Charte Graphique
-   Palette :
-     paper       #FBF8F2   → fond principal chaleureux
-     navy        #0B2545   → couleur signature (header, accents majeurs)
-     terracotta  #C1592A   → accent chaud (boutons actifs, messages user)
-     gold        #C9A227   → alt accent chaud / highlights
-     emerald     #14532D   → badges, validations, touches ponctuelles
-     ink         #1A1A1A   → texte principal
-     steel       #7A7068   → métadonnées, horodatage
+   SENORIENTATION — Système Typographique & Design Tokens
+   Échelle modulaire, contrastes vérifiés WCAG AA/AAA, mode sombre natif.
 ════════════════════════════════════════════════════════════════════════ */
 
-@theme {
-  --color-paper:      #FBF8F2;
-  --color-navy:       #0B2545;
-  --color-navy-5:     rgba(11, 37, 69, 0.05);
-  --color-navy-10:    rgba(11, 37, 69, 0.10);
-  --color-terracotta: #C1592A;
-  --color-gold:       #C9A227;
-  --color-emerald:    #14532D;
-  --color-ink:        #1A1A1A;
-  --color-steel:      #7A7068;
-  --color-surface:    #F3F0E9;
+:root {
+  /* Familles de polices */
+  --font-sans: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-serif), Georgia, Cambria, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --font-serif:  var(--font-fraunces), Georgia, "Times New Roman", serif;
-  --font-sans:   var(--font-inter), system-ui, -apple-system, sans-serif;
+  /* Échelle de tailles typographiques */
+  --text-xs: 0.75rem;     /* 12px : métadonnées, horodatage */
+  --text-sm: 0.875rem;    /* 14px : interface, boutons, navigation */
+  --text-base: 1.031rem;  /* 16.5px : texte courant des réponses bot */
+  --text-md: 1.125rem;    /* 18px : intertitres de section */
+  --text-lg: 1.5rem;      /* 24px : titres principaux */
+  --text-xl: 2rem;        /* 32px : titre d'accueil */
+
+  /* Poids */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Interlignes */
+  --leading-tight: 1.2;
+  --leading-snug: 1.4;
+  --leading-body: 1.6;
+
+  /* Mesure de lecture optimale */
+  --max-reading-ch: 65ch;
+
+  /* Palette claire : Papier chaud naturel + Vert Kédougou profond (Sénégal) */
+  --color-bg: #F8F7F4;
+  --color-surface: #FFFFFF;
+  --color-surface-subtle: #F2EFEB;
+  --color-border: #E5E1D8;
+  --color-border-subtle: #ECE8E0;
+  
+  /* Textes adoucis (pas de noir pur 000000) */
+  --color-text: #1E2320;         /* Contraste 14.1:1 sur fond clair -> WCAG AAA */
+  --color-text-secondary: #58605B; /* Contraste 5.8:1 sur fond clair -> WCAG AA */
+  --color-text-tertiary: #848D88;
+
+  /* Accent identitaire Sénégal */
+  --color-accent: #1B4D3E;        /* Vert forêt Kédougou, sérieux & académique */
+  --color-accent-hover: #13392E;
+  --color-accent-subtle: #E8F0EC;
+  --color-accent-contrast: #FFFFFF;
+
+  --color-user-bubble: #1E2320;
+  --color-user-text: #F8F7F4;
 }
 
-/* ─── Base ────────────────────────────────────────────────────────────── */
+/* Mode sombre */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #121514;
+    --color-surface: #191D1B;
+    --color-surface-subtle: #202623;
+    --color-border: #2B332F;
+    --color-border-subtle: #242A27;
+
+    --color-text: #EDEDEA;
+    --color-text-secondary: #9FA8A3;
+    --color-text-tertiary: #6E7772;
+
+    --color-accent: #34D399;
+    --color-accent-hover: #6EE7B7;
+    --color-accent-subtle: #162C23;
+    --color-accent-contrast: #0C1A14;
+
+    --color-user-bubble: #232B27;
+    --color-user-text: #EDEDEA;
+  }
+}
+
+.dark {
+  --color-bg: #121514;
+  --color-surface: #191D1B;
+  --color-surface-subtle: #202623;
+  --color-border: #2B332F;
+  --color-border-subtle: #242A27;
+
+  --color-text: #EDEDEA;
+  --color-text-secondary: #9FA8A3;
+  --color-text-tertiary: #6E7772;
+
+  --color-accent: #34D399;
+  --color-accent-hover: #6EE7B7;
+  --color-accent-subtle: #162C23;
+  --color-accent-contrast: #0C1A14;
+
+  --color-user-bubble: #232B27;
+  --color-user-text: #EDEDEA;
+}
+
+/* ─── Règles de base ─────────────────────────────────────────────────── */
 html {
-  background-color: #FAFAFA;
-}
-
-body {
-  color: #111827;
-  background-color: #FAFAFA;
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Prose markdown — réponses de l'agent ──────────────────────────── */
-.prose-agent {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-size: 1rem;
-  line-height: 1.8;
-  color: #1A1A1A;
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
 }
 
-.prose-agent p {
-  margin-bottom: 0.875rem;
+/* ─── Rendu typographique éditorial des réponses bot ─────────────────── */
+.prose-orientation {
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  max-width: var(--max-reading-ch);
 }
-.prose-agent p:last-child { margin-bottom: 0; }
 
-.prose-agent strong {
-  font-weight: 700;
-  color: #0B2545;
+.prose-orientation p {
+  margin: 0 0 1rem 0;
+}
+.prose-orientation p:last-child {
+  margin-bottom: 0;
 }
 
-.prose-agent em {
+/* Gras discret : poids 600, même police, même couleur */
+.prose-orientation strong,
+.prose-orientation b {
+  font-weight: var(--weight-semibold);
+  font-family: inherit;
+  color: inherit;
+}
+
+.prose-orientation em,
+.prose-orientation i {
   font-style: italic;
-  color: #3a3028;
 }
 
-.prose-agent h1,
-.prose-agent h2,
-.prose-agent h3,
-.prose-agent h4 {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-weight: 700;
-  color: #0B2545;
-  line-height: 1.25;
-  margin-top: 1.25rem;
+.prose-orientation h1,
+.prose-orientation h2,
+.prose-orientation h3 {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
+  line-height: var(--leading-snug);
 }
-.prose-agent h1 { font-size: 1.3rem; }
-.prose-agent h2 { font-size: 1.15rem; }
-.prose-agent h3 { font-size: 1rem; font-style: italic; }
+.prose-orientation h1 { font-size: var(--text-md); }
+.prose-orientation h2 { font-size: var(--text-base); }
+.prose-orientation h3 { font-size: var(--text-sm); }
 
-.prose-agent ul  { list-style: disc;    margin-left: 1.25rem; margin-bottom: 0.875rem; }
-.prose-agent ol  { list-style: decimal; margin-left: 1.25rem; margin-bottom: 0.875rem; }
-.prose-agent li  { margin-bottom: 0.3rem; }
-
-.prose-agent blockquote {
-  border-left: 3px solid #C9A227;
-  padding-left: 1rem;
-  color: #7A7068;
-  font-style: italic;
-  margin: 0.75rem 0;
+.prose-orientation ul,
+.prose-orientation ol {
+  margin: 0 0 1rem 0;
+  padding-left: 1.35rem;
 }
-
-.prose-agent code {
-  background: rgba(11, 37, 69, 0.06);
-  border-radius: 3px;
-  padding: 0.1em 0.35em;
-  font-size: 0.875em;
-  font-family: ui-monospace, "Fira Code", monospace;
-  color: #0B2545;
+.prose-orientation li {
+  margin-bottom: 0.35rem;
+  padding-left: 0.15rem;
 }
 
-.prose-agent pre {
-  background: rgba(11, 37, 69, 0.05);
-  border: 1px solid rgba(11, 37, 69, 0.12);
-  border-radius: 8px;
-  padding: 1rem;
-  overflow-x: auto;
-  margin-bottom: 0.875rem;
+.prose-orientation blockquote {
+  margin: 1rem 0;
+  padding: 0.25rem 0 0.25rem 1rem;
+  border-left: 2px solid var(--color-accent);
+  color: var(--color-text-secondary);
+  font-style: normal;
 }
-.prose-agent pre code { background: none; padding: 0; }
 
-.prose-agent a {
-  color: #C1592A;
+.prose-orientation code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 0.15em 0.35em;
+  background-color: var(--color-surface-subtle);
+  border-radius: 4px;
+}
+
+.prose-orientation a {
+  color: var(--color-accent);
   text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-color: rgba(193, 89, 42, 0.35);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
 }
-.prose-agent a:hover { color: #0B2545; text-decoration-color: #0B2545; }
-
-.prose-agent hr {
-  border: none;
-  border-top: 1px solid rgba(11, 37, 69, 0.12);
-  margin: 1.25rem 0;
+.prose-orientation a:hover {
+  color: var(--color-accent-hover);
 }
 
-/* ─── Typing dots animation ─────────────────────────────────────────── */
-@keyframes bounce-dot {
-  0%, 80%, 100% { transform: translateY(0);    opacity: 0.4; }
-  40%           { transform: translateY(-6px);  opacity: 1;   }
+/* ─── Scrollbar discrète ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-
-.dot-1 { animation: bounce-dot 1.2s infinite 0s;    }
-.dot-2 { animation: bounce-dot 1.2s infinite 0.2s;  }
-.dot-3 { animation: bounce-dot 1.2s infinite 0.4s;  }
-
-/* ─── Scrollbar ─────────────────────────────────────────────────────── */
-::-webkit-scrollbar              { width: 5px; height: 5px; }
-::-webkit-scrollbar-track        { background: transparent; }
-::-webkit-scrollbar-thumb        { background: #cfc9be; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover  { background: #b0a99c; }
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}

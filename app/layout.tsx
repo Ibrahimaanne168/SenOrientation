@@ -1,38 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Instrument_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["300", "400", "600", "700", "900"],
-  style: ["normal", "italic"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
+  fallback: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
 });
 
-const inter = Inter({
+const newsreader = Newsreader({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-serif",
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
   display: "swap",
+  fallback: ["Georgia", "Cambria", "Times New Roman", "serif"],
 });
 
 export const metadata: Metadata = {
-  title: "SenOrientation — Agent IA d'Orientation",
+  title: "SenOrientation — Guide d'orientation post-Bac au Sénégal",
   description:
-    "Orientation scolaire et universitaire personnalisée pour les élèves et étudiants sénégalais : universités, filières, admissions Campusen et bourses.",
-  keywords: [
-    "Orientation Sénégal",
-    "Campusen",
-    "UCAD",
-    "UGB",
-    "Bourses Sénégal",
-    "Filières Bac S1 S2 L1 L2 G",
-  ],
-  authors: [{ name: "SenOrientation" }],
+    "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et débouchés.",
   icons: {
     icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
   },
 };
 
@@ -50,12 +42,9 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`h-full ${fraunces.variable} ${inter.variable}`}
+      className={`h-full ${instrumentSans.variable} ${newsreader.variable}`}
     >
-      <body
-        className="h-full antialiased bg-[#FAFAFA] text-gray-900"
-        style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
-      >
+      <body className="h-full antialiased font-sans bg-[var(--color-bg)] text-[var(--color-text)]">
         {children}
       </body>
     </html>
