@@ -260,13 +260,13 @@ export default function ChatPage() {
                 }}
                 className={`w-full flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-lg text-left transition-colors ${
                   isActive
-                    ? "bg-[#F1F3F5] text-[#1F2937] font-semibold"
-                    : "text-[#4B5563] hover:bg-[#F9FAFB] hover:text-[#1F2937]"
+                    ? "bg-[#F1F3F5] text-[#0B3D91] font-semibold"
+                    : "text-[#374151] hover:bg-[#F9FAFB] hover:text-[#111827]"
                 }`}
               >
                 <MessageSquare
                   className={`w-3.5 h-3.5 shrink-0 ${
-                    isActive ? "text-[#0B3D91]" : "text-[#9CA3AF]"
+                    isActive ? "text-[#0B3D91]" : "text-[#6B7280]"
                   }`}
                 />
                 <span className="truncate">{conv.title}</span>
@@ -425,7 +425,7 @@ export default function ChatPage() {
             {/* 4 Suggestions (chips) cliquables au démarrage */}
             {messages.length === 1 && !isLoading && (
               <div className="pl-10 pt-2">
-                <p className="text-[12.5px] font-medium text-[#6B7280] mb-2.5">
+                <p className="text-[12.5px] font-medium text-[#4B5563] mb-2.5">
                   Suggestions :
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -433,7 +433,7 @@ export default function ChatPage() {
                     <button
                       key={idx}
                       onClick={() => handleSuggestionClick(sug)}
-                      className="text-left text-[13px] text-[#374151] bg-[#F9FAFB] hover:bg-[#F3F4F6] hover:text-[#0B3D91] border border-[#E5E7EB] px-3.5 py-1.5 rounded-full transition-colors"
+                      className="text-left text-[13px] font-medium text-[#1F2937] bg-[#F3F4F6] hover:bg-[#E5E7EB] hover:text-[#0B3D91] border border-[#D1D5DB] px-3.5 py-1.5 rounded-full transition-colors cursor-pointer"
                     >
                       {sug}
                     </button>

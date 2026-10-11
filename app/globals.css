@@ -6,8 +6,8 @@
 ════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* 1. Police unique sans-serif appliquée partout */
-  --font-sans: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* 1. Police unique sans-serif issue de layout.tsx */
+  --font-sans: var(--font-plus-jakarta), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
   /* 2. Échelle de tailles strictement cadrée : 13 / 14 / 16 / 20 / 24px */
   --text-xs: 13px;   /* Métadonnées, badges, horodatage */
@@ -29,18 +29,18 @@
   --max-width-content: 760px;
   --max-reading-ch: 65ch;
 
-  /* 5. Palette Mode Clair : Fond blanc pur, gris équilibrés, bleu marine d'accent */
+  /* 5. Palette Fond Blanc : Textes toujours contrastés (#1F2937) */
   --color-bg: #FFFFFF;
   --color-sidebar: #FFFFFF;
   --color-sidebar-active: #F1F3F5;
   --color-border: #E5E7EB;
   --color-border-subtle: #F3F4F6;
 
-  --color-text: #1F2937;           /* Gris très foncé, jamais de noir pur (WCAG AAA) */
-  --color-text-secondary: #6B7280; /* Gris secondaire pour métadonnées */
+  --color-text: #1F2937;           /* Gris très foncé, net et contrasté (WCAG AAA) */
+  --color-text-secondary: #6B7280; /* Gris secondaire lisible */
   --color-text-tertiary: #9CA3AF;
 
-  --color-accent: #0B3D91;         /* Bleu marine noble & haut de gamme */
+  --color-accent: #0B3D91;         /* Bleu marine signature */
   --color-accent-hover: #082E6E;
   --color-accent-contrast: #FFFFFF;
 
@@ -48,58 +48,56 @@
   --color-user-text: #FFFFFF;
 }
 
-/* 6. Mode sombre propre */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #0F172A;
-    --color-sidebar: #0B1120;
-    --color-sidebar-active: #1E293B;
-    --color-border: #1E293B;
-    --color-border-subtle: #1E293B;
+/* Mode sombre uniquement via classe explicite .dark (pour ne pas désynchroniser le fond blanc) */
+.dark {
+  --color-bg: #0F172A;
+  --color-sidebar: #0B1120;
+  --color-sidebar-active: #1E293B;
+  --color-border: #1E293B;
+  --color-border-subtle: #1E293B;
 
-    --color-text: #F8FAFC;
-    --color-text-secondary: #94A3B8;
-    --color-text-tertiary: #64748B;
+  --color-text: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-tertiary: #64748B;
 
-    --color-accent: #3B82F6;
-    --color-accent-hover: #60A5FA;
-    --color-accent-contrast: #FFFFFF;
+  --color-accent: #3B82F6;
+  --color-accent-hover: #60A5FA;
+  --color-accent-contrast: #FFFFFF;
 
-    --color-user-bubble: #2563EB;
-    --color-user-text: #FFFFFF;
-  }
+  --color-user-bubble: #2563EB;
+  --color-user-text: #FFFFFF;
 }
 
 /* ─── Application globale de la typographie ───────────────────────────── */
 html,
-body,
-button,
-input,
-textarea,
-select {
-  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  background-color: var(--color-bg);
-  margin: 0;
-  padding: 0;
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
-/* ─── Rendu Markdown des réponses du bot (16px, interligne 1.6, pas de bulle) ─── */
+/* ─── Rendu Markdown des réponses du bot (16px, interligne 1.6, texte foncé #1F2937) ─── */
 .bot-response-content {
+  font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: var(--leading-body);
   font-weight: var(--weight-regular);
-  color: var(--color-text);
+  color: #1F2937;
   max-width: var(--max-reading-ch);
 }
 
 .bot-response-content p {
   margin: 0 0 0.85rem 0;
+  color: #1F2937;
 }
 .bot-response-content p:last-child {
   margin-bottom: 0;
@@ -109,7 +107,7 @@ body {
 .bot-response-content h3 {
   font-size: var(--text-base);
   font-weight: var(--weight-semibold);
-  color: var(--color-text);
+  color: #111827;
   margin-top: 1.25rem;
   margin-bottom: 0.35rem;
   line-height: var(--leading-normal);
@@ -118,7 +116,7 @@ body {
 .bot-response-content h2 {
   font-size: var(--text-md);
   font-weight: var(--weight-semibold);
-  color: var(--color-text);
+  color: #111827;
   margin-top: 1.4rem;
   margin-bottom: 0.4rem;
   line-height: var(--leading-tight);
@@ -127,7 +125,7 @@ body {
 .bot-response-content h1 {
   font-size: var(--text-lg);
   font-weight: var(--weight-semibold);
-  color: var(--color-text);
+  color: #111827;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
@@ -137,10 +135,12 @@ body {
 .bot-response-content ol {
   margin: 0 0 0.85rem 0;
   padding-left: 1.35rem;
+  color: #1F2937;
 }
 .bot-response-content li {
   margin-bottom: 0.3rem;
   padding-left: 0.15rem;
+  color: #1F2937;
 }
 .bot-response-content ul {
   list-style-type: disc;
@@ -149,11 +149,11 @@ body {
   list-style-type: decimal;
 }
 
-/* Gras en 600 seulement, sans altération de couleur */
+/* Gras en 600 seulement */
 .bot-response-content strong,
 .bot-response-content b {
   font-weight: var(--weight-semibold);
-  color: inherit;
+  color: #111827;
 }
 
 .bot-response-content em,
@@ -163,19 +163,20 @@ body {
 
 /* Liens soulignés dans la couleur d'accent */
 .bot-response-content a {
-  color: var(--color-accent);
+  color: #0B3D91;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .bot-response-content a:hover {
-  color: var(--color-accent-hover);
+  color: #082E6E;
 }
 
 .bot-response-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.875em;
   padding: 0.15em 0.35em;
-  background-color: var(--color-border-subtle);
+  background-color: #F3F4F6;
+  color: #111827;
   border-radius: 4px;
 }
 
@@ -188,6 +189,6 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: #E5E7EB;
   border-radius: 9999px;
 }

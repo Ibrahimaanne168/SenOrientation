@@ -4,10 +4,10 @@ import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-plus-jakarta",
   weight: ["400", "500", "600"],
   display: "swap",
-  fallback: ["system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`h-full ${plusJakartaSans.variable}`}>
-      <body className="h-full bg-[var(--color-bg)] text-[var(--color-text)] antialiased">
+      <body className="h-full bg-white text-[#1F2937] antialiased">
         {children}
       </body>
     </html>
