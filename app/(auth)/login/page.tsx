@@ -1,11 +1,11 @@
-// Page de connexion via Magic Link — palette SenOrientation chic
+// Page de connexion via Magic Link — Refonte Académique & Institutionnelle SenOrientation
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { authEmailSchema } from "@/lib/validation/schemas";
-import { ArrowRight, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -49,73 +49,78 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 bg-[#FBF8F2]">
-      {/* Bandeau tricolore en haut de la page */}
+    <main className="min-h-screen flex items-center justify-center p-4 bg-white relative font-sans text-[#172B46]">
+      {/* Filet institutionnel subtil en haut */}
       <div className="fixed top-0 left-0 right-0 flex h-[3px]" aria-hidden="true">
-        <div className="flex-1 bg-[#0B2545]" />
-        <div className="flex-1 bg-[#C1592A]" />
-        <div className="flex-1 bg-[#14532D]" />
+        <div className="flex-1 bg-[#0B2859]" />
+        <div className="flex-1 bg-[#10469B]" />
+        <div className="flex-1 bg-[#75421F]" />
       </div>
 
-      <div className="w-full max-w-sm bg-white rounded-2xl border border-[#E5DFD4] shadow-sm overflow-hidden">
-        {/* Logo + titre */}
-        <div className="flex flex-col items-center text-center px-8 pt-8 pb-6">
-          <div className="mb-4 w-16 h-16 rounded-2xl bg-[#FBF8F2] border border-[#E5DFD4] flex items-center justify-center p-2">
+      {/* Motif décoratif boussole en arrière-plan */}
+      <div
+        className="pointer-events-none absolute bottom-10 right-10 w-96 h-96 opacity-[0.04] select-none"
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 200 200" fill="none" className="w-full h-full">
+          <circle cx="100" cy="100" r="95" stroke="#0B2859" strokeWidth="1.5" strokeDasharray="4 4" />
+          <circle cx="100" cy="100" r="80" stroke="#75421F" strokeWidth="1.2" />
+          <path d="M100 15 L108 85 L185 100 L108 115 L100 185 L92 115 L15 100 L92 85 Z" stroke="#0B2859" strokeWidth="1.5" fill="none" />
+        </svg>
+      </div>
+
+      <div className="w-full max-w-md bg-white rounded-2xl border border-[#E0E7F0] shadow-[0_4px_24px_rgba(11,40,89,0.06)] overflow-hidden z-10 animate-fadeIn">
+        {/* En-tête avec Logo SenOrientation officiel */}
+        <div className="flex flex-col items-center text-center px-8 pt-9 pb-6">
+          <div className="mb-4 relative w-16 h-16 rounded-2xl bg-[#EDF4FD] border border-[#D3E3F8] flex items-center justify-center p-2.5 shadow-2xs">
             <Image
-              src="/logo.png"
+              src="/SenOrientation.png"
               alt="Logo SenOrientation"
-              width={48}
-              height={48}
+              width={52}
+              height={52}
               priority
               className="object-contain"
             />
           </div>
-          <h1
-            className="text-2xl font-bold text-[#0B2545] leading-tight"
-            style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
-          >
-            SenOrientation
+
+          <h1 className="font-serif text-2xl font-bold tracking-tight">
+            <span className="text-[#0B2859]">Sen</span>
+            <span className="text-[#75421F]">Orientation</span>
           </h1>
-          <p
-            className="text-[10px] uppercase tracking-widest text-[#7A7068] mt-1"
-            style={{ fontFamily: "var(--font-inter), sans-serif" }}
-          >
-            Agent IA d&apos;Orientation
+
+          <p className="text-[12px] text-[#64748B] font-medium mt-1">
+            Ton avenir, notre boussole • Accès Élève
           </p>
-          {/* Filet tricolore sous le titre */}
-          <div className="flex mt-3 gap-1" aria-hidden="true">
-            <div className="h-0.5 w-8 rounded-full bg-[#0B2545]" />
-            <div className="h-0.5 w-5 rounded-full bg-[#C1592A]" />
-            <div className="h-0.5 w-3 rounded-full bg-[#14532D]" />
+
+          <div className="flex mt-3.5 gap-1.5" aria-hidden="true">
+            <div className="h-0.5 w-8 rounded-full bg-[#0B2859]" />
+            <div className="h-0.5 w-5 rounded-full bg-[#10469B]" />
+            <div className="h-0.5 w-3 rounded-full bg-[#75421F]" />
           </div>
         </div>
 
         <div className="px-8 pb-8">
           {submitted ? (
             <div
-              className="p-5 bg-[#14532D]/8 border border-[#14532D]/20 rounded-xl text-center space-y-3"
+              className="p-6 bg-[#EDF4FD] border border-[#BFD7F8] rounded-xl text-center space-y-3.5"
               role="status"
               aria-live="polite"
             >
-              <CheckCircle2 className="w-9 h-9 text-[#14532D] mx-auto" />
-              <h2
-                className="text-base font-bold text-[#0B2545]"
-                style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
-              >
-                Lien envoyé !
+              <CheckCircle2 className="w-10 h-10 text-[#10469B] mx-auto" />
+              <h2 className="font-serif text-lg font-bold text-[#0B2859]">
+                Lien de connexion envoyé !
               </h2>
-              <p
-                className="text-xs text-[#7A7068]"
-                style={{ fontFamily: "var(--font-inter), sans-serif" }}
-              >
-                Un lien de connexion a été envoyé à{" "}
-                <strong className="text-[#0B2545]">{email}</strong>.
+              <p className="text-[13px] text-[#64748B] leading-relaxed">
+                Un lien d&apos;authentification sécurisé a été transmis à{" "}
+                <strong className="text-[#0B2859]">{email}</strong>.
               </p>
               <button
                 type="button"
-                onClick={() => { setSubmitted(false); setEmail(""); }}
-                className="text-xs text-[#C1592A] underline hover:text-[#0B2545] transition-colors"
-                style={{ fontFamily: "var(--font-inter), sans-serif" }}
+                onClick={() => {
+                  setSubmitted(false);
+                  setEmail("");
+                }}
+                className="text-xs text-[#10469B] hover:text-[#0B2859] underline font-medium transition-colors"
               >
                 Utiliser une autre adresse
               </button>
@@ -125,8 +130,7 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="email-input"
-                  className="block text-xs font-bold uppercase tracking-widest text-[#0B2545] mb-2"
-                  style={{ fontFamily: "var(--font-inter), sans-serif" }}
+                  className="block text-xs font-semibold uppercase tracking-wider text-[#0B2859] mb-2"
                 >
                   Adresse email
                 </label>
@@ -135,26 +139,27 @@ export default function LoginPage() {
                   name="email"
                   type="email"
                   value={email}
-                  onChange={(e) => { setEmail(e.target.value); if (error) setError(null); }}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError(null);
+                  }}
                   placeholder="prenom.nom@exemple.sn"
                   required
                   aria-required="true"
                   aria-invalid={error ? "true" : "false"}
                   aria-describedby={error ? "email-error" : undefined}
                   disabled={loading}
-                  className={`w-full px-4 py-2.5 rounded-xl border-[1.5px] text-sm bg-[#FBF8F2] text-[#1A1A1A] placeholder:text-[#B0A99C] focus:outline-none focus:bg-white transition-all ${
+                  className={`w-full px-4 py-2.5 rounded-xl border text-[14px] bg-white text-[#172B46] placeholder:text-[#94A3B8] focus:outline-none transition-all ${
                     error
-                      ? "border-red-400 focus:border-red-500"
-                      : "border-[#D6CEBE] focus:border-[#0B2545]"
+                      ? "border-red-400 focus:border-red-500 ring-2 ring-red-100"
+                      : "border-[#E0E7F0] focus:border-[#10469B] focus:ring-2 focus:ring-[#10469B]/10"
                   }`}
-                  style={{ fontFamily: "var(--font-inter), sans-serif" }}
                 />
                 {error && (
                   <div
                     id="email-error"
-                    className="flex items-center gap-1.5 mt-2 text-xs text-red-600"
+                    className="flex items-center gap-1.5 mt-2 text-xs text-red-600 font-medium"
                     role="alert"
-                    style={{ fontFamily: "var(--font-inter), sans-serif" }}
                   >
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                     <span>{error}</span>
@@ -165,8 +170,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading || !email.trim()}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#C1592A] hover:bg-[#a84924] text-white text-sm font-semibold transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ fontFamily: "var(--font-inter), sans-serif" }}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#10469B] hover:bg-[#0B2859] text-white text-[14px] font-medium transition-all shadow-[0_2px_8px_rgba(16,70,155,0.2)] hover:shadow-[0_4px_12px_rgba(16,70,155,0.3)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -181,26 +185,23 @@ export default function LoginPage() {
                 )}
               </button>
 
-              <div className="text-center">
+              <div className="text-center pt-2">
                 <Link
                   href="/chat"
-                  className="text-xs text-[#7A7068] hover:text-[#C1592A] underline underline-offset-2 transition-colors"
-                  style={{ fontFamily: "var(--font-inter), sans-serif" }}
+                  className="inline-flex items-center gap-1.5 text-xs text-[#64748B] hover:text-[#10469B] underline underline-offset-2 transition-colors font-medium"
                 >
-                  Continuer sans compte (accès invité)
+                  <ArrowLeft className="w-3 h-3" />
+                  <span>Continuer sans compte (accès invité)</span>
                 </Link>
               </div>
             </form>
           )}
         </div>
 
-        {/* Pied de carte */}
-        <div className="px-8 py-4 bg-[#FBF8F2] border-t border-[#E5DFD4] text-center">
-          <p
-            className="text-[10px] text-[#7A7068]"
-            style={{ fontFamily: "var(--font-inter), sans-serif" }}
-          >
-            🔒 Aucun mot de passe stocké. Données protégées.
+        {/* Pied de carte institutionnel */}
+        <div className="px-8 py-3.5 bg-[#EDF4FD]/50 border-t border-[#E0E7F0] text-center">
+          <p className="text-[11px] text-[#64748B]">
+            🔒 Authentification sans mot de passe. Données scolaires protégées.
           </p>
         </div>
       </div>

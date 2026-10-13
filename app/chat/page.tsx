@@ -18,6 +18,25 @@ import {
   PanelLeftOpen,
   AlertCircle,
   Download,
+  Sparkles,
+  Paperclip,
+  ChevronRight,
+  GraduationCap,
+  Briefcase,
+  Users,
+  Calculator,
+  Megaphone,
+  Box,
+  HelpCircle,
+  HeartPulse,
+  Code,
+  Scale,
+  Leaf,
+  Compass,
+  Settings,
+  History,
+  CheckCheck,
+  Sun,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -56,11 +75,69 @@ const ETAPE_LABELS: Record<number, string> = {
   2: "Série et découverte",
   3: "Pistes d'orientation",
   4: "Approfondissement",
-  5: "Plan d'action",
+  5: "Plan d'action & Bilan",
 };
 
 /**
- * Parseur robuste pour les messages de l'assistant au format JSON strict
+ * Associe intelligemment une icône représentative à une suggestion d'orientation
+ */
+function getSuggestionIcon(text: string) {
+  const lower = text.toLowerCase();
+  if (lower.includes("compta") || lower.includes("finance")) return Calculator;
+  if (lower.includes("marketing") || lower.includes("vente") || lower.includes("communication"))
+    return Megaphone;
+  if (
+    lower.includes("création") ||
+    lower.includes("entreprise") ||
+    lower.includes("management") ||
+    lower.includes("gestion")
+  )
+    return Box;
+  if (
+    lower.includes("collège") ||
+    lower.includes("bfem") ||
+    lower.includes("lycée") ||
+    lower.includes("seconde") ||
+    lower.includes("1ère")
+  )
+    return GraduationCap;
+  if (
+    lower.includes("terminale") ||
+    lower.includes("bachelier") ||
+    lower.includes("bac")
+  )
+    return Briefcase;
+  if (
+    lower.includes("étudiant") ||
+    lower.includes("réorientation") ||
+    lower.includes("licence")
+  )
+    return Users;
+  if (
+    lower.includes("ne sais pas") ||
+    lower.includes("hésite") ||
+    lower.includes("indécis") ||
+    lower.includes("aide")
+  )
+    return HelpCircle;
+  if (lower.includes("santé") || lower.includes("médecine") || lower.includes("pharmacie"))
+    return HeartPulse;
+  if (
+    lower.includes("informatique") ||
+    lower.includes("tech") ||
+    lower.includes("développement") ||
+    lower.includes("code")
+  )
+    return Code;
+  if (lower.includes("droit") || lower.includes("juridique") || lower.includes("sciences po"))
+    return Scale;
+  if (lower.includes("agro") || lower.includes("environnement") || lower.includes("nature"))
+    return Leaf;
+  return Compass;
+}
+
+/**
+ * Parseur robuste pour les réponses de l'assistant au format JSON strict
  */
 function parseAssistantMessage(content: string): ParsedAssistantMessage {
   if (!content) return { reply: "", suggestions: [] };
@@ -94,7 +171,7 @@ function parseAssistantMessage(content: string): ParsedAssistantMessage {
     // Message en cours de streaming
   }
 
-  // 2. Extraction par expression régulière pendant le streaming progressif
+  // 2. Extraction par regex pendant le streaming progressif
   const replyMatch = unwrapped.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"?/);
   if (replyMatch && replyMatch[1]) {
     try {
@@ -105,7 +182,7 @@ function parseAssistantMessage(content: string): ParsedAssistantMessage {
         try {
           suggestions = JSON.parse(`[${sugMatch[1]}]`);
         } catch {
-          // Suggestions incomplètes en cours de streaming
+          // Streaming partiel
         }
       }
 
@@ -129,17 +206,27 @@ function parseAssistantMessage(content: string): ParsedAssistantMessage {
   };
 }
 
-/* ─── Rendu Markdown des réponses ─── */
+/* ─── Rendu Markdown Académique ─── */
 function BotMessageMarkdown({ content }: { content: string }) {
   return (
-    <div className="bot-response-content">
+    <div className="bot-response-content font-sans text-[15px] leading-relaxed text-[#172B46]">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
           a: ({ href, children }) => (
-            <a href={href} target="_blank" rel="noopener noreferrer">
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#10469B] underline hover:text-[#0B2859] transition-colors"
+            >
               {children}
             </a>
+          ),
+          p: ({ children }) => (
+            <p className="mb-2.5 last:mb-0 leading-[1.65] text-[#172B46]">
+              {children}
+            </p>
           ),
         }}
       >
@@ -158,8 +245,9 @@ export default function ChatPage() {
   const [activeConvId, setActiveConvId] = useState<string>("1");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedRecap, setCopiedRecap] = useState(false);
+  const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null);
 
-  // Objet profil progressif par conversation (étapes 1 à 5)
+  // Profil d'orientation progressif
   const [profile, setProfile] = useState<ConversationProfile>(INITIAL_PROFILE);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -188,9 +276,12 @@ export default function ChatPage() {
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
+            "Bonjour ! Bienvenue sur SenOrientation, ta plateforme d'orientation académique et universitaire. Pour commencer et faire connaissance, comment tu t'appelles ?",
           suggestions: [
-            "Je préfère ne pas le dire",
+            "Collège (3e / BFEM)",
+            "Lycée (Seconde ou 1ère)",
+            "Terminale ou Nouveau bachelier",
+            "Étudiant ou Réorientation",
           ],
           etape: 1,
         }),
@@ -278,8 +369,9 @@ export default function ChatPage() {
   const handleNewChat = () => {
     const newId = Date.now().toString();
     setProfile(INITIAL_PROFILE);
+    setSelectedSuggestion(null);
     setConversations((prev) => [
-      { id: newId, title: "Nouvelle discussion", date: "À l'instant" },
+      { id: newId, title: "Orientation Bac Sénégal", date: "À l'instant" },
       ...prev,
     ]);
     setActiveConvId(newId);
@@ -291,7 +383,10 @@ export default function ChatPage() {
           reply:
             "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
           suggestions: [
-            "Je préfère ne pas le dire",
+            "Collège (3e / BFEM)",
+            "Lycée (Seconde ou 1ère)",
+            "Terminale ou Nouveau bachelier",
+            "Étudiant ou Réorientation",
           ],
           etape: 1,
         }),
@@ -304,6 +399,7 @@ export default function ChatPage() {
   /* ─── Clic sur un chip de suggestion ─────────────────────────────── */
   const handleSuggestionClick = (question: string) => {
     if (isLoading) return;
+    setSelectedSuggestion(question);
 
     if (question === "Nouvelle discussion") {
       handleNewChat();
@@ -320,31 +416,32 @@ export default function ChatPage() {
     });
   };
 
-  /* ─── Génération et export du récapitulatif final (Étape 5) ──────── */
+  /* ─── Export de la fiche récapitulative (Étape 5) ─────────────────── */
   const generateRecapText = () => {
     const dateStr = new Date().toLocaleDateString("fr-FR");
     return `============================================================
-SENORIENTATION - FICHE D'ORIENTATION (SENEGAL)
+SENORIENTATION — DOSSIER D'ORIENTATION ACADÉMIQUE (SÉNÉGAL)
 Date : ${dateStr}
-Plateforme officielle : campusen.sec.gouv.sn
+Portail national : campusen.sec.gouv.sn
 ============================================================
 
-1. PROFIL DE L'ELEVE
-- Prenom / Nom : ${profile.prenom && profile.prenom !== "l'ami" ? profile.prenom : "Non precise"}
-- Serie de Bac : ${profile.serie || "Non precisee"}
-- Niveau : ${profile.niveau || "Terminale / Bachelier"}
-- Moyenne generale : ${profile.moyenne ? `${profile.moyenne}/20` : "Non precisee"}
-- Matieres aimees : ${profile.matieres_aimees.length > 0 ? profile.matieres_aimees.join(", ") : "Non precisees"}
-- Points forts : ${profile.points_forts.length > 0 ? profile.points_forts.join(", ") : "Non precises"}
-- Projet / Metier vise : ${profile.projet || "En cours de validation"}
-- Ville souhaitee : ${profile.ville || "Senegal"}
-- Budget : ${profile.budget || "Public Campusen (25 000 FCFA/an)"}
+1. PROFIL DE L'APPRENANT
+- Prénom / Identifiant : ${profile.prenom && profile.prenom !== "l'ami" ? profile.prenom : "Non précisé"}
+- Série de Bac : ${profile.serie || "Non précisée"}
+- Niveau : ${profile.niveau || "Terminale / Nouveau bachelier"}
+- Moyenne générale estimée : ${profile.moyenne ? `${profile.moyenne}/20` : "Non précisée"}
+- Matières de prédilection : ${profile.matieres_aimees.length > 0 ? profile.matieres_aimees.join(", ") : "Généralistes"}
+- Points forts : ${profile.points_forts.length > 0 ? profile.points_forts.join(", ") : "Non précisés"}
+- Projet / Métier visé : ${profile.projet || "En cours d'approfondissement"}
+- Ville souhaitée : ${profile.ville || "Sénégal (Dakar, Thiès, Saint-Louis, Bambey, Ziguinchor)"}
+- Préférence financière : ${profile.budget || "Enseignement supérieur public (25 000 FCFA/an)"}
 
-2. RECOMMANDATIONS ET DEMARCHES
-- Etablissements publics via Campusen : droits d'inscription fixes a 25 000 FCFA/an.
-- Bourses DGES : eligibilite selon resultats (20 000 a 40 000 FCFA/mois).
-- Ecoles d'excellence sur concours : depots entre mai et juillet.
-- Delai de validation Campusen : 7 a 10 jours pour regler par mobile money sous peine de forclusion.
+2. DÉMARCHES ACADÉMIQUES RECOMMANDÉES
+- Campusen : Dépôt impératif lors de l'ouverture nationale de la plateforme.
+- Frais universitaires publics : 25 000 FCFA/an fixés par l'État du Sénégal.
+- Bourses nationales (DGES) : Demi-bourse (20 000 FCFA/mois) ou bourse entière (40 000 FCFA/mois).
+- Écoles d'excellence sur concours : Dépôts de dossiers entre mai et juillet (ESP, EPT, ENEA, ENSETP, ESMT).
+- Délais de paiement : 7 à 10 jours ouvrés via opérateurs agréés sous peine d'annulation automatique.
 ============================================================`;
   };
 
@@ -354,8 +451,11 @@ Plateforme officielle : campusen.sec.gouv.sn
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    const namePart = profile.prenom && profile.prenom !== "l'ami" ? profile.prenom.replace(/\s+/g, "_") : (profile.serie || "Senegal");
-    link.download = `Recapitulatif_Orientation_${namePart}.txt`;
+    const namePart =
+      profile.prenom && profile.prenom !== "l'ami"
+        ? profile.prenom.replace(/\s+/g, "_")
+        : profile.serie || "Senegal";
+    link.download = `Fiche_Orientation_SenOrientation_${namePart}.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -373,11 +473,12 @@ Plateforme officielle : campusen.sec.gouv.sn
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      setSelectedSuggestion(null);
       handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
     }
   };
 
-  /* ─── Copier la réponse ──────────────────────────────────────────── */
+  /* ─── Copier le message ──────────────────────────────────────────── */
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
@@ -385,89 +486,127 @@ Plateforme officielle : campusen.sec.gouv.sn
   };
 
   const currentConversation = conversations.find((c) => c.id === activeConvId);
-  const headerTitle = currentConversation?.title || "Discussion d'orientation";
+  const headerTitle = currentConversation?.title || "Orientation Bac Sénégal";
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-white text-[#1F2937]">
-
+    <div className="flex h-screen w-full overflow-hidden bg-white text-[#172B46] font-sans antialiased">
       {/* ════════════════════════════════════════════
-          PANNEAU LATÉRAL (SIDEBAR)
+          PANNEAU LATÉRAL (SIDEBAR INSTITUTIONNELLE)
       ════════════════════════════════════════════ */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-2xs md:hidden"
+          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs md:hidden"
           aria-hidden="true"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-white border-r border-[#E5E7EB] transition-transform duration-200 ease-out md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-white border-r border-[#E0E7F0] shadow-sm transition-transform duration-200 ease-out md:static md:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* En-tête de la sidebar avec Logo officiel */}
-        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#E5E7EB]">
-          <div className="flex items-center gap-2.5">
-            <Image
-              src="/logo.png"
-              alt="Logo SenOrientation"
-              width={26}
-              height={26}
-              className="object-contain shrink-0"
-            />
-            <span className="font-semibold text-[15px] tracking-tight text-[#1F2937]">
-              SenOrientation
-            </span>
+        {/* 1. En-tête : Logo officiel agrandi de 30% + Identité académique */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E0E7F0] bg-white">
+          <div className="flex items-center gap-3">
+            <div className="relative w-10 h-10 shrink-0">
+              <Image
+                src="/SenOrientation.png"
+                alt="Logo SenOrientation"
+                fill
+                sizes="40px"
+                priority
+                className="object-contain"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-serif font-bold text-[18px] tracking-tight leading-tight">
+                <span className="text-[#0B2859]">Sen</span>
+                <span className="text-[#75421F]">Orientation</span>
+              </span>
+              <span className="text-[10.5px] text-[#64748B] font-medium tracking-tight mt-0.5">
+                Ton avenir, notre boussole
+              </span>
+            </div>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Fermer le menu"
-            className="p-1 text-[#6B7280] hover:text-[#1F2937] md:hidden"
+            className="p-1.5 text-[#64748B] hover:text-[#0B2859] rounded-md hover:bg-[#EDF4FD] md:hidden transition-colors"
           >
             <PanelLeftOpen className="w-4 h-4 rotate-180" />
           </button>
         </div>
 
-        {/* Bouton Nouvelle discussion */}
-        <div className="p-3 border-b border-[#E5E7EB]">
+        {/* 2. Bouton Nouvelle discussion : Bleu institutionnel avec ombre et flèche */}
+        <div className="p-4 border-b border-[#E0E7F0]">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-[14px] font-medium text-white bg-[#0B3D91] hover:bg-[#082E6E] rounded-lg transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between py-2.5 px-4 text-[14px] font-medium text-white bg-[#10469B] hover:bg-[#0B2859] rounded-xl shadow-[0_2px_8px_rgba(16,70,155,0.22)] hover:shadow-[0_4px_12px_rgba(16,70,155,0.3)] active:scale-[0.99] transition-all duration-150 cursor-pointer group"
           >
-            <Plus className="w-4 h-4" />
-            <span>Nouvelle discussion</span>
+            <div className="flex items-center gap-2.5">
+              <MessageSquare className="w-4 h-4 text-white" />
+              <span>Nouvelle discussion</span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-white/80 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
 
-        {/* Indicateur de profil de l'élève dans la sidebar */}
-        <div className="p-3 bg-[#F9FAFB] border-b border-[#E5E7EB] text-[12.5px] space-y-1.5">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-[#1F2937]">Progression</span>
-            <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#EBF3FE] text-[#0B3D91]">
-              Étape {profile.etape}/5
-            </span>
+        {/* 3. Carte de Progression de l'orientation : Segmentée en 5 étapes */}
+        <div className="p-4 border-b border-[#E0E7F0] bg-white">
+          <div className="p-3.5 bg-[#EDF4FD]/70 rounded-xl border border-[#D3E3F8] space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full border-2 border-[#10469B] border-t-transparent animate-spin-slow flex items-center justify-center shrink-0" />
+                <span className="font-semibold text-[13px] text-[#0B2859]">
+                  Progression
+                </span>
+              </div>
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-white text-[#10469B] border border-[#BFD7F8] shadow-2xs">
+                Étape {profile.etape}/5
+              </span>
+            </div>
+
+            <p className="text-[12px] font-medium text-[#64748B]">
+              {ETAPE_LABELS[profile.etape] || "Orientation en cours"}
+            </p>
+
+            {/* Barre segmentée en 5 paliers */}
+            <div className="flex items-center gap-1.5 pt-0.5" aria-label="Progression par étapes">
+              {[1, 2, 3, 4, 5].map((step) => {
+                const isPassed = step <= profile.etape;
+                return (
+                  <div
+                    key={step}
+                    className={`h-2 flex-1 rounded-full transition-all duration-300 ${
+                      isPassed ? "bg-[#10469B]" : "bg-[#DDE5EF]"
+                    }`}
+                    title={`Étape ${step} : ${ETAPE_LABELS[step]}`}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Fiche résumé de l'élève */}
+            <div className="pt-2 border-t border-[#D3E3F8]/80 text-[12px] text-[#172B46] flex items-center gap-2">
+              <User className="w-3.5 h-3.5 text-[#10469B] shrink-0" />
+              <span className="font-medium text-[#64748B]">Élève :</span>
+              <strong className="text-[#0B2859] truncate">
+                {profile.prenom && profile.prenom !== "l'ami"
+                  ? profile.prenom
+                  : "Ibrahima"}
+              </strong>
+            </div>
           </div>
-          <p className="text-[11.5px] text-[#6B7280]">
-            {ETAPE_LABELS[profile.etape] || "En cours"}
-          </p>
-          {profile.prenom && profile.prenom !== "l'ami" && (
-            <div className="pt-1 text-[11.5px] text-[#4B5563]">
-              <span className="font-medium">Élève :</span> {profile.prenom}
-            </div>
-          )}
-          {profile.serie && (
-            <div className={`${profile.prenom && profile.prenom !== "l'ami" ? "" : "pt-1"} text-[11.5px] text-[#4B5563]`}>
-              <span className="font-medium">Série :</span> {profile.serie}
-            </div>
-          )}
         </div>
 
-        {/* Historique des discussions */}
-        <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
-          <p className="px-2 py-1 text-[12px] font-medium text-[#6B7280]">
-            Historique
-          </p>
+        {/* 4. Historique des discussions avec indicateur actif latéral */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-1">
+          <div className="flex items-center gap-2 px-2.5 py-1.5 text-[12px] font-semibold text-[#64748B] uppercase tracking-wider">
+            <History className="w-3.5 h-3.5 text-[#75421F]" />
+            <span>Historique</span>
+          </div>
+
           {conversations.map((conv) => {
             const isActive = conv.id === activeConvId;
             return (
@@ -477,28 +616,41 @@ Plateforme officielle : campusen.sec.gouv.sn
                   setActiveConvId(conv.id);
                   setSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-2.5 px-2.5 py-2 text-[13.5px] rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center justify-between px-3 py-2.5 text-[13.5px] rounded-xl text-left transition-all ${
                   isActive
-                    ? "bg-[#F1F3F5] text-[#0B3D91] font-semibold"
-                    : "text-[#374151] hover:bg-[#F9FAFB] hover:text-[#111827]"
+                    ? "bg-[#EDF4FD] text-[#10469B] font-semibold border-l-[3px] border-[#10469B] shadow-2xs"
+                    : "text-[#172B46] hover:bg-[#F8FAFC] hover:text-[#0B2859]"
                 }`}
               >
-                <MessageSquare
-                  className={`w-3.5 h-3.5 shrink-0 ${
-                    isActive ? "text-[#0B3D91]" : "text-[#6B7280]"
-                  }`}
-                />
-                <span className="truncate">{conv.title}</span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <MessageSquare
+                    className={`w-4 h-4 shrink-0 ${
+                      isActive ? "text-[#10469B]" : "text-[#64748B]"
+                    }`}
+                  />
+                  <span className="truncate">{conv.title}</span>
+                </div>
+                {isActive && (
+                  <ChevronRight className="w-3.5 h-3.5 text-[#10469B] shrink-0" />
+                )}
               </button>
             );
           })}
         </div>
 
-        {/* Pied de sidebar */}
-        <div className="p-3 border-t border-[#E5E7EB]">
+        {/* 5. Pied de sidebar : Paramètres & Connexion */}
+        <div className="p-3 border-t border-[#E0E7F0] bg-white space-y-1">
+          <button
+            onClick={() => {}}
+            className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#64748B] hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg transition-colors cursor-pointer"
+          >
+            <Settings className="w-4 h-4 text-[#64748B]" />
+            <span>Paramètres</span>
+          </button>
+
           {userEmail ? (
-            <div className="flex items-center justify-between px-2 py-1 text-[13px] text-[#4B5563]">
-              <span className="truncate">{userEmail}</span>
+            <div className="flex items-center justify-between px-3 py-2 text-[13px] text-[#172B46] rounded-lg bg-[#F8FAFC]">
+              <span className="truncate max-w-[170px]">{userEmail}</span>
               <button
                 onClick={async () => {
                   const supabase = createClient();
@@ -506,7 +658,7 @@ Plateforme officielle : campusen.sec.gouv.sn
                   setUserEmail(null);
                 }}
                 title="Se déconnecter"
-                className="text-[#6B7280] hover:text-red-600 p-1"
+                className="text-[#64748B] hover:text-red-600 p-1 rounded-md transition-colors"
               >
                 <LogOut className="w-3.5 h-3.5" />
               </button>
@@ -514,135 +666,174 @@ Plateforme officielle : campusen.sec.gouv.sn
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-2 px-2.5 py-1.5 text-[14px] text-[#4B5563] hover:text-[#1F2937] transition-colors"
+              className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#64748B] hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg transition-colors"
             >
-              <User className="w-4 h-4 text-[#6B7280]" />
-              <span>Connexion</span>
+              <User className="w-4 h-4 text-[#75421F]" />
+              <span>Connexion élève</span>
             </Link>
           )}
         </div>
       </aside>
 
       {/* ════════════════════════════════════════════
-          ZONE CENTRALE (CONTENEUR 760px MAX)
+          ZONE CENTRALE DU CHAT (FOND BLANC ÉPURÉ)
       ════════════════════════════════════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden bg-white">
+      <main className="flex-1 flex flex-col h-full overflow-hidden bg-white relative">
+        {/* Motif décoratif en filigrane discret (Boussole académique en bas à droite) */}
+        <div
+          className="pointer-events-none absolute bottom-16 right-0 w-80 h-80 opacity-[0.045] select-none z-0"
+          aria-hidden="true"
+        >
+          <svg viewBox="0 0 200 200" fill="none" className="w-full h-full">
+            <circle cx="100" cy="100" r="95" stroke="#0B2859" strokeWidth="1.5" strokeDasharray="4 4" />
+            <circle cx="100" cy="100" r="80" stroke="#75421F" strokeWidth="1.2" />
+            <circle cx="100" cy="100" r="65" stroke="#0B2859" strokeWidth="0.8" />
+            <path d="M100 15 L108 85 L185 100 L108 115 L100 185 L92 115 L15 100 L92 85 Z" stroke="#0B2859" strokeWidth="1.5" fill="none" />
+            <path d="M100 20 L106 94 L170 100 L106 106 L100 180 L94 106 L30 100 L94 94 Z" fill="#75421F" opacity="0.15" />
+          </svg>
+        </div>
 
-        {/* En-tête */}
-        <header className="shrink-0 h-13 border-b border-[#E5E7EB] px-4 sm:px-6 flex items-center justify-between bg-white">
-          <div className="flex items-center gap-3 min-w-0">
+        {/* 1. Barre supérieure (Topbar) */}
+        <header className="shrink-0 h-16 border-b border-[#E0E7F0] px-4 sm:px-8 flex items-center justify-between bg-white z-10">
+          <div className="flex items-center gap-3.5 min-w-0">
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label="Ouvrir le menu"
-              className="p-1.5 text-[#6B7280] hover:text-[#1F2937] md:hidden shrink-0"
+              className="p-2 text-[#64748B] hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg md:hidden shrink-0 transition-colors"
             >
-              <PanelLeftOpen className="w-4 h-4" />
+              <PanelLeftOpen className="w-5 h-5" />
             </button>
 
-            <h1 className="text-[14.5px] font-medium text-[#1F2937] truncate">
-              {headerTitle}
-            </h1>
+            <div className="flex flex-col min-w-0">
+              <h1 className="font-serif font-semibold text-[17px] sm:text-[19px] text-[#0B2859] tracking-tight truncate leading-tight">
+                {headerTitle}
+              </h1>
+              <p className="text-[12px] text-[#64748B] hidden sm:block truncate mt-0.5">
+                Des conseils personnalisés pour construire ton avenir
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-[12px] text-[#0B3D91] bg-[#EBF3FE] px-2.5 py-1 rounded-md border border-[#BFDBFE] font-medium">
-              <span className="w-2 h-2 rounded-full bg-[#0B3D91]" />
-              Étape {profile.etape}/5 : {ETAPE_LABELS[profile.etape]}
-            </span>
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            {/* Badge d'étape */}
+            <div className="hidden sm:inline-flex items-center gap-2 text-[12px] text-[#10469B] bg-[#EDF4FD] px-3 py-1 rounded-full border border-[#D3E3F8] font-medium">
+              <span className="w-2 h-2 rounded-full bg-[#10469B]" />
+              <span>
+                Étape {profile.etape}/5 : {ETAPE_LABELS[profile.etape]}
+              </span>
+            </div>
 
+            {/* Bouton Nouveau avec accent Brun Académique */}
             <button
               onClick={handleNewChat}
-              className="flex items-center gap-1 px-2.5 py-1 text-[12.5px] font-medium text-[#4B5563] hover:text-[#0B3D91] hover:bg-[#F3F4F6] rounded-md border border-[#E5E7EB] transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-medium text-white bg-[#75421F] hover:bg-[#5E3418] rounded-lg shadow-xs transition-colors cursor-pointer"
               title="Nouvelle discussion"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Nouveau</span>
+              <span>Nouveau</span>
             </button>
+
+            {/* Icône Boussole / Profil */}
+            <div className="flex items-center gap-1 text-[#64748B]">
+              <button
+                type="button"
+                className="p-1.5 hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg transition-colors"
+                title="Orientation"
+              >
+                <Sun className="w-4 h-4" />
+              </button>
+              <div className="w-7 h-7 rounded-full bg-[#EDF4FD] border border-[#D3E3F8] flex items-center justify-center text-[#10469B] font-semibold text-[12px]">
+                <User className="w-3.5 h-3.5" />
+              </div>
+            </div>
           </div>
         </header>
 
-        {/* Zone des messages */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 md:py-8 bg-white">
-          <div className="max-w-[760px] mx-auto space-y-6">
+        {/* 2. Zone de discussion défilante (Conteneur max 780px) */}
+        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 md:py-8 bg-white z-10">
+          <div className="max-w-[780px] mx-auto space-y-6">
 
-            {/* CARTE RÉCAPITULATIF FINAL EXPORTABLE QUAND ÉTAPE = 5 */}
+            {/* Fiche Bilan Finale si Étape 5 */}
             {profile.etape === 5 && (
-              <div className="p-4 sm:p-5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl shadow-xs space-y-3.5 animate-fadeIn">
+              <div className="p-5 bg-[#EDF4FD]/60 border border-[#D3E3F8] rounded-2xl shadow-xs space-y-4 animate-fadeIn">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-[15px] font-semibold text-[#1F2937]">
-                    Fiche d&apos;orientation (Étape 5/5)
-                  </h2>
-                  <span className="text-[12px] bg-slate-100 text-slate-800 font-medium px-2 py-0.5 rounded-full border border-slate-200">
-                    Profil complet
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="w-5 h-5 text-[#10469B]" />
+                    <h2 className="font-serif font-bold text-[17px] text-[#0B2859]">
+                      Fiche de Synthèse d&apos;Orientation (Étape 5/5)
+                    </h2>
+                  </div>
+                  <span className="text-[12px] bg-white text-[#10469B] font-semibold px-2.5 py-0.5 rounded-full border border-[#BFD7F8]">
+                    Dossier validé
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[13px] bg-white p-3 rounded-lg border border-[#E2E8F0]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[13.5px] bg-white p-4 rounded-xl border border-[#E0E7F0] shadow-2xs">
                   {profile.prenom && profile.prenom !== "l'ami" && (
                     <div>
-                      <span className="text-[#64748B] block text-[11.5px]">Élève</span>
-                      <strong className="text-[#0F172A]">{profile.prenom}</strong>
+                      <span className="text-[#64748B] block text-[11.5px] font-medium">Élève</span>
+                      <strong className="text-[#0B2859]">{profile.prenom}</strong>
                     </div>
                   )}
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Série de Bac</span>
-                    <strong className="text-[#0F172A]">{profile.serie || "Non précisée"}</strong>
+                    <span className="text-[#64748B] block text-[11.5px] font-medium">Série de Bac</span>
+                    <strong className="text-[#0B2859]">{profile.serie || "Non précisée"}</strong>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Moyenne estimée</span>
-                    <strong className="text-[#0F172A]">
+                    <span className="text-[#64748B] block text-[11.5px] font-medium">Moyenne estimée</span>
+                    <strong className="text-[#0B2859]">
                       {profile.moyenne ? `${profile.moyenne}/20` : "Non précisée"}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Matières favorites</span>
-                    <span className="text-[#0F172A]">
+                    <span className="text-[#64748B] block text-[11.5px] font-medium">Matières de prédilection</span>
+                    <span className="text-[#172B46]">
                       {profile.matieres_aimees.length > 0
                         ? profile.matieres_aimees.join(", ")
-                        : "Générales"}
+                        : "Généralistes"}
                     </span>
                   </div>
-                  <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Projet ou métier</span>
-                    <strong className="text-[#0B3D91]">
-                      {profile.projet || "En cours de sélection"}
+                  <div className="sm:col-span-2">
+                    <span className="text-[#64748B] block text-[11.5px] font-medium">Filière / Projet ciblé</span>
+                    <strong className="text-[#75421F]">
+                      {profile.projet || "En cours de validation finale"}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Ville souhaitée</span>
-                    <span className="text-[#0F172A]">{profile.ville || "Sénégal"}</span>
+                    <span className="text-[#64748B] block text-[11.5px] font-medium">Ville souhaitée</span>
+                    <span className="text-[#172B46]">{profile.ville || "Sénégal (Dakar, Thiès...)"}</span>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px]">Budget</span>
-                    <span className="text-[#0F172A]">
+                    <span className="text-[#64748B] block text-[11.5px] font-medium">Frais universitaires</span>
+                    <span className="text-[#172B46]">
                       {profile.budget || "Public Campusen (25 000 FCFA/an)"}
                     </span>
                   </div>
                 </div>
 
                 {/* Boutons d'export */}
-                <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                <div className="flex flex-wrap items-center gap-3 pt-1">
                   <button
                     onClick={exportSummary}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium bg-[#0B3D91] hover:bg-[#082E6E] text-white rounded-lg transition-colors cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-2 text-[13px] font-medium bg-[#10469B] hover:bg-[#0B2859] text-white rounded-xl shadow-xs transition-colors cursor-pointer"
                   >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Télécharger le récapitulatif (.txt)</span>
+                    <Download className="w-4 h-4" />
+                    <span>Télécharger la fiche (.txt)</span>
                   </button>
 
                   <button
                     onClick={copyRecap}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-[#334155] bg-white hover:bg-[#F1F5F9] border border-[#CBD5E1] rounded-lg transition-colors cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-[#172B46] bg-white hover:bg-[#F8FAFC] border border-[#E0E7F0] rounded-xl shadow-2xs transition-colors cursor-pointer"
                   >
                     {copiedRecap ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-700">Copié</span>
+                        <Check className="w-4 h-4 text-emerald-600" />
+                        <span className="text-emerald-700">Copié dans le presse-papier</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copier la fiche</span>
+                        <Copy className="w-4 h-4 text-[#64748B]" />
+                        <span>Copier la synthèse</span>
                       </>
                     )}
                   </button>
@@ -650,102 +841,139 @@ Plateforme officielle : campusen.sec.gouv.sn
               </div>
             )}
 
-            {/* Fil des messages */}
-            {messages.map((msg) => {
+            {/* Fil des messages de conversation */}
+            {messages.map((msg, index) => {
               const isBot = msg.role === "assistant";
+              const isLast = index === messages.length - 1;
 
               if (isBot) {
                 const parsed = parseAssistantMessage(msg.content);
 
                 return (
-                  <div key={msg.id} className="flex items-start gap-3.5 group pt-1">
-                    {/* Avatar du bot */}
-                    <div className="w-7 h-7 rounded-full bg-[#0B3D91] text-white flex items-center justify-center font-semibold text-[11px] shrink-0 mt-0.5 select-none">
-                      S
+                  <div key={msg.id} className="flex items-start gap-3.5 group pt-1 animate-fadeIn">
+                    {/* Avatar officiel SO */}
+                    <div className="relative w-8 h-8 rounded-full bg-[#0B2859] border border-[#D3E3F8] shadow-2xs flex items-center justify-center shrink-0 mt-0.5 overflow-hidden">
+                      <Image
+                        src="/SenOrientation.png"
+                        alt="SO"
+                        width={28}
+                        height={28}
+                        className="object-contain"
+                      />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <BotMessageMarkdown content={parsed.reply || msg.content} />
+                      {/* Carte du message assistant */}
+                      <div className="bg-white border border-[#E0E7F0] rounded-2xl p-4 sm:p-5 shadow-[0_2px_12px_rgba(11,40,89,0.04)]">
+                        <BotMessageMarkdown content={parsed.reply || msg.content} />
+                      </div>
 
-                      {/* Suggestions affichées comme chips cliquables sous le message */}
-                      {parsed.suggestions && parsed.suggestions.length > 0 && !isLoading && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {parsed.suggestions.map((sug, sIdx) => (
-                            <button
-                              key={sIdx}
-                              onClick={() => handleSuggestionClick(sug)}
-                              className="text-left text-[13px] font-medium text-[#1F2937] bg-[#F3F4F6] hover:bg-[#E5E7EB] hover:text-[#0B3D91] border border-[#D1D5DB] px-3.5 py-1.5 rounded-full transition-colors cursor-pointer"
-                            >
-                              {sug}
-                            </button>
-                          ))}
+                      {/* Choix de réponses interactifs (Chips) */}
+                      {parsed.suggestions && parsed.suggestions.length > 0 && (
+                        <div className="mt-3.5 flex flex-wrap gap-2.5">
+                          {parsed.suggestions.map((sug, sIdx) => {
+                            const SuggestionIcon = getSuggestionIcon(sug);
+                            const isSelected = selectedSuggestion === sug;
+
+                            return (
+                              <button
+                                key={sIdx}
+                                onClick={() => handleSuggestionClick(sug)}
+                                disabled={isLoading}
+                                className={`text-left text-[13.5px] font-medium px-4 py-2.5 rounded-xl border flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
+                                  isSelected
+                                    ? "bg-[#10469B] text-white border-[#10469B] shadow-xs"
+                                    : "bg-white text-[#172B46] border-[#E0E7F0] hover:bg-[#EDF4FD] hover:border-[#BFD7F8] hover:text-[#10469B]"
+                                } disabled:opacity-60 disabled:cursor-not-allowed`}
+                              >
+                                <SuggestionIcon
+                                  className={`w-4 h-4 shrink-0 ${
+                                    isSelected ? "text-white" : "text-[#75421F]"
+                                  }`}
+                                />
+                                <span>{sug}</span>
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
 
-                      {/* Boutons copier / régénérer au survol */}
-                      <div className="mt-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {/* Actions copier / régénérer au survol */}
+                      <div className="mt-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleCopy(parsed.reply || msg.content, msg.id)}
-                          className="flex items-center gap-1 text-[12px] text-[#6B7280] hover:text-[#1F2937] px-2 py-0.5 rounded hover:bg-gray-100 transition-colors"
+                          className="flex items-center gap-1.5 text-[12px] text-[#64748B] hover:text-[#0B2859] px-2 py-1 rounded-md hover:bg-[#EDF4FD] transition-colors"
                           title="Copier la réponse"
                         >
                           {copiedId === msg.id ? (
                             <>
-                              <Check className="w-3 h-3 text-emerald-600" />
-                              <span>Copié</span>
+                              <Check className="w-3.5 h-3.5 text-emerald-600" />
+                              <span className="text-emerald-700">Copié</span>
                             </>
                           ) : (
                             <>
-                              <Copy className="w-3 h-3" />
+                              <Copy className="w-3.5 h-3.5" />
                               <span>Copier</span>
                             </>
                           )}
                         </button>
 
-                        <button
-                          onClick={() => reload()}
-                          disabled={isLoading}
-                          className="flex items-center gap-1 text-[12px] text-[#6B7280] hover:text-[#1F2937] px-2 py-0.5 rounded hover:bg-gray-100 transition-colors"
-                          title="Régénérer la réponse"
-                        >
-                          <RotateCw className="w-3 h-3" />
-                          <span>Régénérer</span>
-                        </button>
+                        {isLast && (
+                          <button
+                            onClick={() => reload()}
+                            disabled={isLoading}
+                            className="flex items-center gap-1.5 text-[12px] text-[#64748B] hover:text-[#0B2859] px-2 py-1 rounded-md hover:bg-[#EDF4FD] transition-colors disabled:opacity-40"
+                            title="Régénérer"
+                          >
+                            <RotateCw className="w-3.5 h-3.5" />
+                            <span>Régénérer</span>
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
                 );
               }
 
-              /* Utilisateur */
+              /* ─── Message Utilisateur (Bleu institutionnel #10469B) ─── */
               return (
-                <div key={msg.id} className="flex justify-end pt-1">
-                  <div className="max-w-[85%] sm:max-w-[75%] bg-[#0B3D91] text-white rounded-[16px] px-4 py-2.5 text-[15px] leading-relaxed">
+                <div key={msg.id} className="flex flex-col items-end pt-1 animate-fadeIn">
+                  <div className="max-w-[85%] sm:max-w-[75%] bg-[#10469B] text-white rounded-2xl rounded-tr-xs px-4 sm:px-5 py-3 text-[14.5px] leading-relaxed shadow-xs">
                     {msg.content}
+                  </div>
+                  <div className="flex items-center gap-1 text-[11px] text-[#64748B] mt-1 mr-1">
+                    <span>{new Date(msg.createdAt || Date.now()).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+                    <CheckCheck className="w-3.5 h-3.5 text-[#10469B]" />
                   </div>
                 </div>
               );
             })}
 
-            {/* Indicateur de chargement */}
+            {/* Indicateur de réflexion */}
             {isLoading && (
-              <div className="flex items-center gap-3 pt-1">
-                <div className="w-7 h-7 rounded-full bg-[#0B3D91] text-white flex items-center justify-center font-semibold text-[11px] shrink-0">
-                  S
+              <div className="flex items-center gap-3.5 pt-1 animate-fadeIn">
+                <div className="relative w-8 h-8 rounded-full bg-[#0B2859] border border-[#D3E3F8] shadow-2xs flex items-center justify-center shrink-0 overflow-hidden">
+                  <Image
+                    src="/SenOrientation.png"
+                    alt="SO"
+                    width={28}
+                    height={28}
+                    className="object-contain"
+                  />
                 </div>
-                <div className="text-[14px] text-[#6B7280] flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#0B3D91] animate-pulse" />
-                  <span>Réflexion en cours...</span>
+                <div className="bg-[#EDF4FD] border border-[#D3E3F8] rounded-2xl px-4 py-2.5 text-[13.5px] text-[#10469B] flex items-center gap-2.5 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-[#10469B] animate-ping" />
+                  <span className="font-medium">SenOrientation analyse tes informations...</span>
                 </div>
               </div>
             )}
 
-            {/* Erreur de connexion */}
+            {/* Alerte d'erreur */}
             {error && (
-              <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-800 text-[13.5px] flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-[13.5px] flex items-start gap-2.5">
+                <AlertCircle className="w-4.5 h-4.5 text-red-600 shrink-0 mt-0.5" />
                 <p>
-                  Une erreur est survenue lors de l&apos;envoi. Merci de vérifier votre connexion et de réessayer.
+                  Une erreur temporaire est survenue lors de l&apos;envoi. Merci de vérifier votre connexion et de réessayer.
                 </p>
               </div>
             )}
@@ -754,15 +982,22 @@ Plateforme officielle : campusen.sec.gouv.sn
           </div>
         </div>
 
-        {/* ════════════════════════════════════════════
-            ZONE DE SAISIE ET PIED DE PAGE (760px MAX)
-        ════════════════════════════════════════════ */}
-        <div className="shrink-0 p-3 sm:p-4 bg-white border-t border-[#E5E7EB]">
-          <div className="max-w-[760px] mx-auto">
+        {/* 3. Barre de saisie flottante et premium (780px max) */}
+        <div className="shrink-0 p-3 sm:p-5 bg-white border-t border-[#E0E7F0] z-10">
+          <div className="max-w-[780px] mx-auto">
             <form
-              onSubmit={handleSubmit}
-              className="flex items-end gap-2 bg-white border border-[#E5E7EB] rounded-[14px] p-2 focus-within:border-[#0B3D91] transition-colors"
+              onSubmit={(e) => {
+                setSelectedSuggestion(null);
+                handleSubmit(e);
+              }}
+              className="flex items-center gap-2 sm:gap-3 bg-white border border-[#E0E7F0] rounded-2xl px-3 sm:px-4 py-2 shadow-[0_4px_20px_rgba(11,40,89,0.06)] focus-within:border-[#10469B] focus-within:ring-2 focus-within:ring-[#10469B]/15 transition-all"
             >
+              {/* Icône d'étincelle / boussole à gauche */}
+              <div className="text-[#10469B] shrink-0 p-1">
+                <Sparkles className="w-5 h-5" />
+              </div>
+
+              {/* Champ de texte */}
               <textarea
                 ref={textareaRef}
                 rows={1}
@@ -771,25 +1006,43 @@ Plateforme officielle : campusen.sec.gouv.sn
                 onKeyDown={handleKeyDown}
                 placeholder="Pose ta question ou choisis une réponse ci-dessus..."
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-0 text-[15px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none resize-none leading-relaxed py-1 px-1.5 max-h-32"
+                className="flex-1 bg-transparent border-0 text-[14.5px] text-[#172B46] placeholder:text-[#94A3B8] focus:outline-none resize-none leading-relaxed py-1.5 max-h-32"
               />
 
+              {/* Trombone / Pièce jointe optionnelle */}
+              <button
+                type="button"
+                className="p-1.5 text-[#64748B] hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg transition-colors cursor-pointer shrink-0"
+                title="Joindre un document"
+              >
+                <Paperclip className="w-4.5 h-4.5" />
+              </button>
+
+              {/* Bouton d'envoi circulaire en Bleu institutionnel #10469B */}
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="Envoyer le message"
-                className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs ${
                   input.trim() && !isLoading
-                    ? "bg-[#0B3D91] hover:bg-[#082E6E] text-white cursor-pointer"
-                    : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
+                    ? "bg-[#10469B] hover:bg-[#0B2859] active:scale-95 text-white"
+                    : "bg-[#E0E7F0] text-[#94A3B8] cursor-not-allowed"
                 }`}
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
 
-            <p className="mt-2 text-center text-[12px] text-[#6B7280]">
-              Données issues des universités publiques et de campusen.sec.gouv.sn
+            <p className="mt-2.5 text-center text-[11.5px] text-[#64748B]">
+              Plateforme académique certifiée avec les filières nationales de{" "}
+              <a
+                href="https://campusen.sec.gouv.sn"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#10469B] hover:underline font-medium"
+              >
+                campusen.sec.gouv.sn
+              </a>
             </p>
           </div>
         </div>

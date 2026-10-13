@@ -1,13 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Source_Serif_4, Inter } from "next/font/google";
 import "./globals.css";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
-  variable: "--font-plus-jakarta",
-  weight: ["400", "500", "600"],
+  variable: "--font-serif",
+  weight: ["400", "600", "700"],
   display: "swap",
-  fallback: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -15,7 +21,7 @@ export const metadata: Metadata = {
   description:
     "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles.",
   icons: {
-    icon: "/logo.png",
+    icon: "/SenOrientation.png",
   },
 };
 
@@ -31,8 +37,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`h-full ${plusJakartaSans.variable}`}>
-      <body className="h-full bg-white text-[#1F2937] antialiased">
+    <html
+      lang="fr"
+      className={`h-full ${inter.variable} ${sourceSerif.variable}`}
+    >
+      <body className="h-full bg-white text-[#172B46] font-sans antialiased">
         {children}
       </body>
     </html>

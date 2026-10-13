@@ -1,81 +1,67 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SENORIENTATION — Système Typographique & Design Tokens
-   Échelle : 13 / 14 / 16 / 20 / 24px • Bleu Marine #0B3D91 • Fond Blanc
+   SENORIENTATION — Charte Graphique Académique & Institutionnelle
+   Palette :
+   - Bleu institutionnel : #10469B
+   - Bleu profond       : #0B2859
+   - Brun académique    : #75421F
+   - Brun clair         : #A87548
+   - Bleu très pâle     : #EDF4FD
+   - Gris bleuté        : #E0E7F0
+   - Texte principal    : #172B46
+   - Texte secondaire   : #64748B
+   - Blanc              : #FFFFFF
+
+   Polices :
+   - Source Serif 4 (Titres & identité académique)
+   - Inter          (Interface, boutons, saisie & lecture)
 ════════════════════════════════════════════════════════════════════════ */
 
+@theme {
+  --font-serif: var(--font-serif), "Source Serif 4", Georgia, serif;
+  --font-sans: var(--font-sans), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --color-brand-blue: #10469B;
+  --color-brand-dark: #0B2859;
+  --color-brand-brown: #75421F;
+  --color-brand-brown-light: #A87548;
+  --color-brand-pale: #EDF4FD;
+  --color-brand-border: #E0E7F0;
+  --color-brand-text: #172B46;
+  --color-brand-muted: #64748B;
+}
+
 :root {
-  /* 1. Police unique sans-serif issue de layout.tsx */
-  --font-sans: var(--font-plus-jakarta), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-serif), "Source Serif 4", Georgia, serif;
+  --font-sans: var(--font-sans), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* 2. Échelle de tailles strictement cadrée : 13 / 14 / 16 / 20 / 24px */
-  --text-xs: 13px;   /* Métadonnées, badges, horodatage */
-  --text-sm: 14px;   /* Boutons, navigation, saisie */
-  --text-base: 16px; /* Corps du texte, réponses du bot, h3 */
-  --text-md: 20px;   /* Sous-titres h2 */
-  --text-lg: 24px;   /* Titres h1 */
-
-  /* 3. Poids & Interlignes */
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --weight-semibold: 600;
-
-  --leading-tight: 1.25;
-  --leading-normal: 1.45;
-  --leading-body: 1.6;
-
-  /* 4. Conteneur central unique */
-  --max-width-content: 760px;
-  --max-reading-ch: 65ch;
-
-  /* 5. Palette Fond Blanc : Textes toujours contrastés (#1F2937) */
-  --color-bg: #FFFFFF;
-  --color-sidebar: #FFFFFF;
-  --color-sidebar-active: #F1F3F5;
-  --color-border: #E5E7EB;
-  --color-border-subtle: #F3F4F6;
-
-  --color-text: #1F2937;           /* Gris très foncé, net et contrasté (WCAG AAA) */
-  --color-text-secondary: #6B7280; /* Gris secondaire lisible */
-  --color-text-tertiary: #9CA3AF;
-
-  --color-accent: #0B3D91;         /* Bleu marine signature */
-  --color-accent-hover: #082E6E;
-  --color-accent-contrast: #FFFFFF;
-
-  --color-user-bubble: #0B3D91;
-  --color-user-text: #FFFFFF;
+  --color-primary: #10469B;
+  --color-primary-dark: #0B2859;
+  --color-academic-brown: #75421F;
+  --color-academic-brown-light: #A87548;
+  --color-bg-pale: #EDF4FD;
+  --color-border-subtle: #E0E7F0;
+  --color-text-main: #172B46;
+  --color-text-muted: #64748B;
 }
 
-/* Mode sombre uniquement via classe explicite .dark (pour ne pas désynchroniser le fond blanc) */
-.dark {
-  --color-bg: #0F172A;
-  --color-sidebar: #0B1120;
-  --color-sidebar-active: #1E293B;
-  --color-border: #1E293B;
-  --color-border-subtle: #1E293B;
-
-  --color-text: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-tertiary: #64748B;
-
-  --color-accent: #3B82F6;
-  --color-accent-hover: #60A5FA;
-  --color-accent-contrast: #FFFFFF;
-
-  --color-user-bubble: #2563EB;
-  --color-user-text: #FFFFFF;
-}
-
-/* ─── Application globale de la typographie ───────────────────────────── */
+/* ─── Typographie globale ────────────────────────────────────────────── */
 html,
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: #FFFFFF;
+  color: #172B46;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.font-serif {
+  font-family: var(--font-serif) !important;
+}
+
+.font-sans {
+  font-family: var(--font-sans) !important;
 }
 
 button,
@@ -85,62 +71,58 @@ select {
   font-family: inherit;
 }
 
-/* ─── Rendu Markdown des réponses du bot (16px, interligne 1.6, texte foncé #1F2937) ─── */
+/* ─── Rendu Markdown Académique pour les réponses du chatbot ─────────── */
 .bot-response-content {
   font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: var(--leading-body);
-  font-weight: var(--weight-regular);
-  color: #1F2937;
-  max-width: var(--max-reading-ch);
+  font-size: 15px;
+  line-height: 1.65;
+  color: #172B46;
 }
 
 .bot-response-content p {
   margin: 0 0 0.85rem 0;
-  color: #1F2937;
+  color: #172B46;
 }
 .bot-response-content p:last-child {
   margin-bottom: 0;
 }
 
-/* h3 en 16px/600 avec marge haute */
+.bot-response-content h1,
+.bot-response-content h2,
 .bot-response-content h3 {
-  font-size: var(--text-base);
-  font-weight: var(--weight-semibold);
-  color: #111827;
-  margin-top: 1.25rem;
-  margin-bottom: 0.35rem;
-  line-height: var(--leading-normal);
-}
-
-.bot-response-content h2 {
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
-  color: #111827;
-  margin-top: 1.4rem;
-  margin-bottom: 0.4rem;
-  line-height: var(--leading-tight);
+  font-family: var(--font-serif);
+  color: #0B2859;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .bot-response-content h1 {
-  font-size: var(--text-lg);
-  font-weight: var(--weight-semibold);
-  color: #111827;
-  margin-top: 1.5rem;
+  font-size: 1.35rem;
+  margin-top: 1.25rem;
   margin-bottom: 0.5rem;
 }
 
-/* Listes ul / ol bien indentées */
+.bot-response-content h2 {
+  font-size: 1.2rem;
+  margin-top: 1.15rem;
+  margin-bottom: 0.45rem;
+}
+
+.bot-response-content h3 {
+  font-size: 1.05rem;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+}
+
 .bot-response-content ul,
 .bot-response-content ol {
   margin: 0 0 0.85rem 0;
-  padding-left: 1.35rem;
-  color: #1F2937;
+  padding-left: 1.25rem;
+  color: #172B46;
 }
 .bot-response-content li {
-  margin-bottom: 0.3rem;
-  padding-left: 0.15rem;
-  color: #1F2937;
+  margin-bottom: 0.35rem;
+  color: #172B46;
 }
 .bot-response-content ul {
   list-style-type: disc;
@@ -149,46 +131,60 @@ select {
   list-style-type: decimal;
 }
 
-/* Gras en 600 seulement */
 .bot-response-content strong,
 .bot-response-content b {
-  font-weight: var(--weight-semibold);
-  color: #111827;
+  font-weight: 600;
+  color: #0B2859;
 }
 
-.bot-response-content em,
-.bot-response-content i {
-  font-style: italic;
-}
-
-/* Liens soulignés dans la couleur d'accent */
 .bot-response-content a {
-  color: #0B3D91;
+  color: #10469B;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
+  font-weight: 500;
 }
 .bot-response-content a:hover {
-  color: #082E6E;
+  color: #0B2859;
 }
 
 .bot-response-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.875em;
   padding: 0.15em 0.35em;
-  background-color: #F3F4F6;
-  color: #111827;
+  background-color: #EDF4FD;
+  color: #0B2859;
   border-radius: 4px;
+  border: 1px solid #E0E7F0;
 }
 
-/* Scrollbar sobre */
+/* ─── Scrollbar discrète et raffinée ─────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E5E7EB;
+  background: #E0E7F0;
   border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #CBD5E1;
+}
+
+/* ─── Animation douce pour les cartes et messages ────────────────────── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
