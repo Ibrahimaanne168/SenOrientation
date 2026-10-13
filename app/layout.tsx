@@ -21,7 +21,9 @@ export const metadata: Metadata = {
   description:
     "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles.",
   icons: {
-    icon: "/logo.png",
+    icon: "/icon.png",
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
 };
 
@@ -39,9 +41,28 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`h-full ${inter.variable} ${sourceSerif.variable}`}
+      suppressHydrationWarning
+      className={`h-full dark ${inter.variable} ${sourceSerif.variable}`}
     >
-      <body className="h-full bg-white text-[#172B46] font-sans antialiased">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const saved = localStorage.getItem('theme');
+                if (saved === 'light') {
+                  document.documentElement.classList.remove('dark');
+                } else {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch (e) {
+                document.documentElement.classList.add('dark');
+              }
+            `,
+          }}
+        />
+      </head>
+      <body className="h-full bg-[var(--bg-app)] text-[var(--text-main)] font-sans antialiased transition-colors duration-200">
         {children}
       </body>
     </html>

@@ -1,61 +1,109 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SENORIENTATION — Charte Graphique Académique & Institutionnelle
-   Palette :
-   - Bleu institutionnel : #10469B
-   - Bleu profond       : #0B2859
-   - Brun académique    : #75421F
-   - Brun clair         : #A87548
-   - Bleu très pâle     : #EDF4FD
-   - Gris bleuté        : #E0E7F0
-   - Texte principal    : #172B46
-   - Texte secondaire   : #64748B
-   - Blanc              : #FFFFFF
+   SENORIENTATION — Charte Graphique du Nouveau Logo (Boussole Stellaire Or)
+   Palette Sombre (Identique au Logo) :
+   - Fond Noir Obsidienne Mat : #0C0D12 / #11131A
+   - Surfaces & Cartes        : #171822 / #1B1D28
+   - Or Radiant & Métallique  : #F5C542 / #EAB308 / #D4AF37
+   - Bordures & Halos Or      : rgba(245, 197, 66, 0.25)
+   - Texte principal          : #F8FAFC
+   - Texte secondaire         : #94A3B8
 
-   Polices :
-   - Source Serif 4 (Titres & identité académique)
-   - Inter          (Interface, boutons, saisie & lecture)
+   Palette Claire (Couleurs Inverses) :
+   - Fond Blanc Pur / Ivoire  : #FFFFFF / #F8FAFC
+   - Surfaces & Cartes        : #FFFFFF
+   - Encre Obsidienne         : #0F172A / #1E293B
+   - Or Noble / Ambré         : #D97706 / #B45309 / #EAB308
+   - Bordures & Séparateurs   : #E2E8F0 / #CBD5E1
 ════════════════════════════════════════════════════════════════════════ */
-
-@theme {
-  --font-serif: var(--font-serif), "Source Serif 4", Georgia, serif;
-  --font-sans: var(--font-sans), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
-  --color-brand-blue: #10469B;
-  --color-brand-dark: #0B2859;
-  --color-brand-brown: #75421F;
-  --color-brand-brown-light: #A87548;
-  --color-brand-pale: #EDF4FD;
-  --color-brand-border: #E0E7F0;
-  --color-brand-text: #172B46;
-  --color-brand-muted: #64748B;
-}
 
 :root {
   --font-serif: var(--font-serif), "Source Serif 4", Georgia, serif;
   --font-sans: var(--font-sans), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  --color-primary: #10469B;
-  --color-primary-dark: #0B2859;
-  --color-academic-brown: #75421F;
-  --color-academic-brown-light: #A87548;
-  --color-bg-pale: #EDF4FD;
-  --color-border-subtle: #E0E7F0;
-  --color-text-main: #172B46;
-  --color-text-muted: #64748B;
+  /* MODE CLAIR (Couleurs inverses) */
+  --bg-app: #FFFFFF;
+  --bg-sidebar: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --bg-hover: #F1F5F9;
+  --bg-chip: #FFFFFF;
+  --bg-chip-hover: #FFFBEB;
+  --border-main: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --border-focus: #D97706;
+
+  --text-main: #0F172A;
+  --text-body: #1E293B;
+  --text-muted: #64748B;
+  --text-dim: #94A3B8;
+
+  --gold-primary: #D97706;
+  --gold-glow: #F59E0B;
+  --gold-light: #FEF3C7;
+  --gold-border: #FDE68A;
+
+  --btn-primary-bg: #0F172A;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-hover: #1E293B;
+
+  --user-bubble-bg: #0F172A;
+  --user-bubble-text: #FFFFFF;
+  --user-bubble-meta: #64748B;
+
+  --bot-card-bg: #FFFFFF;
+  --bot-card-border: #E2E8F0;
+  --bot-card-shadow: 0 2px 14px rgba(15, 23, 42, 0.05);
+}
+
+.dark {
+  /* MODE SOMBRE (Couleurs exactes du nouveau logo) */
+  --bg-app: #0C0D12;
+  --bg-sidebar: #11131A;
+  --bg-card: #161822;
+  --bg-input: #141620;
+  --bg-hover: #1D1F2B;
+  --bg-chip: #161822;
+  --bg-chip-hover: rgba(245, 197, 66, 0.12);
+  --border-main: #252836;
+  --border-subtle: #1A1C27;
+  --border-focus: #F5C542;
+
+  --text-main: #F8FAFC;
+  --text-body: #E2E8F0;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+
+  --gold-primary: #F5C542;
+  --gold-glow: #FCD34D;
+  --gold-light: rgba(245, 197, 66, 0.15);
+  --gold-border: rgba(245, 197, 66, 0.35);
+
+  --btn-primary-bg: #F5C542;
+  --btn-primary-text: #0C0D12;
+  --btn-primary-hover: #FBBF24;
+
+  --user-bubble-bg: #1B1E29;
+  --user-bubble-text: #F8FAFC;
+  --user-bubble-meta: #94A3B8;
+
+  --bot-card-bg: #151720;
+  --bot-card-border: #252836;
+  --bot-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 /* ─── Typographie globale ────────────────────────────────────────────── */
 html,
 body {
   font-family: var(--font-sans);
-  background-color: #FFFFFF;
-  color: #0F172A;
+  background-color: var(--bg-app);
+  color: var(--text-main);
   font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .font-serif {
@@ -73,18 +121,18 @@ select {
   font-family: var(--font-sans);
 }
 
-/* ─── Rendu Markdown Académique Appuyé pour les réponses du chatbot ─────────── */
+/* ─── Rendu Markdown pour les réponses du chatbot ─────────── */
 .bot-response-content {
   font-family: var(--font-sans);
   font-size: 15.5px;
   line-height: 1.65;
-  color: #0F172A;
+  color: var(--text-body);
   font-weight: 550;
 }
 
 .bot-response-content p {
   margin: 0 0 0.85rem 0;
-  color: #0F172A;
+  color: var(--text-body);
   font-weight: 550;
 }
 .bot-response-content p:last-child {
@@ -95,7 +143,7 @@ select {
 .bot-response-content h2,
 .bot-response-content h3 {
   font-family: var(--font-serif);
-  color: #0B2859;
+  color: var(--text-main);
   font-weight: 700;
   letter-spacing: -0.015em;
 }
@@ -122,13 +170,13 @@ select {
 .bot-response-content ol {
   margin: 0 0 0.85rem 0;
   padding-left: 1.35rem;
-  color: #0F172A;
-  font-weight: 500;
+  color: var(--text-body);
+  font-weight: 550;
 }
 .bot-response-content li {
   margin-bottom: 0.35rem;
-  color: #0F172A;
-  font-weight: 500;
+  color: var(--text-body);
+  font-weight: 550;
 }
 .bot-response-content ul {
   list-style-type: disc;
@@ -140,27 +188,27 @@ select {
 .bot-response-content strong,
 .bot-response-content b {
   font-weight: 700;
-  color: #0B2859;
+  color: var(--gold-primary);
 }
 
 .bot-response-content a {
-  color: #10469B;
+  color: var(--gold-primary);
   text-decoration: underline;
   text-underline-offset: 3px;
   font-weight: 600;
 }
 .bot-response-content a:hover {
-  color: #0B2859;
+  filter: brightness(1.15);
 }
 
 .bot-response-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.875em;
   padding: 0.15em 0.35em;
-  background-color: #EDF4FD;
-  color: #0B2859;
+  background-color: var(--gold-light);
+  color: var(--gold-primary);
   border-radius: 4px;
-  border: 1px solid #E0E7F0;
+  border: 1px solid var(--border-main);
 }
 
 /* ─── Scrollbar discrète et raffinée ─────────────────────────────────── */
@@ -172,11 +220,11 @@ select {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E0E7F0;
+  background: var(--border-main);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #CBD5E1;
+  background: var(--text-muted);
 }
 
 /* ─── Animation douce pour les cartes et messages ────────────────────── */

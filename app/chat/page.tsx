@@ -37,6 +37,7 @@ import {
   History,
   CheckCheck,
   Sun,
+  Moon,
   Languages,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -52,210 +53,171 @@ interface ConversationItem {
   date: string;
 }
 
-interface ParsedAssistantMessage {
-  reply: string;
-  suggestions: string[];
-  profil_update?: Partial<ConversationProfile>;
-  dossier?: Partial<ConversationProfile>;
-  indices?: Array<{ texte: string; statut: string }>;
-  hypotheses?: Array<{ domaine: string; confiance: string }> | string[];
-  pistes?: Array<{
-    nom: string;
-    etablissements: string[];
-    duree: string;
-    debouches: string;
-    indice_retenu?: string;
-    pourquoi?: string;
-  }>;
-  etablissements?: string[];
-  etape?: number;
-}
-
 const ETAPE_LABELS: Record<number, string> = {
-  1: "Accueil et présentation",
-  2: "Série et découverte",
-  3: "Pistes d'orientation",
-  4: "Approfondissement",
-  5: "Plan d'action & Bilan",
+  1: "Découverte du profil scolaire",
+  2: "Exploration des centres d'intérêt",
+  3: "Affinement des filières cibles",
+  4: "Établissements & critères d'admission",
+  5: "Validation & Bilan d'orientation",
 };
 
 /**
- * Associe intelligemment une icône représentative à une suggestion d'orientation
+ * Associe une icône thématique élégante à un chip de suggestion
  */
 function getSuggestionIcon(text: string) {
   const lower = text.toLowerCase();
-  if (lower.includes("autre domaine") || lower.includes("autre univers")) return Sparkles;
-  if (
-    lower.includes("langue") ||
-    lower.includes("traduction") ||
-    lower.includes("interprétation") ||
-    lower.includes("arabe")
-  )
-    return Languages;
-  if (lower.includes("compta") || lower.includes("finance") || lower.includes("banque") || lower.includes("assurance"))
-    return Calculator;
-  if (lower.includes("marketing") || lower.includes("vente") || lower.includes("communication") || lower.includes("journalisme") || lower.includes("médias"))
-    return Megaphone;
-  if (
-    lower.includes("création") ||
-    lower.includes("entreprise") ||
-    lower.includes("management") ||
-    lower.includes("gestion") ||
-    lower.includes("agroalimentaire") ||
-    lower.includes("mécanique") ||
-    lower.includes("usinage")
-  )
-    return Box;
-  if (
-    lower.includes("collège") ||
-    lower.includes("bfem") ||
-    lower.includes("lycée") ||
-    lower.includes("seconde") ||
-    lower.includes("1ère") ||
-    lower.includes("lettres") ||
-    lower.includes("enseignement") ||
-    lower.includes("école")
-  )
-    return GraduationCap;
-  if (
-    lower.includes("terminale") ||
-    lower.includes("bachelier") ||
-    lower.includes("bac")
-  )
-    return Briefcase;
-  if (
-    lower.includes("étudiant") ||
-    lower.includes("réorientation") ||
-    lower.includes("licence") ||
-    lower.includes("administration") ||
-    lower.includes("ressources humaines") ||
-    lower.includes("rh") ||
-    lower.includes("social")
-  )
-    return Users;
-  if (
-    lower.includes("ne sais pas") ||
-    lower.includes("hésite") ||
-    lower.includes("indécis") ||
-    lower.includes("aide")
-  )
-    return HelpCircle;
-  if (lower.includes("santé") || lower.includes("médecine") || lower.includes("pharmacie") || lower.includes("chimie"))
+  if (lower.includes("santé") || lower.includes("médecine") || lower.includes("soin") || lower.includes("bio")) {
     return HeartPulse;
-  if (
-    lower.includes("informatique") ||
-    lower.includes("tech") ||
-    lower.includes("développement") ||
-    lower.includes("code") ||
-    lower.includes("data") ||
-    lower.includes("ia") ||
-    lower.includes("électronique") ||
-    lower.includes("électrotechnique") ||
-    lower.includes("automatisme")
-  )
+  }
+  if (lower.includes("informatique") || lower.includes("numérique") || lower.includes("techno") || lower.includes("code") || lower.includes("ia")) {
     return Code;
-  if (lower.includes("droit") || lower.includes("juridique") || lower.includes("sciences po") || lower.includes("politique") || lower.includes("justice"))
+  }
+  if (lower.includes("gestion") || lower.includes("finance") || lower.includes("compta") || lower.includes("banque")) {
+    return Calculator;
+  }
+  if (lower.includes("droit") || lower.includes("justice") || lower.includes("politique") || lower.includes("avocat")) {
     return Scale;
-  if (lower.includes("agro") || lower.includes("environnement") || lower.includes("nature") || lower.includes("végétal"))
+  }
+  if (lower.includes("commerce") || lower.includes("marketing") || lower.includes("vente") || lower.includes("management")) {
+    return Briefcase;
+  }
+  if (lower.includes("communication") || lower.includes("journalisme") || lower.includes("média") || lower.includes("relation")) {
+    return Megaphone;
+  }
+  if (lower.includes("langue") || lower.includes("traduction") || lower.includes("lettre")) {
+    return Languages;
+  }
+  if (lower.includes("agronomie") || lower.includes("agriculture") || lower.includes("environnement") || lower.includes("eau")) {
     return Leaf;
+  }
+  if (lower.includes("ingénieur") || lower.includes("btp") || lower.includes("mécani") || lower.includes("industrie")) {
+    return Box;
+  }
+  if (lower.includes("enseign") || lower.includes("social") || lower.includes("humain") || lower.includes("aide")) {
+    return Users;
+  }
+  if (lower.includes("je ne sais pas") || lower.includes("indécis") || lower.includes("hésite")) {
+    return HelpCircle;
+  }
   return Compass;
 }
 
 /**
- * Parseur robuste pour les réponses de l'assistant au format JSON strict
+ * Nettoie le markdown en retirant les emojis pour un rendu académique
  */
-function parseAssistantMessage(content: string): ParsedAssistantMessage {
-  if (!content) return { reply: "", suggestions: [] };
+function formatText(text: string): string {
+  if (!text) return "";
+  return text.replace(
+    /[\u{1F300}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu,
+    ""
+  );
+}
 
-  const clean = content.trim();
-
-  // Nettoyage des éventuels wrappers markdown ```json ... ```
-  const unwrapped = clean
-    .replace(/^```json\s*/i, "")
-    .replace(/^```\s*/i, "")
-    .replace(/```$/i, "")
-    .trim();
-
-  // 1. Essai de JSON.parse direct (quand le message est complet)
+/**
+ * Découpe et extrait le JSON technique si l'assistant renvoie une structure enrichie
+ */
+function parseAssistantMessage(content: string): {
+  reply: string;
+  suggestions: string[];
+  profil_update?: Partial<ConversationProfile>;
+  etape?: number;
+} {
   try {
-    const obj = JSON.parse(unwrapped);
-    if (obj && typeof obj === "object" && typeof obj.reply === "string") {
+    const trimmed = content.trim();
+    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+      const parsed = JSON.parse(trimmed);
       return {
-        reply: obj.reply,
-        suggestions: Array.isArray(obj.suggestions) ? obj.suggestions : [],
-        profil_update: obj.dossier || obj.profil_update,
-        dossier: obj.dossier,
-        indices: Array.isArray(obj.indices) ? obj.indices : [],
-        hypotheses: Array.isArray(obj.hypotheses) ? obj.hypotheses : [],
-        pistes: Array.isArray(obj.pistes) ? obj.pistes : [],
-        etablissements: Array.isArray(obj.etablissements) ? obj.etablissements : [],
-        etape: typeof obj.etape === "number" ? obj.etape : undefined,
+        reply: parsed.reply || "",
+        suggestions: Array.isArray(parsed.suggestions) ? parsed.suggestions : [],
+        profil_update: parsed.dossier || parsed.profile || undefined,
+        etape: parsed.etape || undefined,
       };
     }
   } catch {
-    // Message en cours de streaming
+    /* fallback texte brut */
   }
 
-  // 2. Extraction par regex pendant le streaming progressif
-  const replyMatch = unwrapped.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"?/);
-  if (replyMatch && replyMatch[1]) {
+  const jsonMatch = content.match(/```json\s*(\{[\s\S]*?\})\s*```/);
+  if (jsonMatch && jsonMatch[1]) {
     try {
-      const replyText = JSON.parse(`"${replyMatch[1]}"`);
-      const sugMatch = unwrapped.match(/"suggestions"\s*:\s*\[([\s\S]*?)\]/);
-      let suggestions: string[] = [];
-      if (sugMatch && sugMatch[1]) {
-        try {
-          suggestions = JSON.parse(`[${sugMatch[1]}]`);
-        } catch {
-          // Streaming partiel
-        }
-      }
-
-      const etapeMatch = unwrapped.match(/"etape"\s*:\s*([1-5])/);
-      const etape = etapeMatch ? parseInt(etapeMatch[1], 10) : undefined;
-
+      const parsed = JSON.parse(jsonMatch[1]);
+      const cleanReply = content.replace(/```json[\s\S]*?```/, "").trim();
       return {
-        reply: replyText,
-        suggestions,
-        etape,
+        reply: cleanReply || parsed.reply || "",
+        suggestions: Array.isArray(parsed.suggestions) ? parsed.suggestions : [],
+        profil_update: parsed.dossier || parsed.profile || undefined,
+        etape: parsed.etape || undefined,
       };
     } catch {
-      // Fallback
+      /* fallback */
     }
   }
 
-  // 3. Fallback texte brut
-  return {
-    reply: clean,
-    suggestions: [],
-  };
+  return { reply: content, suggestions: [] };
 }
 
-/* ─── Rendu Markdown Académique ─── */
+/**
+ * Composant de rendu Markdown avec typographie contrastée
+ */
 function BotMessageMarkdown({ content }: { content: string }) {
+  const clean = formatText(content);
   return (
-    <div className="bot-response-content font-sans text-[15px] leading-relaxed text-[#172B46]">
+    <div className="bot-response-content select-text leading-relaxed">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
+          h1: ({ children }) => (
+            <h1 className="font-serif font-bold text-xl text-[var(--text-main)] mt-4 mb-2">
+              {children}
+            </h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="font-serif font-bold text-lg text-[var(--text-main)] mt-3.5 mb-1.5">
+              {children}
+            </h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="font-serif font-semibold text-base text-[var(--text-main)] mt-3 mb-1">
+              {children}
+            </h3>
+          ),
+          p: ({ children }) => (
+            <p className="mb-3 text-[var(--text-body)] font-medium leading-relaxed last:mb-0">
+              {children}
+            </p>
+          ),
+          ul: ({ children }) => (
+            <ul className="list-disc pl-5 mb-3 space-y-1 text-[var(--text-body)] font-medium">
+              {children}
+            </ul>
+          ),
+          ol: ({ children }) => (
+            <ol className="list-decimal pl-5 mb-3 space-y-1 text-[var(--text-body)] font-medium">
+              {children}
+            </ol>
+          ),
+          li: ({ children }) => <li className="mb-1 leading-normal">{children}</li>,
+          strong: ({ children }) => (
+            <strong className="font-bold text-[var(--gold-primary)]">{children}</strong>
+          ),
           a: ({ href, children }) => (
             <a
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#10469B] underline hover:text-[#0B2859] transition-colors"
+              className="text-[var(--gold-primary)] hover:underline font-semibold"
             >
               {children}
             </a>
           ),
-          p: ({ children }) => (
-            <p className="mb-2.5 last:mb-0 leading-[1.65] text-[#172B46]">
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-4 border-[var(--gold-primary)] pl-3 my-2 text-[var(--text-muted)] italic">
               {children}
-            </p>
+            </blockquote>
           ),
         }}
       >
-        {content}
+        {clean}
       </ReactMarkdown>
     </div>
   );
@@ -264,6 +226,7 @@ function BotMessageMarkdown({ content }: { content: string }) {
 export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [conversations, setConversations] = useState<ConversationItem[]>([
     { id: "1", title: "Orientation Bac Sénégal", date: "Aujourd'hui" },
   ]);
@@ -277,6 +240,35 @@ export default function ChatPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  /* ─── Synchronisation du thème Sombre / Clair ─────────────────────── */
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("theme") as "dark" | "light" | null;
+      const initialTheme = saved || "dark";
+      setTheme(initialTheme);
+      if (initialTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    try {
+      localStorage.setItem("theme", nextTheme);
+    } catch {}
+    if (nextTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   /* ─── useChat Vercel AI SDK ─────────────────────────────────────── */
   const {
@@ -301,39 +293,29 @@ export default function ChatPage() {
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Bonjour ! Bienvenue sur SenOrientation, ta plateforme d'orientation académique et universitaire. Pour commencer et faire connaissance, comment tu t'appelles ?",
+            "Bonjour ! Bienvenue sur SenOrientation, ta plateforme d'orientation académique et universitaire. Pour commencer et faire connaissance, comment puis-je t'appeler ?",
           suggestions: [
-            "Collège (3e / BFEM)",
-            "Lycée (Seconde ou 1ère)",
-            "Terminale ou Nouveau bachelier",
-            "Étudiant ou Réorientation",
+            "Je préfère ne pas le dire",
           ],
           etape: 1,
         }),
-        createdAt: new Date(),
       },
     ],
-    onError: (err) => {
-      // eslint-disable-next-line no-console
-      console.error("[Chat error]", err);
-    },
   });
 
-  /* ─── Synchronisation automatique du profil depuis les messages ─── */
+  /* ─── Synchronisation du profil depuis les annotations ou le JSON ─── */
   useEffect(() => {
+    if (messages.length === 0) return;
     const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant");
     if (!lastAssistantMsg) return;
 
-    // 1. Lecture depuis les annotations dataStream
-    if (lastAssistantMsg.annotations && Array.isArray(lastAssistantMsg.annotations)) {
-      for (const ann of lastAssistantMsg.annotations) {
-        if (ann && typeof ann === "object" && "profile" in ann) {
-          const p = (ann as Record<string, unknown>).profile as ConversationProfile | undefined;
-          if (p && typeof p.etape === "number") {
-            setProfile(p);
-            return;
-          }
-        }
+    // 1. Lecture depuis les annotations Vercel AI SDK (stream data)
+    const annotations = (lastAssistantMsg as any).annotations;
+    if (Array.isArray(annotations) && annotations.length > 0) {
+      const lastAnnot = annotations[annotations.length - 1];
+      if (lastAnnot && typeof lastAnnot === "object" && (lastAnnot.profile || lastAnnot.etape)) {
+        setProfile((prev) => mergeProfileUpdate(prev, lastAnnot.profile, lastAnnot.etape));
+        return;
       }
     }
 
@@ -390,23 +372,33 @@ export default function ChatPage() {
     );
   }, [messages, activeConvId]);
 
-  /* ─── Bouton Nouvelle discussion ─────────────────────────────────── */
+  /* ─── Clic sur un choix interactif ───────────────────────────────── */
+  const handleSuggestionClick = (suggestionText: string) => {
+    setSelectedSuggestion(suggestionText);
+    append({
+      role: "user",
+      content: suggestionText,
+    });
+  };
+
+  /* ─── Nouvelle discussion ────────────────────────────────────────── */
   const handleNewChat = () => {
-    const newId = Date.now().toString();
-    setProfile(INITIAL_PROFILE);
-    setSelectedSuggestion(null);
-    setConversations((prev) => [
-      { id: newId, title: "Orientation Bac Sénégal", date: "À l'instant" },
-      ...prev,
-    ]);
+    const newId = String(Date.now());
+    const newConv: ConversationItem = {
+      id: newId,
+      title: "Nouvelle discussion",
+      date: "Aujourd'hui",
+    };
+    setConversations([newConv, ...conversations]);
     setActiveConvId(newId);
+    setProfile(INITIAL_PROFILE);
     setMessages([
       {
         id: `welcome-${newId}`,
         role: "assistant",
         content: JSON.stringify({
           reply:
-            "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
+            "Bonjour ! Je suis ton conseiller d'orientation SenOrientation. Où en es-tu actuellement dans tes études ?",
           suggestions: [
             "Collège (3e / BFEM)",
             "Lycée (Seconde ou 1ère)",
@@ -415,86 +407,63 @@ export default function ChatPage() {
           ],
           etape: 1,
         }),
-        createdAt: new Date(),
       },
     ]);
     setSidebarOpen(false);
   };
 
-  /* ─── Clic sur un chip de suggestion ─────────────────────────────── */
-  const handleSuggestionClick = (question: string) => {
-    if (isLoading) return;
-    setSelectedSuggestion(question);
-
-    if (question === "Nouvelle discussion") {
-      handleNewChat();
-      return;
-    }
-    if (question === "Exporter mon récapitulatif") {
-      exportSummary();
-      return;
-    }
-
-    append({
-      role: "user",
-      content: question,
-    });
-  };
-
-  /* ─── Export de la fiche récapitulative (Étape 5) ─────────────────── */
-  const generateRecapText = () => {
-    const dateStr = new Date().toLocaleDateString("fr-FR");
-    return `============================================================
-SENORIENTATION — DOSSIER D'ORIENTATION ACADÉMIQUE (SÉNÉGAL)
-Date : ${dateStr}
-Portail national : campusen.sec.gouv.sn
-============================================================
-
-1. PROFIL DE L'APPRENANT
-- Prénom / Identifiant : ${profile.prenom && profile.prenom !== "l'ami" ? profile.prenom : "Non précisé"}
-- Série de Bac : ${profile.serie || "Non précisée"}
-- Niveau : ${profile.niveau || "Terminale / Nouveau bachelier"}
-- Moyenne générale estimée : ${profile.moyenne ? `${profile.moyenne}/20` : "Non précisée"}
-- Matières de prédilection : ${profile.matieres_aimees.length > 0 ? profile.matieres_aimees.join(", ") : "Généralistes"}
-- Points forts : ${profile.points_forts.length > 0 ? profile.points_forts.join(", ") : "Non précisés"}
-- Projet / Métier visé : ${profile.projet || "En cours d'approfondissement"}
-- Ville souhaitée : ${profile.ville || "Sénégal (Dakar, Thiès, Saint-Louis, Bambey, Ziguinchor)"}
-- Préférence financière : ${profile.budget || "Enseignement supérieur public (25 000 FCFA/an)"}
-
-2. DÉMARCHES ACADÉMIQUES RECOMMANDÉES
-- Campusen : Dépôt impératif lors de l'ouverture nationale de la plateforme.
-- Frais universitaires publics : 25 000 FCFA/an fixés par l'État du Sénégal.
-- Bourses nationales (DGES) : Demi-bourse (20 000 FCFA/mois) ou bourse entière (40 000 FCFA/mois).
-- Écoles d'excellence sur concours : Dépôts de dossiers entre mai et juillet (ESP, EPT, ENEA, ENSETP, ESMT).
-- Délais de paiement : 7 à 10 jours ouvrés via opérateurs agréés sous peine d'annulation automatique.
-============================================================`;
-  };
-
+  /* ─── Exporter le bilan en texte (.txt) ──────────────────────────── */
   const exportSummary = () => {
-    const text = generateRecapText();
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const recap = `========================================================
+FICHE OFFICIELLE D'ORIENTATION - SENORIENTATION
+Plateforme nationale d'orientation académique du Sénégal
+========================================================
+
+1. INFORMATIONS SUR L'ÉLÈVE
+--------------------------------------------------------
+- Prénom / Identité        : ${profile.prenom || "Non précisé"}
+- Série de Bac             : ${profile.serie || "Non précisée"}
+- Niveau scolaire          : ${profile.niveau || "Non précisé"}
+- Moyenne déclarée         : ${profile.moyenne ? `${profile.moyenne}/20` : "Non précisée"}
+
+2. CENTRES D'INTÉRÊT & COMPÉTENCES
+--------------------------------------------------------
+- Centres d'intérêt majeurs: ${profile.interets_principaux.join(", ") || "En cours d'exploration"}
+- Matières de prédilection : ${profile.matieres_aimees.join(", ") || "Généralistes"}
+- Points forts identifiés  : ${profile.points_forts.join(", ") || "À affiner"}
+
+3. PROJET & CRITÈRES D'ÉTUDES
+--------------------------------------------------------
+- Filière visée            : ${profile.projet || "Non arrêtée"}
+- Ville souhaitée          : ${profile.ville || "Sénégal (Dakar, Saint-Louis, Thiès...)"}
+- Type d'établissement     : ${profile.budget || "Public Campusen (25 000 FCFA/an)"}
+- Durée souhaitée          : ${profile.duree_souhaitee || "2 à 5 ans"}
+
+Document généré automatiquement sur SenOrientation
+Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
+
+    const blob = new Blob([recap], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    const namePart =
-      profile.prenom && profile.prenom !== "l'ami"
-        ? profile.prenom.replace(/\s+/g, "_")
-        : profile.serie || "Senegal";
-    link.download = `Fiche_Orientation_SenOrientation_${namePart}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `bilan_orientation_${(profile.prenom || "eleve").toLowerCase()}.txt`;
+    a.click();
     URL.revokeObjectURL(url);
   };
 
+  /* ─── Copier la synthèse dans le presse-papier ───────────────────── */
   const copyRecap = () => {
-    const text = generateRecapText();
-    navigator.clipboard.writeText(text);
+    const txt = `Bilan SenOrientation :
+- Élève : ${profile.prenom || "Élève"}
+- Série : ${profile.serie || "Non précisée"}
+- Intérêts : ${profile.interets_principaux.join(", ")}
+- Projet : ${profile.projet || "En cours"}`;
+    navigator.clipboard.writeText(txt);
     setCopiedRecap(true);
     setTimeout(() => setCopiedRecap(false), 2000);
   };
 
-  /* ─── Soumission par Entrée ──────────────────────────────────────── */
+  /* ─── Gestion de la touche Entrée pour soumettre ─────────────────── */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -514,27 +483,27 @@ Portail national : campusen.sec.gouv.sn
   const headerTitle = currentConversation?.title || "Orientation Bac Sénégal";
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-white text-[#172B46] font-sans antialiased">
+    <div className="flex h-screen w-full overflow-hidden bg-[var(--bg-app)] text-[var(--text-main)] font-sans antialiased">
       {/* ════════════════════════════════════════════
-          PANNEAU LATÉRAL (SIDEBAR INSTITUTIONNELLE)
+          PANNEAU LATÉRAL (SIDEBAR)
       ════════════════════════════════════════════ */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs md:hidden"
           aria-hidden="true"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-white border-r border-[#E0E7F0] shadow-sm transition-transform duration-200 ease-out md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-[var(--bg-sidebar)] border-r border-[var(--border-main)] shadow-sm transition-transform duration-200 ease-out md:static md:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* 1. En-tête : Logo officiel agrandi de 30% + Identité académique */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E0E7F0] bg-white">
+        {/* 1. En-tête : Nouveau Logo (Boussole stellaire or sans bordures blanches) */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)]">
           <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10 shrink-0">
+            <div className="relative w-10 h-10 shrink-0 rounded-xl overflow-hidden shadow-xs">
               <Image
                 src="/logo.png"
                 alt="Logo SenOrientation"
@@ -546,10 +515,10 @@ Portail national : campusen.sec.gouv.sn
             </div>
             <div className="flex flex-col">
               <span className="font-serif font-bold text-[18px] tracking-tight leading-tight">
-                <span className="text-[#0B2859]">Sen</span>
-                <span className="text-[#75421F]">Orientation</span>
+                <span className="text-[var(--text-main)]">Sen</span>
+                <span className="text-[var(--gold-primary)]">Orientation</span>
               </span>
-              <span className="text-[10.5px] text-[#64748B] font-medium tracking-tight mt-0.5">
+              <span className="text-[10.5px] text-[var(--text-muted)] font-medium tracking-tight mt-0.5">
                 Ton avenir, notre boussole
               </span>
             </div>
@@ -557,42 +526,42 @@ Portail national : campusen.sec.gouv.sn
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Fermer le menu"
-            className="p-1.5 text-[#64748B] hover:text-[#0B2859] rounded-md hover:bg-[#EDF4FD] md:hidden transition-colors"
+            className="p-1.5 text-[var(--text-muted)] hover:text-[var(--gold-primary)] rounded-md hover:bg-[var(--bg-hover)] md:hidden transition-colors"
           >
             <PanelLeftOpen className="w-4 h-4 rotate-180" />
           </button>
         </div>
 
-        {/* 2. Bouton Nouvelle discussion : Bleu institutionnel avec ombre et flèche */}
-        <div className="p-4 border-b border-[#E0E7F0]">
+        {/* 2. Bouton Nouvelle discussion */}
+        <div className="p-4 border-b border-[var(--border-main)]">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-between py-2.5 px-4 text-[14px] font-medium text-white bg-[#10469B] hover:bg-[#0B2859] rounded-xl shadow-[0_2px_8px_rgba(16,70,155,0.22)] hover:shadow-[0_4px_12px_rgba(16,70,155,0.3)] active:scale-[0.99] transition-all duration-150 cursor-pointer group"
+            className="w-full flex items-center justify-between py-2.5 px-4 text-[14px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 active:scale-[0.99] rounded-xl shadow-[0_2px_12px_rgba(245,197,66,0.18)] transition-all duration-150 cursor-pointer group"
           >
             <div className="flex items-center gap-2.5">
-              <MessageSquare className="w-4 h-4 text-white" />
+              <MessageSquare className="w-4 h-4" />
               <span>Nouvelle discussion</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-white/80 group-hover:translate-x-0.5 transition-transform" />
+            <ChevronRight className="w-4 h-4 opacity-75 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
 
-        {/* 3. Carte de Progression de l'orientation : Segmentée en 5 étapes */}
-        <div className="p-4 border-b border-[#E0E7F0] bg-white">
-          <div className="p-3.5 bg-[#EDF4FD]/70 rounded-xl border border-[#D3E3F8] space-y-3">
+        {/* 3. Carte de Progression de l'orientation (5 étapes) */}
+        <div className="p-4 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)]">
+          <div className="p-3.5 bg-[var(--gold-light)] rounded-xl border border-[var(--gold-border)] space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full border-2 border-[#10469B] border-t-transparent animate-spin-slow flex items-center justify-center shrink-0" />
-                <span className="font-semibold text-[13px] text-[#0B2859]">
+                <div className="w-5 h-5 rounded-full border-2 border-[var(--gold-primary)] border-t-transparent animate-spin-slow flex items-center justify-center shrink-0" />
+                <span className="font-bold text-[13px] text-[var(--text-main)]">
                   Progression
                 </span>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-white text-[#10469B] border border-[#BFD7F8] shadow-2xs">
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[var(--bg-card)] text-[var(--gold-primary)] border border-[var(--gold-border)] shadow-2xs">
                 Étape {profile.etape}/5
               </span>
             </div>
 
-            <p className="text-[12px] font-medium text-[#64748B]">
+            <p className="text-[12px] font-medium text-[var(--text-muted)]">
               {ETAPE_LABELS[profile.etape] || "Orientation en cours"}
             </p>
 
@@ -604,7 +573,7 @@ Portail national : campusen.sec.gouv.sn
                   <div
                     key={step}
                     className={`h-2 flex-1 rounded-full transition-all duration-300 ${
-                      isPassed ? "bg-[#10469B]" : "bg-[#DDE5EF]"
+                      isPassed ? "bg-[var(--gold-primary)]" : "bg-[var(--border-main)] opacity-50"
                     }`}
                     title={`Étape ${step} : ${ETAPE_LABELS[step]}`}
                   />
@@ -613,10 +582,10 @@ Portail national : campusen.sec.gouv.sn
             </div>
 
             {/* Fiche résumé de l'élève */}
-            <div className="pt-2 border-t border-[#D3E3F8]/80 text-[12px] text-[#172B46] flex items-center gap-2">
-              <User className="w-3.5 h-3.5 text-[#10469B] shrink-0" />
-              <span className="font-medium text-[#64748B]">Élève :</span>
-              <strong className="text-[#0B2859] truncate">
+            <div className="pt-2 border-t border-[var(--gold-border)] text-[12px] text-[var(--text-main)] flex items-center gap-2">
+              <User className="w-3.5 h-3.5 text-[var(--gold-primary)] shrink-0" />
+              <span className="font-medium text-[var(--text-muted)]">Élève :</span>
+              <strong className="text-[var(--text-main)] truncate">
                 {profile.prenom && profile.prenom !== "l'ami"
                   ? profile.prenom
                   : "Ibrahima"}
@@ -625,10 +594,10 @@ Portail national : campusen.sec.gouv.sn
           </div>
         </div>
 
-        {/* 4. Historique des discussions avec indicateur actif latéral */}
+        {/* 4. Historique des discussions */}
         <div className="flex-1 overflow-y-auto p-3 space-y-1">
-          <div className="flex items-center gap-2 px-2.5 py-1.5 text-[12px] font-semibold text-[#64748B] uppercase tracking-wider">
-            <History className="w-3.5 h-3.5 text-[#75421F]" />
+          <div className="flex items-center gap-2 px-2.5 py-1.5 text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+            <History className="w-3.5 h-3.5 text-[var(--gold-primary)]" />
             <span>Historique</span>
           </div>
 
@@ -641,22 +610,22 @@ Portail national : campusen.sec.gouv.sn
                   setActiveConvId(conv.id);
                   setSidebarOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3 py-2.5 text-[13.5px] rounded-xl text-left transition-all ${
+                className={`w-full flex items-center justify-between px-3 py-2.5 text-[13.5px] rounded-xl text-left transition-all cursor-pointer ${
                   isActive
-                    ? "bg-[#EDF4FD] text-[#10469B] font-semibold border-l-[3px] border-[#10469B] shadow-2xs"
-                    : "text-[#172B46] hover:bg-[#F8FAFC] hover:text-[#0B2859]"
+                    ? "bg-[var(--gold-light)] text-[var(--gold-primary)] font-bold border-l-[3px] border-[var(--gold-primary)] shadow-2xs"
+                    : "text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <MessageSquare
                     className={`w-4 h-4 shrink-0 ${
-                      isActive ? "text-[#10469B]" : "text-[#64748B]"
+                      isActive ? "text-[var(--gold-primary)]" : "text-[var(--text-muted)]"
                     }`}
                   />
                   <span className="truncate">{conv.title}</span>
                 </div>
                 {isActive && (
-                  <ChevronRight className="w-3.5 h-3.5 text-[#10469B] shrink-0" />
+                  <ChevronRight className="w-3.5 h-3.5 text-[var(--gold-primary)] shrink-0" />
                 )}
               </button>
             );
@@ -664,17 +633,17 @@ Portail national : campusen.sec.gouv.sn
         </div>
 
         {/* 5. Pied de sidebar : Paramètres & Connexion */}
-        <div className="p-3 border-t border-[#E0E7F0] bg-white space-y-1">
+        <div className="p-3 border-t border-[var(--border-main)] bg-[var(--bg-sidebar)] space-y-1">
           <button
             onClick={() => {}}
-            className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#64748B] hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg transition-colors cursor-pointer"
+            className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer"
           >
-            <Settings className="w-4 h-4 text-[#64748B]" />
+            <Settings className="w-4 h-4" />
             <span>Paramètres</span>
           </button>
 
           {userEmail ? (
-            <div className="flex items-center justify-between px-3 py-2 text-[13px] text-[#172B46] rounded-lg bg-[#F8FAFC]">
+            <div className="flex items-center justify-between px-3 py-2 text-[13px] text-[var(--text-main)] rounded-lg bg-[var(--bg-card)] border border-[var(--border-main)]">
               <span className="truncate max-w-[170px]">{userEmail}</span>
               <button
                 onClick={async () => {
@@ -683,7 +652,7 @@ Portail national : campusen.sec.gouv.sn
                   setUserEmail(null);
                 }}
                 title="Se déconnecter"
-                className="text-[#64748B] hover:text-red-600 p-1 rounded-md transition-colors"
+                className="text-[var(--text-muted)] hover:text-red-500 p-1 rounded-md transition-colors"
               >
                 <LogOut className="w-3.5 h-3.5" />
               </button>
@@ -691,9 +660,9 @@ Portail national : campusen.sec.gouv.sn
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#64748B] hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg transition-colors"
+              className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors"
             >
-              <User className="w-4 h-4 text-[#75421F]" />
+              <User className="w-4 h-4 text-[var(--gold-primary)]" />
               <span>Connexion élève</span>
             </Link>
           )}
@@ -701,39 +670,40 @@ Portail national : campusen.sec.gouv.sn
       </aside>
 
       {/* ════════════════════════════════════════════
-          ZONE CENTRALE DU CHAT (FOND BLANC ÉPURÉ)
+          ZONE CENTRALE DU CHAT
       ════════════════════════════════════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden bg-white relative">
-        {/* Motif décoratif en filigrane discret (Boussole académique en bas à droite) */}
+      <main className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--bg-app)] relative">
+        {/* Motif décoratif en filigrane discret (Boussole stellaire d'or du nouveau logo) */}
         <div
-          className="pointer-events-none absolute bottom-16 right-0 w-80 h-80 opacity-[0.045] select-none z-0"
+          className="pointer-events-none absolute bottom-16 right-0 w-84 h-84 opacity-[0.04] select-none z-0"
           aria-hidden="true"
         >
           <svg viewBox="0 0 200 200" fill="none" className="w-full h-full">
-            <circle cx="100" cy="100" r="95" stroke="#0B2859" strokeWidth="1.5" strokeDasharray="4 4" />
-            <circle cx="100" cy="100" r="80" stroke="#75421F" strokeWidth="1.2" />
-            <circle cx="100" cy="100" r="65" stroke="#0B2859" strokeWidth="0.8" />
-            <path d="M100 15 L108 85 L185 100 L108 115 L100 185 L92 115 L15 100 L92 85 Z" stroke="#0B2859" strokeWidth="1.5" fill="none" />
-            <path d="M100 20 L106 94 L170 100 L106 106 L100 180 L94 106 L30 100 L94 94 Z" fill="#75421F" opacity="0.15" />
+            <circle cx="100" cy="100" r="62" stroke="currentColor" strokeWidth="4" strokeDasharray="32 16" className="text-[var(--gold-primary)]" />
+            <path
+              d="M100 18 L115 85 L182 100 L115 115 L100 182 L85 115 L18 100 L85 85 Z"
+              fill="currentColor"
+              className="text-[var(--gold-primary)]"
+            />
           </svg>
         </div>
 
         {/* 1. Barre supérieure (Topbar) */}
-        <header className="shrink-0 h-16 border-b border-[#E0E7F0] px-4 sm:px-8 flex items-center justify-between bg-white z-10">
+        <header className="shrink-0 h-16 border-b border-[var(--border-main)] px-4 sm:px-8 flex items-center justify-between bg-[var(--bg-app)] z-10">
           <div className="flex items-center gap-3.5 min-w-0">
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label="Ouvrir le menu"
-              className="p-2 text-[#64748B] hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg md:hidden shrink-0 transition-colors"
+              className="p-2 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg md:hidden shrink-0 transition-colors cursor-pointer"
             >
               <PanelLeftOpen className="w-5 h-5" />
             </button>
 
             <div className="flex flex-col min-w-0">
-              <h1 className="font-serif font-semibold text-[17px] sm:text-[19px] text-[#0B2859] tracking-tight truncate leading-tight">
+              <h1 className="font-serif font-bold text-[18px] sm:text-[20px] text-[var(--text-main)] tracking-tight truncate leading-tight">
                 {headerTitle}
               </h1>
-              <p className="text-[12px] text-[#64748B] hidden sm:block truncate mt-0.5">
+              <p className="text-[12px] font-medium text-[var(--text-muted)] hidden sm:block truncate mt-0.5">
                 Des conseils personnalisés pour construire ton avenir
               </p>
             </div>
@@ -741,96 +711,102 @@ Portail national : campusen.sec.gouv.sn
 
           <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             {/* Badge d'étape */}
-            <div className="hidden sm:inline-flex items-center gap-2 text-[12px] text-[#10469B] bg-[#EDF4FD] px-3 py-1 rounded-full border border-[#D3E3F8] font-medium">
-              <span className="w-2 h-2 rounded-full bg-[#10469B]" />
+            <div className="hidden sm:inline-flex items-center gap-2 text-[12px] text-[var(--gold-primary)] bg-[var(--gold-light)] px-3 py-1 rounded-full border border-[var(--gold-border)] font-bold">
+              <span className="w-2 h-2 rounded-full bg-[var(--gold-primary)] animate-pulse" />
               <span>
                 Étape {profile.etape}/5 : {ETAPE_LABELS[profile.etape]}
               </span>
             </div>
 
-            {/* Bouton Nouveau avec accent Brun Académique */}
+            {/* Bouton Nouveau */}
             <button
               onClick={handleNewChat}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-medium text-white bg-[#75421F] hover:bg-[#5E3418] rounded-lg shadow-xs transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 rounded-lg shadow-xs transition-colors cursor-pointer"
               title="Nouvelle discussion"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Nouveau</span>
             </button>
 
-            {/* Icône Boussole / Profil */}
-            <div className="flex items-center gap-1 text-[#64748B]">
-              <button
-                type="button"
-                className="p-1.5 hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg transition-colors"
-                title="Orientation"
-              >
-                <Sun className="w-4 h-4" />
-              </button>
-              <div className="w-7 h-7 rounded-full bg-[#EDF4FD] border border-[#D3E3F8] flex items-center justify-center text-[#10469B] font-semibold text-[12px]">
-                <User className="w-3.5 h-3.5" />
-              </div>
+            {/* Basculeur Mode Sombre (Couleurs Logo) / Mode Clair (Couleurs Inverses) */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-2 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-xl border border-[var(--border-main)] transition-colors cursor-pointer"
+              title={theme === "dark" ? "Passer en mode clair (couleurs inverses)" : "Passer en mode sombre (couleurs du logo)"}
+              aria-label="Changer le mode de couleur"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-[#F5C542]" />
+              ) : (
+                <Moon className="w-4 h-4 text-[#0F172A]" />
+              )}
+            </button>
+
+            {/* Icône Profil */}
+            <div className="w-8 h-8 rounded-full bg-[var(--gold-light)] border border-[var(--gold-border)] flex items-center justify-center text-[var(--gold-primary)] font-bold text-[12px]">
+              <User className="w-4 h-4" />
             </div>
           </div>
         </header>
 
         {/* 2. Zone de discussion défilante (Conteneur max 780px) */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 md:py-8 bg-white z-10">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 md:py-8 bg-[var(--bg-app)] z-10">
           <div className="max-w-[780px] mx-auto space-y-6">
 
             {/* Fiche Bilan Finale si Étape 5 */}
             {profile.etape === 5 && (
-              <div className="p-5 bg-[#EDF4FD]/60 border border-[#D3E3F8] rounded-2xl shadow-xs space-y-4 animate-fadeIn">
+              <div className="p-5 bg-[var(--gold-light)] border border-[var(--gold-border)] rounded-2xl shadow-xs space-y-4 animate-fadeIn">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <GraduationCap className="w-5 h-5 text-[#10469B]" />
-                    <h2 className="font-serif font-bold text-[17px] text-[#0B2859]">
+                    <GraduationCap className="w-5 h-5 text-[var(--gold-primary)]" />
+                    <h2 className="font-serif font-bold text-[17px] text-[var(--text-main)]">
                       Fiche de Synthèse d&apos;Orientation (Étape 5/5)
                     </h2>
                   </div>
-                  <span className="text-[12px] bg-white text-[#10469B] font-semibold px-2.5 py-0.5 rounded-full border border-[#BFD7F8]">
+                  <span className="text-[12px] bg-[var(--bg-card)] text-[var(--gold-primary)] font-bold px-2.5 py-0.5 rounded-full border border-[var(--gold-border)]">
                     Dossier validé
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[13.5px] bg-white p-4 rounded-xl border border-[#E0E7F0] shadow-2xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[13.5px] bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-main)] shadow-2xs">
                   {profile.prenom && profile.prenom !== "l'ami" && (
                     <div>
-                      <span className="text-[#64748B] block text-[11.5px] font-medium">Élève</span>
-                      <strong className="text-[#0B2859]">{profile.prenom}</strong>
+                      <span className="text-[var(--text-muted)] block text-[11.5px] font-medium">Élève</span>
+                      <strong className="text-[var(--text-main)]">{profile.prenom}</strong>
                     </div>
                   )}
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px] font-medium">Série de Bac</span>
-                    <strong className="text-[#0B2859]">{profile.serie || "Non précisée"}</strong>
+                    <span className="text-[var(--text-muted)] block text-[11.5px] font-medium">Série de Bac</span>
+                    <strong className="text-[var(--text-main)]">{profile.serie || "Non précisée"}</strong>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px] font-medium">Moyenne estimée</span>
-                    <strong className="text-[#0B2859]">
+                    <span className="text-[var(--text-muted)] block text-[11.5px] font-medium">Moyenne estimée</span>
+                    <strong className="text-[var(--text-main)]">
                       {profile.moyenne ? `${profile.moyenne}/20` : "Non précisée"}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px] font-medium">Matières de prédilection</span>
-                    <span className="text-[#172B46]">
+                    <span className="text-[var(--text-muted)] block text-[11.5px] font-medium">Matières de prédilection</span>
+                    <span className="text-[var(--text-body)]">
                       {profile.matieres_aimees.length > 0
                         ? profile.matieres_aimees.join(", ")
                         : "Généralistes"}
                     </span>
                   </div>
                   <div className="sm:col-span-2">
-                    <span className="text-[#64748B] block text-[11.5px] font-medium">Filière / Projet ciblé</span>
-                    <strong className="text-[#75421F]">
+                    <span className="text-[var(--text-muted)] block text-[11.5px] font-medium">Filière / Projet ciblé</span>
+                    <strong className="text-[var(--gold-primary)]">
                       {profile.projet || "En cours de validation finale"}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px] font-medium">Ville souhaitée</span>
-                    <span className="text-[#172B46]">{profile.ville || "Sénégal (Dakar, Thiès...)"}</span>
+                    <span className="text-[var(--text-muted)] block text-[11.5px] font-medium">Ville souhaitée</span>
+                    <span className="text-[var(--text-body)]">{profile.ville || "Sénégal (Dakar, Thiès...)"}</span>
                   </div>
                   <div>
-                    <span className="text-[#64748B] block text-[11.5px] font-medium">Frais universitaires</span>
-                    <span className="text-[#172B46]">
+                    <span className="text-[var(--text-muted)] block text-[11.5px] font-medium">Frais universitaires</span>
+                    <span className="text-[var(--text-body)]">
                       {profile.budget || "Public Campusen (25 000 FCFA/an)"}
                     </span>
                   </div>
@@ -840,7 +816,7 @@ Portail national : campusen.sec.gouv.sn
                 <div className="flex flex-wrap items-center gap-3 pt-1">
                   <button
                     onClick={exportSummary}
-                    className="flex items-center gap-2 px-4 py-2 text-[13px] font-medium bg-[#10469B] hover:bg-[#0B2859] text-white rounded-xl shadow-xs transition-colors cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-2 text-[13px] font-bold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded-xl shadow-xs hover:brightness-110 transition-colors cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
                     <span>Télécharger la fiche (.txt)</span>
@@ -848,16 +824,16 @@ Portail national : campusen.sec.gouv.sn
 
                   <button
                     onClick={copyRecap}
-                    className="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-[#172B46] bg-white hover:bg-[#F8FAFC] border border-[#E0E7F0] rounded-xl shadow-2xs transition-colors cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-[var(--text-main)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-main)] rounded-xl shadow-2xs transition-colors cursor-pointer"
                   >
                     {copiedRecap ? (
                       <>
-                        <Check className="w-4 h-4 text-emerald-600" />
-                        <span className="text-emerald-700">Copié dans le presse-papier</span>
+                        <Check className="w-4 h-4 text-emerald-500" />
+                        <span className="text-emerald-500 font-semibold">Copié dans le presse-papier</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-4 h-4 text-[#64748B]" />
+                        <Copy className="w-4 h-4 text-[var(--text-muted)]" />
                         <span>Copier la synthèse</span>
                       </>
                     )}
@@ -876,8 +852,8 @@ Portail national : campusen.sec.gouv.sn
 
                 return (
                   <div key={msg.id} className="flex items-start gap-3.5 group pt-1 animate-fadeIn">
-                    {/* Avatar officiel SO */}
-                    <div className="relative w-8 h-8 rounded-full bg-white border border-[#D3E3F8] shadow-xs flex items-center justify-center shrink-0 mt-0.5 overflow-hidden p-0.5">
+                    {/* Avatar officiel SO (Nouveau logo sans bordures blanches) */}
+                    <div className="relative w-8 h-8 rounded-xl bg-[var(--bg-card)] border border-[var(--border-main)] shadow-xs flex items-center justify-center shrink-0 mt-0.5 overflow-hidden p-0.5">
                       <Image
                         src="/logo.png"
                         alt="Logo SenOrientation"
@@ -889,7 +865,7 @@ Portail national : campusen.sec.gouv.sn
 
                     <div className="flex-1 min-w-0">
                       {/* Carte du message assistant */}
-                      <div className="bg-white border border-[#E0E7F0] rounded-2xl p-4 sm:p-5 shadow-[0_2px_12px_rgba(11,40,89,0.04)]">
+                      <div className="bg-[var(--bot-card-bg)] border border-[var(--bot-card-border)] rounded-2xl p-4 sm:p-5 shadow-[var(--bot-card-shadow)]">
                         <BotMessageMarkdown content={parsed.reply || msg.content} />
                       </div>
 
@@ -907,13 +883,13 @@ Portail national : campusen.sec.gouv.sn
                                 disabled={isLoading}
                                 className={`text-left text-[14px] font-semibold px-4 py-2.5 rounded-xl border flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
                                   isSelected
-                                    ? "bg-[#10469B] text-white border-[#10469B] shadow-xs"
-                                    : "bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#EDF4FD] hover:border-[#BFD7F8] hover:text-[#10469B]"
+                                    ? "bg-[var(--gold-primary)] text-[#0B0F19] border-[var(--gold-primary)] shadow-sm font-bold"
+                                    : "bg-[var(--bg-chip)] text-[var(--text-main)] border-[var(--border-main)] hover:bg-[var(--bg-chip-hover)] hover:border-[var(--gold-primary)] hover:text-[var(--gold-primary)]"
                                 } disabled:opacity-60 disabled:cursor-not-allowed`}
                               >
                                 <SuggestionIcon
                                   className={`w-4 h-4 shrink-0 ${
-                                    isSelected ? "text-white" : "text-[#75421F]"
+                                    isSelected ? "text-[#0B0F19]" : "text-[var(--gold-primary)]"
                                   }`}
                                 />
                                 <span>{sug}</span>
@@ -927,13 +903,13 @@ Portail national : campusen.sec.gouv.sn
                       <div className="mt-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleCopy(parsed.reply || msg.content, msg.id)}
-                          className="flex items-center gap-1.5 text-[12px] text-[#64748B] hover:text-[#0B2859] px-2 py-1 rounded-md hover:bg-[#EDF4FD] transition-colors"
+                          className="flex items-center gap-1.5 text-[12px] text-[var(--text-muted)] hover:text-[var(--gold-primary)] px-2 py-1 rounded-md hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
                           title="Copier la réponse"
                         >
                           {copiedId === msg.id ? (
                             <>
-                              <Check className="w-3.5 h-3.5 text-emerald-600" />
-                              <span className="text-emerald-700">Copié</span>
+                              <Check className="w-3.5 h-3.5 text-emerald-500" />
+                              <span className="text-emerald-500">Copié</span>
                             </>
                           ) : (
                             <>
@@ -947,7 +923,7 @@ Portail national : campusen.sec.gouv.sn
                           <button
                             onClick={() => reload()}
                             disabled={isLoading}
-                            className="flex items-center gap-1.5 text-[12px] text-[#64748B] hover:text-[#0B2859] px-2 py-1 rounded-md hover:bg-[#EDF4FD] transition-colors disabled:opacity-40"
+                            className="flex items-center gap-1.5 text-[12px] text-[var(--text-muted)] hover:text-[var(--gold-primary)] px-2 py-1 rounded-md hover:bg-[var(--bg-hover)] transition-colors disabled:opacity-40 cursor-pointer"
                             title="Régénérer"
                           >
                             <RotateCw className="w-3.5 h-3.5" />
@@ -960,15 +936,15 @@ Portail national : campusen.sec.gouv.sn
                 );
               }
 
-              /* ─── Message Utilisateur (Bleu institutionnel #10469B) ─── */
+              /* ─── Message Utilisateur ─── */
               return (
                 <div key={msg.id} className="flex flex-col items-end pt-1 animate-fadeIn">
-                  <div className="max-w-[85%] sm:max-w-[75%] bg-[#10469B] text-white rounded-2xl rounded-tr-xs px-4 sm:px-5 py-3 text-[15px] font-semibold leading-relaxed shadow-xs">
+                  <div className="max-w-[85%] sm:max-w-[75%] bg-[var(--user-bubble-bg)] text-[var(--user-bubble-text)] border border-[var(--border-main)] rounded-2xl rounded-tr-xs px-4 sm:px-5 py-3 text-[15px] font-semibold leading-relaxed shadow-xs">
                     {msg.content}
                   </div>
-                  <div className="flex items-center gap-1 text-[11px] font-medium text-[#475569] mt-1 mr-1">
+                  <div className="flex items-center gap-1 text-[11px] font-medium text-[var(--user-bubble-meta)] mt-1 mr-1">
                     <span>{new Date(msg.createdAt || Date.now()).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
-                    <CheckCheck className="w-3.5 h-3.5 text-[#10469B]" />
+                    <CheckCheck className="w-3.5 h-3.5 text-[var(--gold-primary)]" />
                   </div>
                 </div>
               );
@@ -977,7 +953,7 @@ Portail national : campusen.sec.gouv.sn
             {/* Indicateur de réflexion */}
             {isLoading && (
               <div className="flex items-center gap-3.5 pt-1 animate-fadeIn">
-                <div className="relative w-8 h-8 rounded-full bg-white border border-[#D3E3F8] shadow-xs flex items-center justify-center shrink-0 overflow-hidden p-0.5">
+                <div className="relative w-8 h-8 rounded-xl bg-[var(--bg-card)] border border-[var(--border-main)] shadow-xs flex items-center justify-center shrink-0 overflow-hidden p-0.5">
                   <Image
                     src="/logo.png"
                     alt="Logo SenOrientation"
@@ -986,17 +962,17 @@ Portail national : campusen.sec.gouv.sn
                     className="object-contain"
                   />
                 </div>
-                <div className="bg-[#EDF4FD] border border-[#D3E3F8] rounded-2xl px-4 py-2.5 text-[13.5px] text-[#10469B] flex items-center gap-2.5 shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-[#10469B] animate-ping" />
-                  <span className="font-medium">SenOrientation analyse tes informations...</span>
+                <div className="bg-[var(--gold-light)] border border-[var(--gold-border)] rounded-2xl px-4 py-2.5 text-[13.5px] text-[var(--gold-primary)] flex items-center gap-2.5 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-[var(--gold-primary)] animate-ping" />
+                  <span className="font-semibold">SenOrientation analyse tes informations...</span>
                 </div>
               </div>
             )}
 
             {/* Alerte d'erreur */}
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-[13.5px] flex items-start gap-2.5">
-                <AlertCircle className="w-4.5 h-4.5 text-red-600 shrink-0 mt-0.5" />
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-[13.5px] flex items-start gap-2.5">
+                <AlertCircle className="w-4.5 h-4.5 text-red-500 shrink-0 mt-0.5" />
                 <p>
                   Une erreur temporaire est survenue lors de l&apos;envoi. Merci de vérifier votre connexion et de réessayer.
                 </p>
@@ -1007,18 +983,18 @@ Portail national : campusen.sec.gouv.sn
           </div>
         </div>
 
-        {/* 3. Barre de saisie flottante et premium (780px max) */}
-        <div className="shrink-0 p-3 sm:p-5 bg-white border-t border-[#E0E7F0] z-10">
+        {/* 3. Barre de saisie flottante (780px max) */}
+        <div className="shrink-0 p-3 sm:p-5 bg-[var(--bg-app)] border-t border-[var(--border-main)] z-10">
           <div className="max-w-[780px] mx-auto">
             <form
               onSubmit={(e) => {
                 setSelectedSuggestion(null);
                 handleSubmit(e);
               }}
-              className="flex items-center gap-2 sm:gap-3 bg-white border border-[#E0E7F0] rounded-2xl px-3 sm:px-4 py-2 shadow-[0_4px_20px_rgba(11,40,89,0.06)] focus-within:border-[#10469B] focus-within:ring-2 focus-within:ring-[#10469B]/15 transition-all"
+              className="flex items-center gap-2 sm:gap-3 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-2xl px-3 sm:px-4 py-2 shadow-sm focus-within:border-[var(--gold-primary)] focus-within:ring-2 focus-within:ring-[var(--gold-primary)]/20 transition-all"
             >
-              {/* Icône d'étincelle / boussole à gauche */}
-              <div className="text-[#10469B] shrink-0 p-1">
+              {/* Icône d'étoile / boussole à gauche */}
+              <div className="text-[var(--gold-primary)] shrink-0 p-1">
                 <Sparkles className="w-5 h-5" />
               </div>
 
@@ -1031,40 +1007,40 @@ Portail national : campusen.sec.gouv.sn
                 onKeyDown={handleKeyDown}
                 placeholder="Pose ta question ou choisis une réponse ci-dessus..."
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-0 text-[14.5px] text-[#172B46] placeholder:text-[#94A3B8] focus:outline-none resize-none leading-relaxed py-1.5 max-h-32"
+                className="flex-1 bg-transparent border-0 text-[14.5px] font-medium text-[var(--text-main)] placeholder:text-[var(--text-dim)] focus:outline-none resize-none leading-relaxed py-1.5 max-h-32"
               />
 
               {/* Trombone / Pièce jointe optionnelle */}
               <button
                 type="button"
-                className="p-1.5 text-[#64748B] hover:text-[#0B2859] hover:bg-[#EDF4FD] rounded-lg transition-colors cursor-pointer shrink-0"
+                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer shrink-0"
                 title="Joindre un document"
               >
                 <Paperclip className="w-4.5 h-4.5" />
               </button>
 
-              {/* Bouton d'envoi circulaire en Bleu institutionnel #10469B */}
+              {/* Bouton d'envoi circulaire */}
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="Envoyer le message"
                 className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs ${
                   input.trim() && !isLoading
-                    ? "bg-[#10469B] hover:bg-[#0B2859] active:scale-95 text-white"
-                    : "bg-[#E0E7F0] text-[#94A3B8] cursor-not-allowed"
+                    ? "bg-[var(--gold-primary)] hover:brightness-110 active:scale-95 text-[#0C0D12]"
+                    : "bg-[var(--border-main)] text-[var(--text-dim)] cursor-not-allowed"
                 }`}
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
 
-            <p className="mt-2.5 text-center text-[11.5px] text-[#64748B]">
+            <p className="mt-2.5 text-center text-[11.5px] font-medium text-[var(--text-muted)]">
               Plateforme académique certifiée avec les filières nationales de{" "}
               <a
                 href="https://campusen.sec.gouv.sn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#10469B] hover:underline font-medium"
+                className="text-[var(--gold-primary)] hover:underline font-semibold"
               >
                 campusen.sec.gouv.sn
               </a>
