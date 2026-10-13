@@ -536,7 +536,7 @@ Portail national : campusen.sec.gouv.sn
           <div className="flex items-center gap-3">
             <div className="relative w-10 h-10 shrink-0">
               <Image
-                src="/SenOrientation.png"
+                src="/logo.png"
                 alt="Logo SenOrientation"
                 fill
                 sizes="40px"
@@ -877,12 +877,12 @@ Portail national : campusen.sec.gouv.sn
                 return (
                   <div key={msg.id} className="flex items-start gap-3.5 group pt-1 animate-fadeIn">
                     {/* Avatar officiel SO */}
-                    <div className="relative w-8 h-8 rounded-full bg-[#0B2859] border border-[#D3E3F8] shadow-2xs flex items-center justify-center shrink-0 mt-0.5 overflow-hidden">
+                    <div className="relative w-8 h-8 rounded-full bg-white border border-[#D3E3F8] shadow-xs flex items-center justify-center shrink-0 mt-0.5 overflow-hidden p-0.5">
                       <Image
-                        src="/SenOrientation.png"
-                        alt="SO"
-                        width={28}
-                        height={28}
+                        src="/logo.png"
+                        alt="Logo SenOrientation"
+                        width={26}
+                        height={26}
                         className="object-contain"
                       />
                     </div>
@@ -905,10 +905,10 @@ Portail national : campusen.sec.gouv.sn
                                 key={sIdx}
                                 onClick={() => handleSuggestionClick(sug)}
                                 disabled={isLoading}
-                                className={`text-left text-[13.5px] font-medium px-4 py-2.5 rounded-xl border flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
+                                className={`text-left text-[14px] font-semibold px-4 py-2.5 rounded-xl border flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
                                   isSelected
                                     ? "bg-[#10469B] text-white border-[#10469B] shadow-xs"
-                                    : "bg-white text-[#172B46] border-[#E0E7F0] hover:bg-[#EDF4FD] hover:border-[#BFD7F8] hover:text-[#10469B]"
+                                    : "bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#EDF4FD] hover:border-[#BFD7F8] hover:text-[#10469B]"
                                 } disabled:opacity-60 disabled:cursor-not-allowed`}
                               >
                                 <SuggestionIcon
@@ -963,10 +963,10 @@ Portail national : campusen.sec.gouv.sn
               /* ─── Message Utilisateur (Bleu institutionnel #10469B) ─── */
               return (
                 <div key={msg.id} className="flex flex-col items-end pt-1 animate-fadeIn">
-                  <div className="max-w-[85%] sm:max-w-[75%] bg-[#10469B] text-white rounded-2xl rounded-tr-xs px-4 sm:px-5 py-3 text-[14.5px] leading-relaxed shadow-xs">
+                  <div className="max-w-[85%] sm:max-w-[75%] bg-[#10469B] text-white rounded-2xl rounded-tr-xs px-4 sm:px-5 py-3 text-[15px] font-semibold leading-relaxed shadow-xs">
                     {msg.content}
                   </div>
-                  <div className="flex items-center gap-1 text-[11px] text-[#64748B] mt-1 mr-1">
+                  <div className="flex items-center gap-1 text-[11px] font-medium text-[#475569] mt-1 mr-1">
                     <span>{new Date(msg.createdAt || Date.now()).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
                     <CheckCheck className="w-3.5 h-3.5 text-[#10469B]" />
                   </div>
@@ -977,12 +977,12 @@ Portail national : campusen.sec.gouv.sn
             {/* Indicateur de réflexion */}
             {isLoading && (
               <div className="flex items-center gap-3.5 pt-1 animate-fadeIn">
-                <div className="relative w-8 h-8 rounded-full bg-[#0B2859] border border-[#D3E3F8] shadow-2xs flex items-center justify-center shrink-0 overflow-hidden">
+                <div className="relative w-8 h-8 rounded-full bg-white border border-[#D3E3F8] shadow-xs flex items-center justify-center shrink-0 overflow-hidden p-0.5">
                   <Image
-                    src="/SenOrientation.png"
-                    alt="SO"
-                    width={28}
-                    height={28}
+                    src="/logo.png"
+                    alt="Logo SenOrientation"
+                    width={26}
+                    height={26}
                     className="object-contain"
                   />
                 </div>

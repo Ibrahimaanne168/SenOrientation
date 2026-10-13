@@ -72,9 +72,9 @@ export default function LoginPage() {
       <div className="w-full max-w-md bg-white rounded-2xl border border-[#E0E7F0] shadow-[0_4px_24px_rgba(11,40,89,0.06)] overflow-hidden z-10 animate-fadeIn">
         {/* En-tête avec Logo SenOrientation officiel */}
         <div className="flex flex-col items-center text-center px-8 pt-9 pb-6">
-          <div className="mb-4 relative w-16 h-16 rounded-2xl bg-[#EDF4FD] border border-[#D3E3F8] flex items-center justify-center p-2.5 shadow-2xs">
+          <div className="mb-4 relative w-16 h-16 rounded-2xl bg-white border border-[#D3E3F8] flex items-center justify-center p-2 shadow-2xs">
             <Image
-              src="/SenOrientation.png"
+              src="/logo.png"
               alt="Logo SenOrientation"
               width={52}
               height={52}

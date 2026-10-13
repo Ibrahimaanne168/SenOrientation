@@ -51,9 +51,11 @@ html,
 body {
   font-family: var(--font-sans);
   background-color: #FFFFFF;
-  color: #172B46;
+  color: #0F172A;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .font-serif {
@@ -68,20 +70,22 @@ button,
 input,
 textarea,
 select {
-  font-family: inherit;
+  font-family: var(--font-sans);
 }
 
-/* ─── Rendu Markdown Académique pour les réponses du chatbot ─────────── */
+/* ─── Rendu Markdown Académique Appuyé pour les réponses du chatbot ─────────── */
 .bot-response-content {
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 15.5px;
   line-height: 1.65;
-  color: #172B46;
+  color: #0F172A;
+  font-weight: 550;
 }
 
 .bot-response-content p {
   margin: 0 0 0.85rem 0;
-  color: #172B46;
+  color: #0F172A;
+  font-weight: 550;
 }
 .bot-response-content p:last-child {
   margin-bottom: 0;
@@ -92,37 +96,39 @@ select {
 .bot-response-content h3 {
   font-family: var(--font-serif);
   color: #0B2859;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
 .bot-response-content h1 {
-  font-size: 1.35rem;
-  margin-top: 1.25rem;
+  font-size: 1.4rem;
+  margin-top: 1.3rem;
   margin-bottom: 0.5rem;
 }
 
 .bot-response-content h2 {
-  font-size: 1.2rem;
-  margin-top: 1.15rem;
+  font-size: 1.25rem;
+  margin-top: 1.2rem;
   margin-bottom: 0.45rem;
 }
 
 .bot-response-content h3 {
-  font-size: 1.05rem;
-  margin-top: 1rem;
+  font-size: 1.1rem;
+  margin-top: 1.05rem;
   margin-bottom: 0.35rem;
 }
 
 .bot-response-content ul,
 .bot-response-content ol {
   margin: 0 0 0.85rem 0;
-  padding-left: 1.25rem;
-  color: #172B46;
+  padding-left: 1.35rem;
+  color: #0F172A;
+  font-weight: 500;
 }
 .bot-response-content li {
   margin-bottom: 0.35rem;
-  color: #172B46;
+  color: #0F172A;
+  font-weight: 500;
 }
 .bot-response-content ul {
   list-style-type: disc;
@@ -133,7 +139,7 @@ select {
 
 .bot-response-content strong,
 .bot-response-content b {
-  font-weight: 600;
+  font-weight: 700;
   color: #0B2859;
 }
 
@@ -141,7 +147,7 @@ select {
   color: #10469B;
   text-decoration: underline;
   text-underline-offset: 3px;
-  font-weight: 500;
+  font-weight: 600;
 }
 .bot-response-content a:hover {
   color: #0B2859;

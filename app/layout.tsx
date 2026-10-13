@@ -5,14 +5,14 @@ import "./globals.css";
 const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
   variable: "--font-serif",
-  weight: ["400", "600", "700"],
+  weight: ["400", "600", "700", "800", "900"],
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description:
     "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles.",
   icons: {
-    icon: "/SenOrientation.png",
+    icon: "/logo.png",
   },
 };
 

@@ -19,6 +19,8 @@ export type IntentId =
   | "intent_demander_prenom"
   | "intent_demander_situation_scolaire"
   | "intent_demander_serie"
+  | "intent_clarifier_s1_s2"
+  | "intent_clarifier_l1_l2"
   | "intent_reorientation"
   | "intent_post_bac_objectifs"
   | "intent_avant_bac_series"
@@ -940,33 +942,101 @@ export function heuristicUpdateProfile(
 
   // 5. Détection de la série (si au lycée, terminale ou post-bac)
   if (!profile.serie) {
+    const latestClean = latestLower;
     const cleanLower = text.toLowerCase();
-    if (/\b(s1a)\b/i.test(text)) profile.serie = "S1A";
-    else if (/\b(s2a)\b/i.test(text)) profile.serie = "S2A";
-    else if (/\b(s1)\b/i.test(text)) profile.serie = "S1";
-    else if (/\b(s2)\b/i.test(text)) profile.serie = "S2";
-    else if (/\b(s3)\b/i.test(text)) profile.serie = "S3";
-    else if (/\b(s4)\b/i.test(text)) profile.serie = "S4";
-    else if (/\b(s5)\b/i.test(text)) profile.serie = "S5";
-    else if (/\b(l1a)\b/i.test(text)) profile.serie = "L1a";
-    else if (/\b(l1b)\b/i.test(text)) profile.serie = "L1b";
-    else if (/\bl['’]1\b|\bl1['’]\b/i.test(text)) profile.serie = "L'1";
-    else if (/\b(l1)\b/i.test(text)) profile.serie = "L1";
-    else if (/\b(l2)\b/i.test(text)) profile.serie = "L2";
-    else if (/\b(la)\b/i.test(text) && !cleanLower.includes("la ")) profile.serie = "LA";
-    else if (/\b(l-ar|l\s*ar)\b/i.test(text) || cleanLower.includes("franco-arabe") || cleanLower.includes("franco arabe")) {
-      profile.serie = cleanLower.includes("s1") ? "S1A" : cleanLower.includes("s2") ? "S2A" : "L-AR";
+
+    // Vérifier si le DERNIER message choisit précisément une série (priorité sur l'historique)
+    const latestHasS1only = (/\bs1\b/i.test(latestMessage) || latestClean.includes("série s1") || latestClean.includes("serie s1")) && !(/\bs2\b/i.test(latestMessage));
+    const latestHasS2only = (/\bs2\b/i.test(latestMessage) || latestClean.includes("série s2") || latestClean.includes("serie s2")) && !(/\bs1\b/i.test(latestMessage));
+    const latestHasL1only = (/\bl1\b/i.test(latestMessage) || latestClean.includes("série l1") || latestClean.includes("serie l1")) && !(/\bl2\b/i.test(latestMessage));
+    const latestHasL2only = (/\bl2\b/i.test(latestMessage) || latestClean.includes("série l2") || latestClean.includes("serie l2")) && !(/\bl1\b/i.test(latestMessage));
+
+    if (latestHasS1only) {
+      profile.serie = "S1";
+      profile.questions_answered["intent_clarifier_s1_s2"] = "S1";
+    } else if (latestHasS2only) {
+      profile.serie = "S2";
+      profile.questions_answered["intent_clarifier_s1_s2"] = "S2";
+    } else if (latestHasL1only) {
+      profile.serie = "L1";
+      profile.questions_answered["intent_clarifier_l1_l2"] = "L1";
+    } else if (latestHasL2only) {
+      profile.serie = "L2";
+      profile.questions_answered["intent_clarifier_l1_l2"] = "L2";
+    } else {
+      const hasS1andS2 = (/\bs1\b/i.test(latestMessage) && /\bs2\b/i.test(latestMessage)) || latestClean.includes("s1 ou s2") || latestClean.includes("s1/s2");
+      const hasL1andL2 = (/\bl1\b/i.test(latestMessage) && /\bl2\b/i.test(latestMessage)) || latestClean.includes("l1 ou l2") || latestClean.includes("l1/l2");
+
+      if (hasS1andS2) {
+        profile.statut_parcours = "bac";
+        if (!profile.niveau) profile.niveau = "Terminale / Bachelier";
+        profile.questions_answered["intent_demander_serie"] = "Bac S1 ou S2";
+        if (!profile.questions_asked.includes("intent_demander_serie")) {
+          profile.questions_asked.push("intent_demander_serie");
+        }
+      } else if (hasL1andL2) {
+        profile.statut_parcours = "bac";
+        if (!profile.niveau) profile.niveau = "Terminale / Bachelier";
+        profile.questions_answered["intent_demander_serie"] = "Bac L1 ou L2";
+        if (!profile.questions_asked.includes("intent_demander_serie")) {
+          profile.questions_asked.push("intent_demander_serie");
+        }
+      } else if (latestClean.includes("hésite") || latestClean.includes("hesite")) {
+        if (profile.questions_answered["intent_demander_serie"] === "Bac S1 ou S2") {
+          profile.questions_answered["intent_clarifier_s1_s2"] = "hésitation";
+        } else if (profile.questions_answered["intent_demander_serie"] === "Bac L1 ou L2") {
+          profile.questions_answered["intent_clarifier_l1_l2"] = "hésitation";
+        }
+      } else if (/\b(s1a)\b/i.test(text)) {
+        profile.serie = "S1A";
+        profile.questions_answered["intent_clarifier_s1_s2"] = "S1A";
+      } else if (/\b(s2a)\b/i.test(text)) {
+        profile.serie = "S2A";
+        profile.questions_answered["intent_clarifier_s1_s2"] = "S2A";
+      } else if (/\b(s1)\b/i.test(text) && !/\bs2\b/i.test(text)) {
+        profile.serie = "S1";
+        profile.questions_answered["intent_clarifier_s1_s2"] = "S1";
+      } else if (/\b(s2)\b/i.test(text) && !/\bs1\b/i.test(text)) {
+        profile.serie = "S2";
+        profile.questions_answered["intent_clarifier_s1_s2"] = "S2";
+      } else if (/\b(s3)\b/i.test(text)) profile.serie = "S3";
+      else if (/\b(s4)\b/i.test(text)) profile.serie = "S4";
+      else if (/\b(s5)\b/i.test(text)) profile.serie = "S5";
+      else if (/\b(l1a)\b/i.test(text)) {
+        profile.serie = "L1a";
+        profile.questions_answered["intent_clarifier_l1_l2"] = "L1a";
+      } else if (/\b(l1b)\b/i.test(text)) {
+        profile.serie = "L1b";
+        profile.questions_answered["intent_clarifier_l1_l2"] = "L1b";
+      } else if (/\bl['’]1\b|\bl1['’]\b/i.test(text)) {
+        profile.serie = "L'1";
+        profile.questions_answered["intent_clarifier_l1_l2"] = "L'1";
+      } else if (/\b(l1)\b/i.test(text) && !/\bl2\b/i.test(text)) {
+        profile.serie = "L1";
+        profile.questions_answered["intent_clarifier_l1_l2"] = "L1";
+      } else if (/\b(l2)\b/i.test(text) && !/\bl1\b/i.test(text)) {
+        profile.serie = "L2";
+        profile.questions_answered["intent_clarifier_l1_l2"] = "L2";
+      } else if (/\b(la)\b/i.test(text) && !cleanLower.includes("la ")) profile.serie = "LA";
+      else if (/\b(l-ar|l\s*ar)\b/i.test(text) || cleanLower.includes("franco-arabe") || cleanLower.includes("franco arabe")) {
+        profile.serie = cleanLower.includes("s1") ? "S1A" : cleanLower.includes("s2") ? "S2A" : "L-AR";
+      }
+      else if (cleanLower.includes("littéraire")) profile.serie = "L2";
+      else if (cleanLower.includes("l'")) profile.serie = "L'1";
+      else if (/\b(steg|bac\s*g|terminale\s*g|série\s*g|série\s*de\s*bac\s*g)\b/i.test(text)) profile.serie = "G";
+      else if (/\b(t1)\b/i.test(text)) profile.serie = "T1";
+      else if (/\b(t2)\b/i.test(text)) profile.serie = "T2";
+      else if (/\b(f6)\b/i.test(text)) profile.serie = "F6";
+      else if (/\b(stidd)\b/i.test(text)) profile.serie = "STIDD";
+      else if (/\b(g)\b/i.test(text) && !cleanLower.includes("génie") && (cleanLower.includes("bac") || cleanLower.includes("série") || cleanLower.includes("gestion"))) profile.serie = "G";
     }
-    else if (cleanLower.includes("littéraire")) profile.serie = "L2";
-    else if (cleanLower.includes("l'")) profile.serie = "L'1";
-    else if (/\b(steg|bac\s*g|terminale\s*g|série\s*g|série\s*de\s*bac\s*g)\b/i.test(text)) profile.serie = "G";
-    else if (/\b(t1)\b/i.test(text)) profile.serie = "T1";
-    else if (/\b(t2)\b/i.test(text)) profile.serie = "T2";
-    else if (/\b(f6)\b/i.test(text)) profile.serie = "F6";
-    else if (/\b(stidd)\b/i.test(text)) profile.serie = "STIDD";
-    else if (/\b(g)\b/i.test(text) && !cleanLower.includes("génie") && (cleanLower.includes("bac") || cleanLower.includes("série") || cleanLower.includes("gestion"))) profile.serie = "G";
 
     if (profile.serie) {
+      if (profile.questions_answered["intent_demander_serie"] === "Bac S1 ou S2" && !profile.questions_asked.includes("intent_clarifier_s1_s2")) {
+        profile.questions_asked.push("intent_clarifier_s1_s2");
+      } else if (profile.questions_answered["intent_demander_serie"] === "Bac L1 ou L2" && !profile.questions_asked.includes("intent_clarifier_l1_l2")) {
+        profile.questions_asked.push("intent_clarifier_l1_l2");
+      }
       profile.questions_answered["intent_demander_situation_scolaire"] = `${profile.niveau || "Bac"} ${profile.serie}`;
       if (!profile.statut_parcours) {
         profile.statut_parcours = "bac";
@@ -1334,8 +1404,26 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
   }
 
   // ── PHASE 1 : IDENTITÉ & SITUATION SCOLAIRE (Prénom, niveau, série) ─────
-  // 1. Demande du prénom si inconnu
-  if (!profile.prenom && lastAskedIntent !== "intent_demander_prenom") {
+  const hasAcademicContext = Boolean(
+    profile.serie ||
+    profile.niveau ||
+    profile.statut_parcours ||
+    profile.type_post_bac ||
+    (profile.questions_answered && (
+      profile.questions_answered["intent_demander_serie"] ||
+      profile.questions_answered["intent_demander_situation_scolaire"] ||
+      profile.questions_answered["intent_clarifier_s1_s2"] ||
+      profile.questions_answered["intent_clarifier_l1_l2"]
+    )) ||
+    profile.confirmed_interests.length > 0 ||
+    profile.matieres_aimees.length > 0 ||
+    profile.points_forts.length > 0
+  );
+
+  const alreadyAskedPrenom = profile.questions_asked.includes("intent_demander_prenom");
+
+  // 1. Demande du prénom si inconnu (uniquement à l'ouverture à blanc quand aucun contexte n'est encore fourni)
+  if (!profile.prenom && !hasAcademicContext && !alreadyAskedPrenom && lastAskedIntent !== "intent_demander_prenom") {
     return {
       type: "question",
       intent_id: "intent_demander_prenom",
@@ -1347,7 +1435,97 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
-  // 2. Demande de la situation scolaire / niveau si inconnu
+  // 2. Si l'élève a indiqué "Bac S1 ou S2" : Clarifier sans attendre S1 vs S2
+  if (
+    !profile.serie &&
+    profile.questions_answered["intent_demander_serie"] === "Bac S1 ou S2" &&
+    !isAsked("intent_clarifier_s1_s2") &&
+    lastAskedIntent !== "intent_clarifier_s1_s2"
+  ) {
+    return {
+      type: "question",
+      intent_id: "intent_clarifier_s1_s2",
+      question: `Félicitations pour ton parcours scientifique${namePart ? " " + namePart : ""} ! Es-tu plus précisément en série S1 (sciences exactes & maths) ou en série S2 (sciences expérimentales & SVT) ?`,
+      suggestions: [
+        "Série S1 (Sciences exactes & maths)",
+        "Série S2 (Sciences expérimentales & SVT)",
+        "J'hésite encore entre S1 et S2",
+      ],
+      vise: "Départager entre série S1 (maths/physique) et série S2 (SVT/biologie)",
+      phase: 1,
+      etape: 1,
+    };
+  }
+
+  // 3. Si l'élève a indiqué "Bac L1 ou L2" : Clarifier sans attendre L1 vs L2
+  if (
+    !profile.serie &&
+    profile.questions_answered["intent_demander_serie"] === "Bac L1 ou L2" &&
+    !isAsked("intent_clarifier_l1_l2") &&
+    lastAskedIntent !== "intent_clarifier_l1_l2"
+  ) {
+    return {
+      type: "question",
+      intent_id: "intent_clarifier_l1_l2",
+      question: `Très bien${namePart ? " " + namePart : ""} ! Es-tu en série L1 (langues anciennes, lettres classiques & civilisations) ou en série L2 (sciences humaines et sociales) ?`,
+      suggestions: [
+        "Série L1 (Langues & lettres classiques)",
+        "Série L2 (Sciences sociales & littérature)",
+        "J'hésite encore entre L1 et L2",
+      ],
+      vise: "Départager entre série L1 (lettres/langues) et série L2 (sciences humaines/droit)",
+      phase: 1,
+      etape: 1,
+    };
+  }
+
+  // 4. Si hésitation sur S1 vs S2 : aider à départager par les matières préférées
+  if (
+    !profile.serie &&
+    profile.questions_answered["intent_clarifier_s1_s2"] === "hésitation" &&
+    !isAsked("intent_matieres_preferees") &&
+    lastAskedIntent !== "intent_matieres_preferees"
+  ) {
+    return {
+      type: "question",
+      intent_id: "intent_matieres_preferees",
+      question: `C'est tout à fait naturel d'hésiter entre les deux filières scientifiques. Pour choisir celle où tu auras la meilleure mention : te sens-tu plus fort et stimulé par les mathématiques et la physique théorique (S1), ou par les sciences de la vie (SVT) et l'expérimentation biologique (S2) ?`,
+      suggestions: [
+        "Maths & Sciences Physiques (S1)",
+        "SVT, Biologie & Chimie (S2)",
+        "Les deux me plaisent autant",
+        "Je ne sais pas",
+      ],
+      vise: "Départager l'hésitation S1 vs S2 par les matières dominantes",
+      phase: 1,
+      etape: 1,
+    };
+  }
+
+  // 5. Si hésitation sur L1 vs L2 : aider à départager par les matières préférées
+  if (
+    !profile.serie &&
+    profile.questions_answered["intent_clarifier_l1_l2"] === "hésitation" &&
+    !isAsked("intent_matieres_preferees") &&
+    lastAskedIntent !== "intent_matieres_preferees"
+  ) {
+    return {
+      type: "question",
+      intent_id: "intent_matieres_preferees",
+      question: `C'est très courant d'hésiter entre les séries littéraires. Préfères-tu approfondir les langues vivantes, le latin et la traduction (L1), ou l'histoire, la philosophie et les sciences sociales (L2) ?`,
+      suggestions: [
+        "Langues vivantes & lettres classiques (L1)",
+        "Histoire, philosophie & société (L2)",
+        "Les deux me plaisent autant",
+        "Je ne sais pas",
+      ],
+      vise: "Départager l'hésitation L1 vs L2 par les matières dominantes",
+      phase: 1,
+      etape: 1,
+    };
+  }
+
+  // 6. Demande de la situation scolaire / niveau si inconnu
   if (!profile.serie && !profile.niveau && !profile.statut_parcours && lastAskedIntent !== "intent_demander_situation_scolaire") {
     return {
       type: "question",
@@ -1365,7 +1543,7 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
-  // 3. Demande de la série du Bac (si Terminale, Nouveau Bachelier ou public Bac) si non encore précisée
+  // 7. Demande de la série du Bac (si Terminale, Nouveau Bachelier ou public Bac) si non encore précisée
   const isBacAudience =
     profile.niveau === "Terminale" ||
     profile.niveau === "Nouveau Bachelier" ||

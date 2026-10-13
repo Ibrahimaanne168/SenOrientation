@@ -285,8 +285,50 @@ async function runTests() {
   );
   console.log(`  Question d'ouverture passerelle: "${nextQ16.question}"`);
 
+  // --- SCÉNARIO 17 : Clic direct sur 'Bac S1 ou S2' sans prénom préalable ---
+  console.log("\n--- Scénario 17 : Clic direct sur 'Bac S1 ou S2' sans prénom préalable ---");
+  const prof17 = heuristicUpdateProfile("Bac S1 ou S2", INITIAL_PROFILE);
+  assert(prof17.statut_parcours === "bac", "Statut parcours bien détecté comme Bac");
+  assert(prof17.questions_answered["intent_demander_serie"] === "Bac S1 ou S2", "Réponse 'Bac S1 ou S2' bien enregistrée");
+  assert(!prof17.prenom, "Aucun prénom fourni (utilisateur anonyme direct)");
+  const nextQ17 = getNextOrientationQuestion(prof17);
+  assert(
+    nextQ17.intent_id === "intent_clarifier_s1_s2",
+    "Ne demande PAS le prénom par erreur : clarifie immédiatement entre S1 et S2"
+  );
+  assert(
+    !nextQ17.question.toLowerCase().includes("comment puis-je t'appeler"),
+    "La question ne réclame pas le prénom"
+  );
+  assert(
+    nextQ17.suggestions.some((s) => s.includes("S1")),
+    "Propose le choix précis Série S1"
+  );
+  assert(
+    nextQ17.suggestions.some((s) => s.includes("S2")),
+    "Propose le choix précis Série S2"
+  );
+  console.log(`  Question de clarification scientifique: "${nextQ17.question}"`);
+
+  // Suite Scénario 17 : Sélection de S1
+  const history17 = [
+    { role: "user", content: "Bac S1 ou S2" },
+    { role: "assistant", content: JSON.stringify({ reply: nextQ17.question, suggestions: nextQ17.suggestions }) },
+  ];
+  const prof17_step2 = heuristicUpdateProfile("Série S1 (Sciences exactes & maths)", history17, prof17);
+  assert(prof17_step2.serie === "S1", "Série S1 correctement assignée");
+  const nextQ17_step2 = getNextOrientationQuestion(prof17_step2);
+  assert(
+    nextQ17_step2.intent_id === "intent_decouvrir_interets",
+    "Passe directement aux domaines d'intérêt adaptés à la série S1"
+  );
+  assert(
+    nextQ17_step2.suggestions.some((s) => s.includes("Informatique") || s.includes("Ingénieurs")),
+    "Suggestions adaptées à la série S1"
+  );
+
   console.log("\n=================================================");
-  console.log("RÉSULTAT GLOBAL DES TESTS : LES 16 SCÉNARIOS SONT CONFORMES !");
+  console.log("RÉSULTAT GLOBAL DES TESTS : LES 17 SCÉNARIOS SONT CONFORMES !");
   console.log("=================================================");
 }
 
