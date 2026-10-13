@@ -18,6 +18,7 @@ export interface Hypothese {
 export type IntentId =
   | "intent_demander_prenom"
   | "intent_demander_situation_scolaire"
+  | "intent_demander_serie"
   | "intent_reorientation"
   | "intent_post_bac_objectifs"
   | "intent_avant_bac_series"
@@ -441,7 +442,13 @@ export function heuristicUpdateProfile(
   };
 
   const latestLower = latestMessage.toLowerCase().trim();
-  const text = (history.map((h) => h.content).join(" ") + " " + latestMessage).toLowerCase();
+  // IMPORTANT : N'extraire les faits et centres d'intérêt QUE depuis les messages de l'UTILISATEUR
+  // pour éviter toute pollution par les questions ou suggestions de l'assistant !
+  const userHistoryText = history
+    .filter((h) => h.role === "user")
+    .map((h) => h.content)
+    .join(" ");
+  const text = (userHistoryText + " " + latestMessage).toLowerCase();
 
   // 1. Détection de "Je ne sais pas" (Partie 4.3)
   if (
@@ -617,7 +624,7 @@ export function heuristicUpdateProfile(
     else if (/\b(l1)\b/i.test(text)) profile.serie = "L1";
     else if (/\b(l2)\b/i.test(text) || text.includes("littéraire")) profile.serie = "L2";
     else if (text.includes("l'")) profile.serie = "L'";
-    else if (/\b(steg|bac\s*g|terminale\s*g|série\s*g|série\s*de\s*bac\s*g|\bg\b)/i.test(text)) profile.serie = "G";
+    else if (/\b(steg|bac\s*g|terminale\s*g|série\s*g|série\s*de\s*bac\s*g)\b/i.test(text)) profile.serie = "G";
     else if (/\b(t1)\b/i.test(text)) profile.serie = "T1";
     else if (/\b(t2)\b/i.test(text)) profile.serie = "T2";
 
@@ -944,8 +951,125 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
-  // ── APPROFONDISSEMENT D'UN DOMAINE CONFIRMÉ (Partie 9 — Test 7) ───────────
-  // Si un domaine précis est confirmé mais sans projet sous-jacent détaillé
+  // ── PHASE 1 : IDENTITÉ & SITUATION SCOLAIRE (Prénom, niveau, série) ─────
+  // 1. Demande du prénom si inconnu
+  if (!profile.prenom && lastAskedIntent !== "intent_demander_prenom") {
+    return {
+      type: "question",
+      intent_id: "intent_demander_prenom",
+      question: "Bonjour ! Je suis ton conseiller d'orientation SenOrientation. Pour faire connaissance et personnaliser notre échange, comment puis-je t'appeler ?",
+      suggestions: ["Je préfère ne pas le dire"],
+      vise: "Faire connaissance en demandant le prénom",
+      phase: 1,
+      etape: 1,
+    };
+  }
+
+  // 2. Demande de la situation scolaire / niveau si inconnu
+  if (!profile.serie && !profile.niveau && !profile.statut_parcours && lastAskedIntent !== "intent_demander_situation_scolaire") {
+    return {
+      type: "question",
+      intent_id: "intent_demander_situation_scolaire",
+      question: `Ravi de faire ta connaissance${namePart ? " " + namePart : ""} ! Où en es-tu actuellement dans tes études (collège, lycée en seconde/première, classe de Terminale, nouveau bachelier, ou déjà étudiant) ?`,
+      suggestions: [
+        "Collège (3e / BFEM)",
+        "Lycée (Seconde ou 1ère)",
+        "Terminale ou Nouveau bachelier",
+        "Étudiant ou Réorientation",
+      ],
+      vise: "Identifier le niveau scolaire (avant-bac, bac ou post-bac) et la situation",
+      phase: 1,
+      etape: 1,
+    };
+  }
+
+  // 3. Demande de la série du Bac (si Terminale, Nouveau Bachelier ou public Bac) si non encore précisée
+  const isBacAudience =
+    profile.niveau === "Terminale" ||
+    profile.niveau === "Nouveau Bachelier" ||
+    profile.statut_parcours === "bac";
+
+  if (isBacAudience && !profile.serie && !isAsked("intent_demander_serie") && lastAskedIntent !== "intent_demander_serie") {
+    return {
+      type: "question",
+      intent_id: "intent_demander_serie",
+      question: `Félicitations pour ton parcours${namePart ? " " + namePart : ""} ! Quelle est ta série de Bac (ou celle que tu prépares cette année) ?`,
+      suggestions: [
+        "Bac S1 ou S2",
+        "Bac L1 ou L2",
+        "Bac G ou STEG",
+        "Bac technique T1 ou T2",
+        "Autre série",
+      ],
+      vise: "Identifier la série de Baccalauréat avant d'explorer les formations",
+      phase: 1,
+      etape: 1,
+    };
+  }
+
+  // 4. Si profil post-bac réorientation ou passerelle : cadrer le motif
+  if (profile.type_post_bac === "reorientation" && !isAsked("intent_reorientation") && lastAskedIntent !== "intent_reorientation") {
+    return {
+      type: "question",
+      intent_id: "intent_reorientation",
+      question: `${nameGreet}qu'est-ce qui a été difficile ou ne t'a pas convenu dans ton parcours initial (trop de théorie, mauvaise attribution Campusen, manque d'intérêt), et quel nouveau cap aimerais-tu prendre ?`,
+      suggestions: [
+        "Filière courte et pratique (BTS / Licence pro)",
+        "Changer vers l'informatique et le numérique",
+        "Changer vers la gestion et le commerce",
+        "Changer vers la santé ou le social",
+      ],
+      vise: "Comprendre les motifs de réorientation et le nouveau cap",
+      phase: 1,
+      etape: 2,
+    };
+  }
+
+  if (profile.type_post_bac === "passerelle_poursuite" && !isAsked("intent_post_bac_objectifs") && lastAskedIntent !== "intent_post_bac_objectifs") {
+    return {
+      type: "question",
+      intent_id: "intent_post_bac_objectifs",
+      question: `${nameGreet}pour ta poursuite d'études après ton diplôme actuel (BTS, DUT ou Licence), vises-tu une Licence professionnelle, un Master universitaire classique (Bac+5), ou un concours d'école ?`,
+      suggestions: [
+        "Licence professionnelle spécialisée",
+        "Master universitaire (Bac+5)",
+        "Concours d'école d'ingénieur ou gestion",
+        "Je ne sais pas encore",
+      ],
+      vise: "Préciser la passerelle de poursuite d'études post-bac",
+      phase: 6,
+      etape: 4,
+    };
+  }
+
+  // ── PHASE 2 : DÉCOUVERTE DES GRANDS CENTRES D'INTÉRÊT (Partie 5) ───────────
+  // Ne présume d'aucun domaine : demande d'abord les grands univers !
+  if (profile.confirmed_interests.length === 0 && profile.interets_principaux.length === 0 && !isAsked("intent_decouvrir_interets") && lastAskedIntent !== "intent_decouvrir_interets") {
+    const contextPrefix = profile.serie
+      ? `Avec ta série ${profile.serie}, de nombreuses opportunités s'offrent à toi. `
+      : profile.niveau
+      ? `Pour ton niveau (${profile.niveau}), `
+      : "";
+    return {
+      type: "question",
+      intent_id: "intent_decouvrir_interets",
+      question: `${contextPrefix}Parmi ces grands univers professionnels, lesquels t'attirent le plus au quotidien ?`,
+      suggestions: [
+        "Sciences, maths & informatique",
+        "Médecine, santé & biologie",
+        "Ingénierie, mécanique & BTP",
+        "Commerce, gestion & finance",
+        "Droit, communication & lettres",
+        "Je ne sais pas encore",
+      ],
+      vise: "Découvrir les centres d'intérêt majeurs sans présumer d'un domaine",
+      phase: 2,
+      etape: 2,
+    };
+  }
+
+  // ── PHASE 5 : APPROFONDISSEMENT D'UN DOMAINE CONFIRMÉ (Partie 9 — Test 7) ──
+  // UNIQUEMENT après que l'élève a clairement exprimé son intérêt pour ce domaine !
   const topDomain = profile.confirmed_interests[0] || profile.interets_principaux[0];
   if (topDomain && !profile.projet && !isAsked("intent_approfondir_domaine") && lastAskedIntent !== "intent_approfondir_domaine") {
     if (topDomain.includes("Informatique")) {
@@ -996,94 +1120,6 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
         etape: 3,
       };
     }
-  }
-
-  // ── PHASE 1 : SITUATION SCOLAIRE (Prénom, niveau, série) ──────────────────
-  if (!profile.prenom && lastAskedIntent !== "intent_demander_prenom") {
-    return {
-      type: "question",
-      intent_id: "intent_demander_prenom",
-      question: "Bonjour ! Je suis ton conseiller d'orientation SenOrientation. Pour faire connaissance et personnaliser notre échange, comment puis-je t'appeler ?",
-      suggestions: ["Je préfère ne pas le dire"],
-      vise: "Faire connaissance en demandant le prénom",
-      phase: 1,
-      etape: 1,
-    };
-  }
-
-  if (!profile.serie && !profile.niveau && !profile.statut_parcours && lastAskedIntent !== "intent_demander_situation_scolaire") {
-    return {
-      type: "question",
-      intent_id: "intent_demander_situation_scolaire",
-      question: `Ravi de faire ta connaissance${namePart ? " " + namePart : ""} ! Où en es-tu actuellement dans tes études (collège, lycée en seconde/première, classe de Terminale, nouveau bachelier, ou déjà étudiant) ?`,
-      suggestions: [
-        "Collège (3e / BFEM)",
-        "Lycée (Seconde ou 1ère)",
-        "Terminale ou Nouveau bachelier",
-        "Étudiant ou Réorientation",
-      ],
-      vise: "Identifier le niveau scolaire (avant-bac, bac ou post-bac) et la situation",
-      phase: 1,
-      etape: 1,
-    };
-  }
-
-  if (profile.type_post_bac === "reorientation" && !isAsked("intent_reorientation") && lastAskedIntent !== "intent_reorientation") {
-    return {
-      type: "question",
-      intent_id: "intent_reorientation",
-      question: `${nameGreet}qu'est-ce qui a été difficile ou ne t'a pas convenu dans ton parcours initial (trop de théorie, mauvaise attribution Campusen, manque d'intérêt), et quel nouveau cap aimerais-tu prendre ?`,
-      suggestions: [
-        "Filière courte et pratique (BTS / Licence pro)",
-        "Changer vers l'informatique et le numérique",
-        "Changer vers la gestion et le commerce",
-        "Changer vers la santé ou le social",
-      ],
-      vise: "Comprendre les motifs de réorientation et le nouveau cap",
-      phase: 1,
-      etape: 2,
-    };
-  }
-
-  if (profile.type_post_bac === "passerelle_poursuite" && !isAsked("intent_post_bac_objectifs") && lastAskedIntent !== "intent_post_bac_objectifs") {
-    return {
-      type: "question",
-      intent_id: "intent_post_bac_objectifs",
-      question: `${nameGreet}pour ta poursuite d'études après ton diplôme actuel (BTS, DUT ou Licence), vises-tu une Licence professionnelle, un Master universitaire classique (Bac+5), ou un concours d'école ?`,
-      suggestions: [
-        "Licence professionnelle spécialisée",
-        "Master universitaire (Bac+5)",
-        "Concours d'école d'ingénieur ou gestion",
-        "Je ne sais pas encore",
-      ],
-      vise: "Préciser la passerelle de poursuite d'études post-bac",
-      phase: 6,
-      etape: 4,
-    };
-  }
-
-  // ── PHASE 2 : DÉCOUVERTE DES CENTRES D'INTÉRÊT (Partie 5) ────────────────
-  if (profile.confirmed_interests.length === 0 && profile.interets_principaux.length === 0 && !isAsked("intent_decouvrir_interets") && lastAskedIntent !== "intent_decouvrir_interets") {
-    const contextPrefix = profile.serie
-      ? `Intéressant avec ta série ${profile.serie}. `
-      : profile.niveau
-      ? `Parfait pour ton niveau (${profile.niveau}). `
-      : "";
-    return {
-      type: "question",
-      intent_id: "intent_decouvrir_interets",
-      question: `${contextPrefix}Pour cibler ce qui te correspond vraiment, quels sont les domaines qui t'attirent le plus au quotidien ?`,
-      suggestions: [
-        "Sciences, maths & informatique",
-        "Médecine, santé & biologie",
-        "Commerce, gestion & finance",
-        "Droit, communication & lettres",
-        "Je ne sais pas encore",
-      ],
-      vise: "Découvrir les centres d'intérêt majeurs",
-      phase: 2,
-      etape: 2,
-    };
   }
 
   // ── PHASE 4 : MATIÈRES ET APTITUDES (Partie 5) ───────────────────────────

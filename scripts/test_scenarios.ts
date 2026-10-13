@@ -174,7 +174,7 @@ async function runTests() {
   // --- SCÉNARIO 13 : Post-Bac - Poursuite d'études / Passerelle après BTS/DUT ---
   console.log("\n--- Scénario 13 : Post-Bac - Passerelle de poursuite d'études après BTS/DUT ---");
   const prof13 = heuristicUpdateProfile(
-    "Bonjour, j'ai terminé mon BTS en informatique et je cherche une passerelle pour poursuivre en Licence professionnelle ou Master",
+    "Bonjour, je m'appelle Abdoulaye, j'ai terminé mon BTS en informatique et je cherche une passerelle pour poursuivre en Licence professionnelle ou Master",
     INITIAL_PROFILE
   );
   assert(prof13.statut_parcours === "post_bac", "Statut post-bac détecté pour titulaire de BTS");
@@ -188,8 +188,47 @@ async function runTests() {
   );
   console.log(`  Question pour poursuite post-BTS: "${nextQ13.question}"`);
 
+  // --- SCÉNARIO 14 : Nouveau bachelier (cas réel de l'utilisateur) ---
+  console.log("\n--- Scénario 14 : Nouveau bachelier - enchaînement logique vers la série ---");
+  const history14 = [
+    { role: "user", content: "Ibrahima" },
+    {
+      role: "assistant",
+      content:
+        '{"reply":"Ravi de faire ta connaissance Ibrahima ! Où en es-tu actuellement dans tes études ?","suggestions":["Collège (3e / BFEM)","Lycée (Seconde ou 1ère)","Terminale ou Nouveau bachelier","Étudiant ou Réorientation"]}',
+    },
+  ];
+  const prof14 = heuristicUpdateProfile(
+    "Nouveau bachelier",
+    history14,
+    { ...INITIAL_PROFILE, prenom: "Ibrahima" }
+  );
+
+  assert(prof14.prenom === "Ibrahima", "Prénom Ibrahima conservé");
+  assert(prof14.niveau === "Nouveau Bachelier", "Niveau Nouveau Bachelier reconnu");
+  assert(prof14.serie === null, "Aucune série attribuée par défaut ou par erreur");
+  assert(
+    !prof14.interets_principaux.includes("Commerce & Gestion"),
+    "La gestion n'est PAS attribuée par erreur à partir des suggestions de l'assistant"
+  );
+  assert(
+    prof14.confirmed_interests.length === 0,
+    "Aucun domaine prématurément confirmé"
+  );
+
+  const nextQ14 = getNextOrientationQuestion(prof14);
+  assert(
+    nextQ14.intent_id === "intent_demander_serie",
+    "Demande logiquement la série du Bac après avoir su qu'il est nouveau bachelier"
+  );
+  assert(
+    !nextQ14.question.toLowerCase().includes("gestion"),
+    "La question ne parle PAS de gestion de manière prématurée"
+  );
+  console.log(`  Question logique pour Ibrahima: "${nextQ14.question}"`);
+
   console.log("\n=================================================");
-  console.log("RÉSULTAT GLOBAL DES TESTS : LES 13 SCÉNARIOS SONT CONFORMES !");
+  console.log("RÉSULTAT GLOBAL DES TESTS : LES 14 SCÉNARIOS SONT CONFORMES !");
   console.log("=================================================");
 }
 
