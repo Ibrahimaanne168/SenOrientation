@@ -19,6 +19,7 @@ import {
   heuristicUpdateProfile,
   mergeProfileUpdate,
   getNextOrientationQuestion,
+  SERIES_SENEGAL,
 } from "@/lib/profile";
 
 export const maxDuration = 30; // 30 secondes max
@@ -206,19 +207,19 @@ export async function POST(req: NextRequest) {
     if (justGaveName) {
       const displayName = updatedProfile.prenom && updatedProfile.prenom !== "l'ami" ? ` ${updatedProfile.prenom}` : "";
       // eslint-disable-next-line no-console
-      console.log(`[RAG Pipeline] Prénom identifié : "${updatedProfile.prenom}" -> Demande de la série.`);
+      console.log(`[RAG Pipeline] Prénom identifié : "${updatedProfile.prenom}" -> Demande de la situation.`);
       const payload: TechnicalOutput = {
-        reply: `Ravi de faire ta connaissance${displayName} ! Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : quelle est ta série de Bac ou ta situation actuelle ?`,
+        reply: `Ravi de faire ta connaissance${displayName} ! Pour qu'on voie ensemble ce qui te correspond le mieux, dis-moi : où en es-tu actuellement dans tes études et quelle est ta situation ?`,
         suggestions: [
-          "Bac S1 ou S2",
-          "Bac L1 ou L2",
-          "Bac G ou STEG",
-          "Autre série ou réorientation",
+          "Collège (3e / BFEM)",
+          "Lycée (Seconde ou 1ère)",
+          "Terminale ou Nouveau bachelier",
+          "Étudiant ou Réorientation",
         ],
         dossier: updatedProfile,
         indices: updatedProfile.prenom && updatedProfile.prenom !== "l'ami" ? [{ texte: `Prénom : ${updatedProfile.prenom}`, statut: "certain" }] : [],
         hypotheses: [],
-        prochaine_question_vise: "Connaître la série de Bac ou le niveau",
+        prochaine_question_vise: "Connaître le niveau scolaire (avant-bac, bac ou post-bac)",
         pistes: [],
         etablissements: [],
         etape: 1,
@@ -249,17 +250,17 @@ export async function POST(req: NextRequest) {
         const displayName = updatedProfile.prenom !== "l'ami" ? ` ${updatedProfile.prenom}` : "";
         const payload: TechnicalOutput = {
           reply:
-            `Ravi de te revoir${displayName} ! Pour qu'on avance ensemble, quelle est ta série de Bac ou ta situation actuelle ?`,
+            `Ravi de te revoir${displayName} ! Pour qu'on avance ensemble, où en es-tu actuellement dans tes études ?`,
           suggestions: [
-            "Bac S1 ou S2",
-            "Bac L1 ou L2",
-            "Bac G ou STEG",
-            "Autre série ou réorientation",
+            "Collège (3e / BFEM)",
+            "Lycée (Seconde ou 1ère)",
+            "Terminale ou Nouveau bachelier",
+            "Étudiant ou Réorientation",
           ],
           dossier: updatedProfile,
           indices: [],
           hypotheses: [],
-          prochaine_question_vise: "Connaître la série de Bac ou le niveau",
+          prochaine_question_vise: "Connaître le niveau scolaire (avant-bac, bac ou post-bac)",
           pistes: [],
           etablissements: [],
           etape: 1,
@@ -565,7 +566,7 @@ function generateLocalOrientationPayload(
     };
   }
 
-  // 3. Si prêt pour le Bilan Final (Étape 5 / Phase 8) : récupérer les vraies formations matchées
+  // 3. Si prêt pour le Bilan Final (Étape 5 / Phase 8)
   const matched = findMatchingFormations(profile);
   const displayName = profile.prenom && profile.prenom !== "l'ami" ? `${profile.prenom}` : "Élève";
 
@@ -575,6 +576,113 @@ function generateLocalOrientationPayload(
       ? profile.interets_principaux.slice(0, 3)
       : ["Sciences & Technologies", "Gestion & Économie"];
 
+  let reply = "";
+
+  if (profile.statut_parcours === "avant_bac") {
+    // BILAN SPÉCIFIQUE AVANT LE BAC (Séries du Bac au Sénégal & Métiers d'avenir)
+    const seriesMatching = SERIES_SENEGAL.filter((s) =>
+      domainesRec.some((d) => s.domaines.some((sd) => sd.toLowerCase().includes(d.toLowerCase()) || d.toLowerCase().includes(sd.toLowerCase())))
+    ).slice(0, 2);
+
+    const seriesRetenues = seriesMatching.length > 0 ? seriesMatching : SERIES_SENEGAL.slice(0, 2);
+    const metiersList = Array.from(new Set(seriesRetenues.flatMap((s) => s.metiers_cibles))).slice(0, 5);
+
+    reply = `**A. Résumé de ton profil**
+- Élève : ${displayName}
+- Niveau actuel : ${profile.niveau || "Collège / Lycée"}
+- Centres d'intérêt confirmés : ${domainesRec.join(", ")}
+- Points forts & aptitudes : ${profile.points_forts.join(", ") || profile.matieres_aimees.join(", ") || "Calcul, réflexion et esprit pratique"}
+
+**B. Séries de Baccalauréat recommandées au Sénégal**
+${seriesRetenues.map((s) => `- **${s.nom}** : ${s.description}\n  - Matières déterminantes au lycée : ${s.matieres_cles.join(", ")}`).join("\n\n")}
+
+**C. Familles de métiers d'avenir accessibles**
+${metiersList.map((m) => `- **${m}**`).join("\n")}
+
+**D. Conseils pour réussir ton passage au lycée**
+- Consolide tes moyennes dans les matières déterminantes dès maintenant.
+- Les séries scientifiques (S1, S2) et techniques (T1, T2, G) ouvrent vers les écoles d'ingénieurs, la médecine et la gestion.
+- Les séries littéraires (L1, L2, L') valorisent le droit, les sciences politiques, la communication et les métiers de la justice.
+
+**E. Question de suivi**
+${decision.question}`;
+
+    return {
+      reply,
+      suggestions: decision.suggestions,
+      dossier: profile,
+      indices: [
+        { texte: `Niveau : ${profile.niveau || "Avant-bac"}`, statut: "certain" },
+        { texte: `Séries cibles : ${seriesRetenues.map((s) => s.code).join(", ")}`, statut: "certain" },
+      ],
+      hypotheses: seriesRetenues.map((s) => ({ domaine: s.nom, confiance: "forte" as const })),
+      prochaine_question_vise: "Présenter les séries de bac recommandées et les métiers cibles",
+      pistes: seriesRetenues.map((s) => ({
+        nom: s.nom,
+        etablissements: ["Lycées d'enseignement général et technique du Sénégal"],
+        duree: "3 ans de lycée (Seconde, Première, Terminale)",
+        debouches: s.metiers_cibles.join(", "),
+        indice_retenu: s.description,
+      })),
+      etablissements: ["Lycées d'enseignement général et technique du Sénégal"],
+      etape: 5,
+    };
+  } else if (profile.statut_parcours === "post_bac") {
+    // BILAN SPÉCIFIQUE POST-BAC (Réorientation après L1 difficile ou passerelles professionnelles)
+    const isReorientation = profile.type_post_bac === "reorientation";
+    const formationsListMarkdown = matched.slice(0, 3).map((m) => {
+      return `- **${m.nom}, ${m.etablissement}**
+  - Diplôme & Format : ${m.diplome} (${m.duree})
+  - Modalités d'admission : ${m.conditions}
+  - Atout pour ton projet : ${m.pourquoi}
+  - Débouchés : ${m.debouches.slice(0, 3).join(", ")}`;
+    }).join("\n\n");
+
+    reply = `**A. Résumé de ta situation universitaire**
+- Étudiant : ${displayName}
+- Statut actuel : ${profile.niveau || "Université"} (${isReorientation ? "Projet de réorientation" : "Poursuite d'études / passerelle"})
+- Nouveaux domaines prioritaires : ${domainesRec.join(", ")}
+- Aptitudes valorisées : ${profile.points_forts.join(", ") || profile.matieres_aimees.join(", ") || "Compétences appliquées"}
+
+**B. Diagnostic et nouveau cap**
+${isReorientation
+  ? "- Une réorientation après une première année universitaire est une opportunité constructive pour se diriger vers un parcours plus professionnalisant ou aligné avec tes talents."
+  : "- Une poursuite d'études ciblée permet de capitaliser sur ton premier diplôme en visant une spécialisation à forte valeur ajoutée sur le marché du travail sénégalais."}
+
+**C. Formations, filières et passerelles adaptées (Sénégal)**
+${formationsListMarkdown}
+
+**D. Modalités de réorientation et démarches administratives**
+- Dossier de réorientation / transfert interne ou externe auprès de la scolarité de l'UFR / université.
+- Validation d'acquis ou équivalence des crédits (ECTS) déjà validés.
+- Possibilité de candidater aux filières courtes professionnalisantes (Licence pro, BTS/DUT) pour une insertion accélérée.
+
+**E. Question de suivi**
+${decision.question}`;
+
+    return {
+      reply,
+      suggestions: decision.suggestions,
+      dossier: profile,
+      indices: [
+        { texte: `Statut universitaire : ${profile.niveau || "Post-bac"}`, statut: "certain" },
+        { texte: `Domaines cibles : ${domainesRec.join(", ")}`, statut: "certain" },
+      ],
+      hypotheses: domainesRec.map((dom) => ({ domaine: dom, confiance: "forte" as const })),
+      prochaine_question_vise: "Guider la réorientation universitaire ou la passerelle",
+      pistes: matched.slice(0, 3).map((m) => ({
+        nom: m.nom,
+        etablissements: m.etablissements,
+        duree: m.duree,
+        debouches: m.debouches.join(", "),
+        indice_retenu: m.pourquoi,
+      })),
+      etablissements: matched.map((m) => m.etablissement),
+      etape: 5,
+    };
+  }
+
+  // BILAN STANDARD POUR BACCALAURÉAT (Terminale / Nouveaux bacheliers)
   const formationsListMarkdown = matched.map((m) => {
     return `- **${m.nom}, ${m.etablissement}**
   - Diplôme & Durée : ${m.diplome} (${m.duree})
@@ -583,7 +691,7 @@ function generateLocalOrientationPayload(
   - Source officielle : ${m.source}`;
   }).join("\n\n");
 
-  const reply = `**A. Résumé de ton profil**
+  reply = `**A. Résumé de ton profil**
 - Élève : ${displayName}
 - Série / Niveau : ${profile.serie ? `Bac ${profile.serie}` : (profile.niveau || "Enseignement secondaire")}
 - Domaines d'intérêt confirmés : ${domainesRec.join(", ")}
@@ -606,7 +714,7 @@ ${formationsListMarkdown}
 - Écoles d'excellence sur concours (ESP, EPT, CESTI, EMS) : dépôts de dossiers entre mai et juillet.
 
 **F. Question de suivi**
-Parmi ces parcours, lequel aimerais-tu approfondir en premier ?`;
+${decision.question}`;
 
   return {
     reply,

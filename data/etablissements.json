@@ -3,1116 +3,2496 @@
     "id": "ucad",
     "nom": "Université Cheikh Anta Diop de Dakar",
     "sigle": "UCAD",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Dakar — Fann",
     "region": "Dakar",
-    "site_officiel": "https://www.ucad.sn",
+    "type": "Publique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ucad_fst",
-      "ucad_fmpos",
-      "ucad_flsh",
-      "ucad_faseg",
-      "ucad_fsjp",
-      "ucad_fastef",
-      "ucad_esp",
-      "ucad_cesti",
-      "ucad_inseps",
-      "ucad_eismv"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Toutes facultés et écoles universitaires publiques",
+      "FST",
+      "FMPOS",
+      "ESP",
+      "FASTEF",
+      "FASEG",
+      "FSJP",
+      "CESTI"
     ],
-    "frais_scolarite_indicatifs": "Nouveaux bacheliers orientés : 25 000 FCFA de droits d'inscription + 500 FCFA de frais de transfert. Formations payantes ou spécifiques selon tarifs d'institut.",
-    "source": "UCAD officiel + ANAQ-Sup",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / CAMES / ANAQ-Sup",
+    "source_verification": "UCAD officiel + ANAQ-Sup",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Faculté des Sciences et Techniques (FST)",
+      "Faculté de Médecine, de Pharmacie et d'Odonto-Stomatologie (FMPOS)",
+      "Faculté des Lettres et Sciences Humaines (FLSH)",
+      "Faculté des Sciences Économiques et de Gestion (FASEG)",
+      "Faculté des Sciences Juridiques et Politiques (FSJP)",
+      "Faculté des Sciences et Technologies de l'Éducation et de la Formation (FASTEF)",
+      "École Supérieure Polytechnique (ESP)",
+      "Centre d'Études des Sciences et Techniques de l'Information (CESTI)",
+      "Institut National Supérieur de l'Éducation Populaire et du Sport (INSEPS)",
+      "École Inter-États des Sciences et Médecine Vétérinaires (EISMV)"
+    ],
+    "filieres_proposees": [
+      "Informatique",
+      "Mathématiques",
+      "Physique",
+      "Chimie",
+      "Sciences de la vie",
+      "Géologie",
+      "Génie civil",
+      "Électronique",
+      "Télécommunications",
+      "Médecine",
+      "Pharmacie",
+      "Odontologie",
+      "Droit",
+      "Sciences politiques",
+      "Économie",
+      "Gestion",
+      "Comptabilité",
+      "Finance",
+      "Lettres",
+      "Langues",
+      "Philosophie",
+      "Histoire",
+      "Géographie",
+      "Sociologie",
+      "Psychologie",
+      "Sciences de l'éducation",
+      "Journalisme / communication",
+      "Bibliothéconomie / documentation",
+      "STAPS (Sport)",
+      "Agriculture / environnement"
+    ],
+    "conditions_admission": "Nouveaux bacheliers : orientation via CAMPUSEN selon les conditions de la formation. Certaines écoles et instituts recrutent sur concours (ESP, CESTI, FASTEF). Formations supérieures : diplôme requis + examen de dossier dans la limite des places disponibles.",
+    "frais_scolarite": "Nouveaux bacheliers orientés : 25 000 FCFA de droits d'inscription + 500 FCFA de frais de transfert. Formations payantes ou spécifiques selon tarifs d'institut.",
+    "duree_formations": "Licence (3 ans), Master (2 ans après la Licence), Doctorat (3 ans après le Master), Médecine (8 ans).",
+    "coordonnees": "Rectorat UCAD, BP 5005 Dakar-Fann · Tél : +221 33 823 02 74 · Email : rectorat@ucad.edu.sn",
+    "site_web": "https://www.ucad.sn",
+    "debouches_principaux": [
+      "Développeur logiciel / Web & Mobile",
+      "Ingénieur logiciel & Ingénieur IA",
+      "Data Scientist & Data Analyst",
+      "Ingénieur cybersécurité & Administrateur réseaux",
+      "Médecin généraliste & spécialiste",
+      "Juriste, Avocat, Magistrat, Conseiller juridique",
+      "Économiste, Auditeur, Comptable, Analyste financier",
+      "Enseignant-chercheur & Analyste scientifique",
+      "Journaliste & Responsable communication"
+    ],
+    "sources": "UCAD officiel + ANAQ-Sup",
+    "logo_url": "https://annuaire.ucad.sn/images/logo_ucad.png",
+    "image_url": "https://annuaire.ucad.sn/images/logo_ucad.png"
   },
   {
     "id": "ugb",
     "nom": "Université Gaston Berger de Saint-Louis",
     "sigle": "UGB",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Saint-Louis",
     "region": "Saint-Louis",
-    "site_officiel": "https://www.ugb.sn",
+    "type": "Publique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ugb_lsh",
-      "ugb_sat",
-      "ugb_seg",
-      "ugb_sjp",
-      "ugb_2s",
-      "ugb_sefs",
-      "ugb_centre_d_excellence_africain_cea_mit",
-      "ugb_s2ata"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "UFR SAT",
+      "CEA-MITIC",
+      "UFR SEG",
+      "UFR SJP",
+      "UFR 2S",
+      "UFR S2ATA"
     ],
-    "frais_scolarite_indicatifs": "Droits d'inscription nationaux publics (25 000 à 50 000 FCFA/an). Portail de préinscription en ligne.",
-    "source": "UGB officiel + ANAQ-Sup",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / CAMES / ANAQ-Sup",
+    "source_verification": "UGB officiel + ANAQ-Sup",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "UFR des Lettres et Sciences Humaines (LSH)",
+      "UFR des Sciences Appliquées et de Technologie (SAT)",
+      "UFR des Sciences Économiques et de Gestion (SEG)",
+      "UFR des Sciences Juridiques et Politiques (SJP)",
+      "UFR des Sciences de la Santé (2S)",
+      "UFR des Sciences de l'Éducation, de la Formation et du Sport (SEFS)",
+      "Centre d'Excellence Africain CEA-MITIC",
+      "UFR Sciences Agronomiques et Technologies Alimentaires (S2ATA)"
+    ],
+    "filieres_proposees": [
+      "Informatique et Télécommunications",
+      "Mathématiques Appliquées",
+      "Physique et Chimie Appliquées",
+      "Sciences Appliquées et de l'Ingénieur",
+      "Économie et Gestion des Entreprises",
+      "Finance et Comptabilité",
+      "Droit des Affaires et Sciences Politiques",
+      "Langues, Lettres et Sociologie",
+      "Sciences de l'Éducation et STAPS",
+      "Médecine et Sciences de la Santé",
+      "Sciences Agronomiques et Environnement",
+      "Statistique et Modélisation"
+    ],
+    "conditions_admission": "Nouveaux bacheliers : orientation CAMPUSEN avec critères d'excellence académique. Sélection / concours / dossier pour masters et filières spécifiques.",
+    "frais_scolarite": "Droits d'inscription nationaux publics (25 000 à 50 000 FCFA/an). Portail de préinscription en ligne.",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat (3 ans), Médecine (8 ans).",
+    "coordonnees": "Université Gaston Berger, BP 234 Saint-Louis, Sénégal",
+    "site_web": "https://www.ugb.sn",
+    "debouches_principaux": [
+      "Ingénieur logiciel & Cybersécurité",
+      "Data Analyst & Spécialiste IA",
+      "Administrateur systèmes et réseaux télécoms",
+      "Économiste, Auditeur, Analyste financier",
+      "Juriste d'entreprise, Avocat, Magistrat",
+      "Médecin praticien & Chercheur santé publique",
+      "Ingénieur agronome & Environnement"
+    ],
+    "sources": "UGB officiel + ANAQ-Sup",
+    "logo_url": "https://www.ukb.sn/sites/default/files/partners/ugb.png",
+    "image_url": "https://www.ukb.sn/sites/default/files/partners/ugb.png"
   },
   {
     "id": "uadb",
     "nom": "Université Alioune Diop de Bambey",
     "sigle": "UADB",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Bambey",
     "region": "Diourbel",
-    "site_officiel": "https://uadb.edu.sn/",
+    "type": "Publique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "uadb_satic",
-      "uadb_ufr__conomie__management_et_ing_nie",
-      "uadb_ufr_sciences_de_la_sant__et_du_d_ve",
-      "uadb_ufr_sciences_et_technologies",
-      "uadb_bambey"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "UFR SATIC",
+      "ISFAR",
+      "UFR Économie & Droit",
+      "UFR Santé"
     ],
-    "frais_scolarite_indicatifs": "Droits d'inscription universitaires publics (25 000 à 50 000 FCFA / an selon cycle).",
-    "source": "UADB officiel + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / MESRI",
+    "source_verification": "UADB officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "UFR Sciences Appliquées et Technologies de l'Information (SATIC)",
+      "UFR Économie, Management et Ingénierie Juridique",
+      "UFR Sciences de la Santé et du Développement",
+      "UFR Sciences et Technologies",
+      "ISFAR — Institut Supérieur de Formation Agricole et Rurale (Bambey)"
+    ],
+    "filieres_proposees": [
+      "Informatique",
+      "Réseaux et Télécommunications",
+      "Mathématiques",
+      "Sciences Physiques",
+      "Sciences Économiques",
+      "Gestion et Finance",
+      "Droit et Management",
+      "Santé et Médecine",
+      "Agriculture et Agronomie",
+      "Formation Rurale et Développement Durable"
+    ],
+    "conditions_admission": "Nouveaux bacheliers : sélection sur dossier et résultats via la commission nationale CAMPUSEN / Direction de l'Enseignement Supérieur.",
+    "frais_scolarite": "Droits d'inscription universitaires publics (25 000 à 50 000 FCFA / an selon cycle).",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat (3 ans), Cycles agricoles ISFAR.",
+    "coordonnees": "UADB, BP 30 Bambey · Tél : +221 33 971 15 75 · Email orientation : baio@uadb.edu.sn",
+    "site_web": "https://uadb.edu.sn/",
+    "debouches_principaux": [
+      "Développeur d'applications & Administrateur réseaux",
+      "Ingénieur logiciel & Data Analyst",
+      "Comptable, Auditeur, Analyste financier",
+      "Juriste & Conseiller juridique d'entreprise",
+      "Ingénieur agronome & Technicien agricole supérieur",
+      "Conseiller agricole & Entrepreneur rural",
+      "Médecin & Professionnel de santé"
+    ],
+    "sources": "UADB officiel + MESRI",
+    "logo_url": "https://uadb.edu.sn/images/pdf-Documentation-BAIO/Livret-daccueil-de-letudiant.pdf"
   },
   {
     "id": "uidt",
     "nom": "Université Iba Der Thiam de Thiès",
     "sigle": "UIDT",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Thiès",
     "region": "Thiès",
-    "site_officiel": "https://www.univ-thies.sn",
+    "type": "Publique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "uidt_ufr_sciences_et_technologies",
-      "uidt_ufr_sciences__conomiques_et_sociale",
-      "uidt_ufr_sciences_de_l_ing_nieur",
-      "uidt_ufr_sant_",
-      "uidt_institut_universitaire_de_technolog",
-      "uidt_ept"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "EPT Thiès",
+      "IUT",
+      "UFR Ingénieur",
+      "UFR Santé",
+      "UFR Sciences & Tech"
     ],
-    "frais_scolarite_indicatifs": "Université publique : droits d'inscription nationaux (25 000 à 50 000 FCFA / an).",
-    "source": "UIDT officiel + ANAQ-Sup",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / ANAQ-Sup",
+    "source_verification": "UIDT officiel + ANAQ-Sup",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "UFR Sciences et Technologies",
+      "UFR Sciences Économiques et Sociales",
+      "UFR Sciences de l'Ingénieur",
+      "UFR Santé",
+      "IUT (Institut Universitaire de Technologie)",
+      "École Polytechnique de Thiès (EPT)"
+    ],
+    "filieres_proposees": [
+      "Informatique & Intelligence Artificielle",
+      "Sciences des Données",
+      "Mathématiques, Physique, Chimie",
+      "Génie Civil & BTP",
+      "Génie Électrique & Électromécanique",
+      "Génie Mécanique & Industriel",
+      "Géomatique & Topographie",
+      "Économie, Gestion, Banque / Finance / Assurance",
+      "Commerce & E-commerce",
+      "Médecine, Pharmacie, Sciences de la Santé",
+      "DUT & Formations professionnelles technologiques"
+    ],
+    "conditions_admission": "Orientation nationale CAMPUSEN pour les UFR. Concours national sélectif pour l'EPT et l'IUT (S1, S2, S3, T1, T2).",
+    "frais_scolarite": "Université publique : droits d'inscription nationaux (25 000 à 50 000 FCFA / an).",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat (3 ans), Diplôme d'Ingénieur (5 ans à l'EPT), DUT (2 ans).",
+    "coordonnees": "Université Iba Der Thiam de Thiès, Thiès — Sénégal",
+    "site_web": "https://www.univ-thies.sn",
+    "debouches_principaux": [
+      "Ingénieur IA & Data Scientist",
+      "Développeur logiciel & Ingénieur cybersécurité",
+      "Ingénieur génie civil & Conducteur de travaux BTP",
+      "Ingénieur industriel & Automaticien de maintenance",
+      "Analyste financier, Auditeur & Contrôleur de gestion",
+      "Médecin, Pharmacien & Cadres de santé"
+    ],
+    "sources": "UIDT officiel + ANAQ-Sup",
+    "logo_url": "https://api-edtset.uidt.sn/img/logo.jpg",
+    "image_url": "https://api-edtset.uidt.sn/img/logo.jpg"
   },
   {
     "id": "uasz",
     "nom": "Université Assane Seck de Ziguinchor",
     "sigle": "UASZ",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Ziguinchor",
     "region": "Ziguinchor",
-    "site_officiel": "https://www.uasz.sn",
+    "type": "Publique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "uasz_ufr_sciences_et_technologies",
-      "uasz_ufr_sciences__conomiques_et_sociale",
-      "uasz_ufr_lettres__arts_et_sciences_humai",
-      "uasz_ufr_sciences_de_la_sant_"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Informatique",
+      "Master Génie Logiciel",
+      "Agroforesterie",
+      "UFR Santé"
     ],
-    "frais_scolarite_indicatifs": "Droits nationaux publics (25 000 à 50 000 FCFA/an).",
-    "source": "UASZ officiel + Accréditation ANAQ-Sup 2025",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Accrédité ANAQ-Sup 2025",
+    "source_verification": "UASZ officiel + Accréditation ANAQ-Sup 2025",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "UFR Sciences et Technologies",
+      "UFR Sciences Économiques et Sociales",
+      "UFR Lettres, Arts et Sciences Humaines",
+      "UFR Sciences de la Santé"
+    ],
+    "filieres_proposees": [
+      "Informatique (Licence & Master Génie Logiciel)",
+      "Systèmes Informatiques et Logiciels",
+      "Création Multimédia & Web",
+      "Mathématiques, Physique, Chimie",
+      "Agroforesterie & Sciences Environnementales",
+      "Sciences Économiques & Gestion",
+      "Sociologie & Sciences Sociales",
+      "Lettres, Langues & Arts",
+      "Médecine & Sciences de la Santé"
+    ],
+    "conditions_admission": "Nouveaux bacheliers orientés via CAMPUSEN. Dépôt des pièces et préinscription en ligne sur la plateforme UASZ.",
+    "frais_scolarite": "Droits nationaux publics (25 000 à 50 000 FCFA/an).",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat (3 ans).",
+    "coordonnees": "Diabir, BP 523 Ziguinchor · Email : rectorat@univ-zig.sn",
+    "site_web": "https://www.uasz.sn",
+    "debouches_principaux": [
+      "Développeur & Ingénieur Génie Logiciel",
+      "Administrateur systèmes/réseaux & Consultant IT",
+      "Ingénieur agronome & Expert agroforestier",
+      "Gestionnaire de projets agricoles et environnementaux",
+      "Comptable, Auditeur & Analyste financier",
+      "Médecin & Professionnel de santé"
+    ],
+    "sources": "UASZ officiel + Accréditation ANAQ-Sup 2025",
+    "logo_url": "https://d107tomoq7qta0.cloudfront.net/images/universities-logos/jgkEIVCfZzI97kD6IVqHtnUK16a1iSjb5Mh8efxV.jpg",
+    "image_url": "https://d107tomoq7qta0.cloudfront.net/images/universities-logos/jgkEIVCfZzI97kD6IVqHtnUK16a1iSjb5Mh8efxV.jpg"
   },
   {
     "id": "uam",
     "nom": "Université Amadou Mahtar Mbow",
     "sigle": "UAM",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Diamniadio",
     "region": "Dakar",
-    "site_officiel": "https://uam.sn/",
+    "type": "Publique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "uam_sta",
-      "uam_tecna",
-      "uam_seg",
-      "uam_polytech_diamniadio",
-      "uam_p_le_sciences_m_dicales_et_sant_"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "UFR STA",
+      "UFR TECNA",
+      "Polytech Diamniadio",
+      "UFR SEG"
     ],
-    "frais_scolarite_indicatifs": "Droits d'inscription nationaux publics",
-    "source": "UAM officiel + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / MESRI",
+    "source_verification": "UAM officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "UFR Sciences et Technologies Avancées (STA)",
+      "UFR Technologies de la Communication Numérique et de l'Audiovisuel (TECNA)",
+      "UFR Sciences Économiques et de Gestion (SEG)",
+      "Polytech Diamniadio",
+      "Pôle Sciences Médicales et Santé"
+    ],
+    "filieres_proposees": [
+      "Intelligence Artificielle & Sciences des Données",
+      "Technologies Numériques Avancées",
+      "Audiovisuel & Communication Numérique",
+      "Génie Civil & BTP",
+      "Génie Industriel & Robotique",
+      "Mathématiques et Sciences Physiques",
+      "Économie et Gestion de l'Innovation",
+      "Sciences Médicales et Technologies de Santé"
+    ],
+    "conditions_admission": "Orientation nationale CAMPUSEN pour les bacheliers scientifiques et techniques. Concours d'entrée pour Polytech Diamniadio.",
+    "frais_scolarite": "Droits d'inscription nationaux publics",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat (3 ans), Diplôme d'Ingénieur (5 ans).",
+    "coordonnees": "Rue 21 x 20, 2e Arrondissement, Pôle urbain de Diamniadio, BP 45927 Dakar · Tél : +221 33 844 10 00 · Email : uam@uam.edu.sn",
+    "site_web": "https://uam.sn/",
+    "debouches_principaux": [
+      "Ingénieur IA & Data Scientist",
+      "Ingénieur logiciel & Expert cybersécurité",
+      "Réalisateur, Monteur & Chef de projet audiovisuel",
+      "Community Manager & Responsable communication digitale",
+      "Ingénieur génie civil, industriel et automatismes",
+      "Cadres des métiers médicaux et paramédicaux"
+    ],
+    "sources": "UAM officiel + MESRI",
+    "logo_url": "https://uam.sn/wp-content/uploads/2024/01/logo-uam.png",
+    "image_url": "https://uam.sn/wp-content/uploads/2024/01/logo-uam.png"
   },
   {
     "id": "unchk",
     "nom": "Université Numérique Cheikh Hamidou Kane",
     "sigle": "UN-CHK",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Diamniadio & Réseau national ENO",
     "region": "Nationale (14 Régions)",
-    "site_officiel": "https://www.unchk.sn",
+    "type": "Publique — Université Numérique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "unchk_p_le_stn___sciences__technologies_",
-      "unchk_p_le_seja___sciences__conomiques__",
-      "unchk_p_le_lshe___lettres__sciences_huma",
-      "unchk_eno"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Pôle STN (IA, Big Data, Info)",
+      "Pôle SEJA (Droit, Économie)",
+      "Pôle LSHE"
     ],
-    "frais_scolarite_indicatifs": "Statut orienté public : droits nationaux · Formation payante sur titre : Licence (400 000 FCFA/an), Master (500 000 FCFA/an), Capacité (200 000 FCFA/an)",
-    "source": "UN-CHK officiel + Plateforme Campusen",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / MESRI / CAMPUSEN",
+    "source_verification": "UN-CHK officiel + Plateforme Campusen",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle STN — Sciences, Technologies et Numérique",
+      "Pôle SEJA — Sciences Économiques, Juridiques et de l'Administration",
+      "Pôle LSHE — Lettres, Sciences Humaines et de l'Éducation",
+      "Réseau national des Espaces Numériques Ouverts (ENO)"
+    ],
+    "filieres_proposees": [
+      "Informatique et Développement d'Applications (IDA)",
+      "Intelligence Artificielle & Big Data Analytics",
+      "Mathématiques Appliquées et Informatique",
+      "Sciences Informatiques et Cybersécurité",
+      "Robotique & Calcul Scientifique",
+      "Arts Graphiques et Numériques",
+      "Communication Digitale et Multimédia",
+      "Systèmes, Réseaux et Infrastructures Virtuelles",
+      "Développement Web Full-Stack & Gaming",
+      "Sciences Économiques et Gestion",
+      "Banque, Microfinance et Assurance",
+      "Droit Privé, Science Politique & LegalTech",
+      "Anglais, Sciences de l'Éducation et Sociologie"
+    ],
+    "conditions_admission": "Orientation CAMPUSEN (L1) ou admission sur titre. L2/L3/Master sur bon dossier académique.",
+    "frais_scolarite": "Statut orienté public : droits nationaux · Formation payante sur titre : Licence (400 000 FCFA/an), Master (500 000 FCFA/an), Capacité (200 000 FCFA/an)",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat et certifications professionnelles.",
+    "coordonnees": "Cité du Savoir — Diamniadio / Castors Dakar, Rue n°13 · Tél : +221 30 108 41 53 · Email : contact@unchk.edu.sn",
+    "site_web": "https://www.unchk.sn",
+    "debouches_principaux": [
+      "Développeur Full-Stack & Ingénieur logiciel",
+      "Data Scientist & Ingénieur IA",
+      "Ingénieur cybersécurité & DevOps",
+      "Ingénieur robotique & Systèmes embarqués",
+      "Auditeur, Analyste financier & Comptable",
+      "Juriste d'entreprise & Chargé de conformité LegalTech",
+      "Sociologue, Consultant & Chargé d'études"
+    ],
+    "sources": "UN-CHK officiel + Plateforme Campusen",
+    "logo_url": "https://letechobservateur.sn/wp-content/uploads/2023/03/logo-UN-CHK.jpg",
+    "image_url": "https://letechobservateur.sn/wp-content/uploads/2023/03/logo-UN-CHK.jpg"
   },
   {
     "id": "ussein",
     "nom": "Université du Sine Saloum El Hadji Ibrahima NIASS",
     "sigle": "USSEIN",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Kaolack / Fatick / Kaffrine",
     "region": "Kaolack",
-    "site_officiel": "https://ussein.sn",
+    "type": "Publique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ussein_ufr_productions_v_g_tales_et_agro",
-      "ussein_ufr_productions_animales_et__leva",
-      "ussein_ufr_gestion_des_ressources_nature",
-      "ussein_ufr_sciences_et_technologies_des_",
-      "ussein_ufr_agro_conomie_et_gestion_des_c"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "35 Licences Professionnalisantes",
+      "Master MATIC",
+      "Master ASAD",
+      "Master Géomatique"
     ],
-    "frais_scolarite_indicatifs": "Droits nationaux publics (25 000 à 50 000 FCFA/an)",
-    "source": "USSEIN officiel + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / MESRI",
+    "source_verification": "USSEIN officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "UFR Productions Végétales et Agroressources",
+      "UFR Productions Animales et Élevage",
+      "UFR Gestion des Ressources Naturelles, Climat et Environnement",
+      "UFR Sciences et Technologies des Aliments",
+      "UFR Agroéconomie et Gestion des Chaînes de Valeur"
+    ],
+    "filieres_proposees": [
+      "Agronomie et Amélioration des Plantes",
+      "Production Végétale et Agroécologie",
+      "Productions Animales, Zootechnie et Santé Animale",
+      "Aquaculture et Gestion des Pêches",
+      "Technologies Agroalimentaires et Transformation",
+      "Gestion Durable de l'Eau et des Sols",
+      "Géomatique & SIG appliqués à l'Environnement (Master Géomatique)",
+      "Agro-Business et Management des Coopératives Rurales",
+      "Master MATIC et Master ASAD"
+    ],
+    "conditions_admission": "Orientation CAMPUSEN pour bacheliers S1, S2, S4, S5, T1. Dossier pour les 35 licences professionnalisantes et masters.",
+    "frais_scolarite": "Droits nationaux publics (25 000 à 50 000 FCFA/an)",
+    "duree_formations": "Licence Professionnelle (3 ans), Master (2 ans), Formations CFS professionnalisantes.",
+    "coordonnees": "USSEIN, Kaolack / Fatick / Kaffrine, Sénégal",
+    "site_web": "https://ussein.sn",
+    "debouches_principaux": [
+      "Ingénieur agronome & Conseiller agricole",
+      "Responsable de production végétale et animale",
+      "Ingénieur agroalimentaire & Responsable qualité",
+      "Expert environnement & Gestionnaire des ressources naturelles",
+      "Géomaticien, Cartographe & Analyste SIG",
+      "Entrepreneur AgriTech & Gestionnaire d'exploitation"
+    ],
+    "sources": "USSEIN officiel + MESRI",
+    "logo_url": "https://pbs.twimg.com/profile_images/1513879728091971597/f4bV8zD2.jpg",
+    "image_url": "https://pbs.twimg.com/profile_images/1513879728091971597/f4bV8zD2.jpg"
   },
   {
     "id": "uso",
     "nom": "Université du Sénégal Oriental",
     "sigle": "USO",
-    "type_etablissement": "Public",
-    "statut": "Public",
     "ville": "Tambacounda (Antennes : Kédougou, Bakel)",
     "region": "Tambacounda",
-    "site_officiel": "https://www.uso.sn",
+    "type": "Publique",
+    "statut_etablissement": "Public",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur (Création par Décret 22/12/2022)",
-    "habilitation_institutionnelle": "A vérifier",
-    "composantes_ids": [
-      "uso_espt_uso",
-      "uso_grandes__coles_de_l_uso",
-      "uso_ufr_sciences__technologies_et_m_tier",
-      "uso_antennes_d_centralis_es_de_k_dougou_"
+    "habilitation_institutionnelle": "Oui (Rentrée 2026-2027)",
+    "formations_accreditees": [
+      "École Supérieure Polytechnique de Tambacounda (ESPT)",
+      "Grandes Écoles USO"
     ],
-    "frais_scolarite_indicatifs": "Université publique : droits nationaux applicables dès l'ouverture 2026-2027.",
-    "source": "USO officiel (Décret de création & Recrutement Concours ESPT 2026)",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Ouverture officielle 2026-2027",
+    "source_verification": "USO officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "École Supérieure Polytechnique de Tambacounda (ESPT-USO)",
+      "Grandes Écoles de l'USO",
+      "UFR Sciences, Technologies et Métiers",
+      "Antennes décentralisées de Kédougou et Bakel"
+    ],
+    "filieres_proposees": [
+      "Technologies & Ingénierie",
+      "Sciences Appliquées & Numérique",
+      "Mines, Géologie et Ressources Minérales",
+      "Agriculture & Agroforesterie Tropicale",
+      "Environnement et Énergies Renouvelables",
+      "Développement Territorial & Gestion Locale",
+      "Métiers Techniques & Formations Professionnalisantes"
+    ],
+    "conditions_admission": "Intégrée à la carte universitaire officielle pour la rentrée 2026-2027. Concours d'entrée direct pour l'ESPT et orientation CAMPUSEN.",
+    "frais_scolarite": "Université publique : droits nationaux applicables dès l'ouverture 2026-2027.",
+    "duree_formations": "Licence / DUT (2 à 3 ans), Diplôme d'Ingénieur (5 ans), Master (2 ans).",
+    "coordonnees": "USO, Tambacounda (Antennes : Kédougou & Bakel) · Tél : +221 33 849 75 52 · Email : communication@uso.sn",
+    "site_web": "https://www.uso.sn",
+    "debouches_principaux": [
+      "Ingénieur d'études & Technicien supérieur",
+      "Ingénieur des mines et géologue d'exploration",
+      "Développeur & Administrateur réseaux",
+      "Ingénieur agronome & Conseiller territorial",
+      "Expert environnement & Énergies durables",
+      "Responsable de projets de développement local"
+    ],
+    "sources": "USO officiel (Décret de création & Recrutement Concours ESPT 2026)",
+    "logo_url": "https://www.leral.net/photo/art/grande/53390638-40429995.jpg",
+    "image_url": "https://www.leral.net/photo/art/grande/53390638-40429995.jpg"
   },
   {
     "id": "uahb",
     "nom": "Université Amadou Hampâté Bâ",
     "sigle": "UAHB",
-    "type_etablissement": "Privé",
-    "statut": "Privé",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://univ.uahb.sn/",
+    "type": "Privée",
+    "statut_etablissement": "Privé",
     "agrement_mesri": "Oui (Agrément Définitif depuis 2008)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "uahb_fsjp",
-      "uahb_fst",
-      "uahb_faseg",
-      "uahb_fss"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Droit privé & Droit public",
+      "Audit et contrôle de gestion",
+      "Finance-Comptabilité",
+      "Informatique appliquée",
+      "Santé communautaire"
     ],
-    "frais_scolarite_indicatifs": "Variables selon la filière : Licence Droit/Gestion (650 000 à 900 000 FCFA/an), Informatique/Ingénierie (850 000 à 1 200 000 FCFA/an), Santé/Médecine (1 500 000 à 2 500 000 FCFA/an). Inscription annuelle : 100 000 à 150 000 FCFA.",
-    "source": "UAHB / MESRI / ANAQ-Sup",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "Accrédité ANAQ-Sup / CAMES / MESRI",
+    "source_verification": "UAHB officiel + MESRI + ANAQ-Sup",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Faculté des Sciences Juridiques et Politiques (FSJP)",
+      "Faculté des Sciences et Technologies (FST)",
+      "Faculté des Sciences Économiques et de Gestion (FASEG)",
+      "Faculté des Sciences de la Santé (FSS)"
+    ],
+    "filieres_proposees": [
+      "Droit privé & Droit public",
+      "Juriste-conseil d'entreprise",
+      "Audit et contrôle de gestion",
+      "Finance / Comptabilité",
+      "Banque / Assurance",
+      "Gestion des organisations",
+      "Informatique & Informatique appliquée",
+      "Sciences et technologies de l'information",
+      "Agroalimentaire & Agronomie",
+      "Médecine & Santé communautaire"
+    ],
+    "conditions_admission": "Bac ou diplôme équivalent pour l'entrée en Licence. Admission sur dossier selon la filière. Conditions particulières et entretien pour les formations médicales. Licence requise pour le Master.",
+    "frais_scolarite": "Variables selon la filière : Licence Droit/Gestion (650 000 à 900 000 FCFA/an), Informatique/Ingénierie (850 000 à 1 200 000 FCFA/an), Santé/Médecine (1 500 000 à 2 500 000 FCFA/an). Inscription annuelle : 100 000 à 150 000 FCFA.",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat (selon spécialité), Médecine (cursus complet).",
+    "coordonnees": "Rocade Fann – Bel-Air, en face Canal IV, Dakar · Tél : +221 33 824 01 24 / +221 77 325 80 80 · Email : contact@uahb.sn",
+    "site_web": "https://univ.uahb.sn/",
+    "debouches_principaux": [
+      "Développeur logiciel & Ingénieur IA",
+      "Data Analyst & Data Scientist",
+      "Administrateur systèmes/réseaux & Cybersécurité",
+      "Juriste d'entreprise, Conseiller juridique, Avocat",
+      "Comptable, Auditeur, Analyste financier, Contrôleur de gestion",
+      "Médecin praticien, Professionnel de santé publique",
+      "Ingénieur agroalimentaire & Responsable qualité"
+    ],
+    "sources": "UAHB / MESRI / ANAQ-Sup",
+    "logo_url": "https://www.uahb.sn/wp-content/uploads/2025/02/demande-dadmission.pdf"
   },
   {
     "id": "udb",
     "nom": "Université Dakar-Bourguiba",
     "sigle": "UDB",
-    "type_etablissement": "Privé",
-    "statut": "Privé",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://udb.sn/",
+    "type": "Privée",
+    "statut_etablissement": "Privé",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "udb_facult__de_droit_et_sciences_politiq",
-      "udb_facult__des_sciences__conomiques_et_",
-      "udb_d_partement_informatique___technolog",
-      "udb_institut_de_management_et_finance_ap"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Droit des affaires",
+      "Droit maritime & Ingénierie fiscale",
+      "Informatique & Technologies émergentes",
+      "Finance appliquée & Banque"
     ],
-    "frais_scolarite_indicatifs": "Frais par filière (Année 2026-2027) : Licence Droit/Gestion (600 000 à 850 000 FCFA/an), Master Droit des Affaires/Maritime (1 000 000 à 1 400 000 FCFA/an), Informatique & IA (750 000 à 1 100 000 FCFA/an). Droits d'inscription : 100 000 FCFA.",
-    "source": "Site officiel UDB + Grille tarifaire MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "2025-2026 / MESRI",
+    "source_verification": "UDB officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Faculté de Droit et Sciences Politiques",
+      "Faculté des Sciences Économiques et de Gestion",
+      "Département Informatique & Technologies Émergentes",
+      "Institut de Management et Finance Appliquée"
+    ],
+    "filieres_proposees": [
+      "Informatique & IA appliquée",
+      "Mathématiques – Physique – Chimie – Informatique",
+      "Gestion, Finance, Banque, Audit et Contrôle de gestion",
+      "Droit des affaires & Droit maritime",
+      "Droit de l'ingénierie financière et fiscale",
+      "Gestion juridique des affaires",
+      "Commerce international & Management",
+      "Monnaie – Banque – Finance",
+      "Sciences politiques & Relations internationales"
+    ],
+    "conditions_admission": "Baccalauréat pour la 1ère année de Licence. Admissions parallèles en L2/L3 sur étude de dossier (Bac+1/Bac+2). Licence requise pour l'admission en Master.",
+    "frais_scolarite": "Frais par filière (Année 2026-2027) : Licence Droit/Gestion (600 000 à 850 000 FCFA/an), Master Droit des Affaires/Maritime (1 000 000 à 1 400 000 FCFA/an), Informatique & IA (750 000 à 1 100 000 FCFA/an). Droits d'inscription : 100 000 FCFA.",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat (selon spécialité).",
+    "coordonnees": "Dakar — Sénégal · Formulaire et contacts officiels sur udb.sn",
+    "site_web": "https://udb.sn/",
+    "debouches_principaux": [
+      "Développeur & Ingénieur logiciel",
+      "Analyste financier & Banquier d'affaires",
+      "Juriste maritime & Juriste d'entreprise",
+      "Auditeur, Contrôleur de gestion, Comptable",
+      "Manager de projet, Responsable commercial, Consultant IT"
+    ],
+    "sources": "Site officiel UDB + Grille tarifaire MESRI",
+    "logo_url": "https://legrandfrere.africa/wp-content/uploads/302042593_586986992876920_3219076915262379784_n.jpg",
+    "image_url": "https://legrandfrere.africa/wp-content/uploads/302042593_586986992876920_3219076915262379784_n.jpg"
   },
   {
     "id": "ucao",
     "nom": "Université Catholique de l'Afrique de l'Ouest / Complexe Saint-Michel",
     "sigle": "UCAO / ISG Saint-Michel",
-    "type_etablissement": "Privé",
-    "statut": "Privé / Confessionnel",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://www.st-michel.sn/",
+    "type": "Privée",
+    "statut_etablissement": "Privé / Confessionnel",
     "agrement_mesri": "Oui (Agrément Définitif & Décision d'habilitation favorable 2026)",
-    "habilitation_institutionnelle": "A vérifier",
-    "composantes_ids": [
-      "ucao_isg_saint_michel",
-      "ucao_d_partement_informatique_et_r_seaux",
-      "ucao_d_partement_droit_et_sciences_polit",
-      "ucao_p_le_transport__logistique_et_comme"
+    "habilitation_institutionnelle": "Oui (Habilitation institutionnelle favorable 2026)",
+    "formations_accreditees": [
+      "Licence Comptabilité-Finance (ANAQ-Sup/CAMES)",
+      "Licence Droit économique et des affaires",
+      "Licence Transport-Logistique",
+      "Master Audit et contrôle de gestion",
+      "Master Banque-Assurance-Microfinance",
+      "Master Informatique de gestion"
     ],
-    "frais_scolarite_indicatifs": "Grille officielle Saint-Michel (2026-2027) : BTS (550 000 à 650 000 FCFA/an), Licence (750 000 à 950 000 FCFA/an), Master (1 200 000 à 1 600 000 FCFA/an). Frais d'inscription : 120 000 FCFA.",
-    "source": "UCAO Saint-Michel officiel + Décision ANAQ-Sup 2026",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "2026 (Habilitation) / ANAQ-Sup / CAMES",
+    "source_verification": "UCAO officiel + Décision ANAQ-Sup 2026 + CAMES",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Institut Supérieur de Gestion (ISG Saint-Michel)",
+      "Département Informatique et Réseaux",
+      "Département Droit et Sciences Politiques",
+      "Pôle Transport, Logistique et Commerce International"
+    ],
+    "filieres_proposees": [
+      "Comptabilité-Gestion (BTS & Licence)",
+      "Hautes Études Comptables et Financières",
+      "Droit économique et des affaires",
+      "Transport-Logistique & Supply Chain",
+      "Commerce et échanges internationaux",
+      "Gestion des ressources humaines",
+      "Informatique de gestion & Réseaux et systèmes",
+      "Sciences politiques et relations internationales",
+      "Marketing digital & E-commerce",
+      "Management de la qualité et projets innovants"
+    ],
+    "conditions_admission": "Baccalauréat pour l'entrée en 1ère année (BTS/Licence). BTS ou équivalent pour admission en L3. Licence reconnue CAMES/ANAQ-Sup pour accès aux Masters spécialisés.",
+    "frais_scolarite": "Grille officielle Saint-Michel (2026-2027) : BTS (550 000 à 650 000 FCFA/an), Licence (750 000 à 950 000 FCFA/an), Master (1 200 000 à 1 600 000 FCFA/an). Frais d'inscription : 120 000 FCFA.",
+    "duree_formations": "BTS (2 ans), Licence (3 ans), Master (2 ans).",
+    "coordonnees": "17, rue Saint-Michel, Dakar · Tél : +221 33 823 08 40 · Email : stmichel@ucao.edu.sn",
+    "site_web": "https://www.st-michel.sn/",
+    "debouches_principaux": [
+      "Comptable & Auditeur financier agréé",
+      "Contrôleur de gestion & Analyste financier",
+      "Développeur & Informaticien de gestion",
+      "Logisticien & Supply Chain Manager",
+      "Juriste d'affaires & Conseiller juridique",
+      "Responsable marketing digital & E-commerce manager"
+    ],
+    "sources": "UCAO Saint-Michel officiel + Décision ANAQ-Sup 2026"
   },
   {
     "id": "unis",
     "nom": "Université du Sahel",
     "sigle": "UNIS",
-    "type_etablissement": "Privé",
-    "statut": "Privé",
     "ville": "Dakar — Mermoz",
     "region": "Dakar",
-    "site_officiel": "https://www.sahel.education/",
+    "type": "Privée",
+    "statut_etablissement": "Privé",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "unis_facult__des_sciences__conomiques_et",
-      "unis_facult__des_sciences_juridiques_et_",
-      "unis_d_partement_informatique_et_technol",
-      "unis_p_le_sciences_humaines__sociales_et"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Sciences économiques et gestion",
+      "Informatique",
+      "Sciences juridiques",
+      "Sciences politiques & Environnement"
     ],
-    "frais_scolarite_indicatifs": "Frais annuels 2026-2027 par filière : Licence (600 000 à 850 000 FCFA/an), Master (950 000 à 1 300 000 FCFA/an). Inscription annuelle : 100 000 FCFA.",
-    "source": "Université du Sahel officiel + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "UNIS officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Faculté des Sciences Économiques et de Gestion",
+      "Faculté des Sciences Juridiques et Politiques",
+      "Département Informatique et Technologies",
+      "Pôle Sciences Humaines, Sociales et Environnement"
+    ],
+    "filieres_proposees": [
+      "Sciences économiques et gestion",
+      "Informatique, Réseaux et Numérique",
+      "Sciences juridiques et politiques",
+      "Sciences humaines et sociales",
+      "Lettres et langues appliquées",
+      "Sciences et technologies de l'environnement",
+      "Ingénierie de gestion"
+    ],
+    "conditions_admission": "Baccalauréat pour entrée en Licence sur examen de dossier. Diplôme de niveau Licence pour entrée en Master spécialisé.",
+    "frais_scolarite": "Frais annuels 2026-2027 par filière : Licence (600 000 à 850 000 FCFA/an), Master (950 000 à 1 300 000 FCFA/an). Inscription annuelle : 100 000 FCFA.",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Doctorat (selon spécialité).",
+    "coordonnees": "33, rue MZ-198, Mermoz, Dakar · BP 5355 Dakar-Fann · Tél : +221 33 860 99 75 · Email : contact@sahel.education",
+    "site_web": "https://www.sahel.education/",
+    "debouches_principaux": [
+      "Développeur & Administrateur systèmes et réseaux",
+      "Comptable, Auditeur, Manager de projet",
+      "Juriste d'entreprise & Conseiller juridique",
+      "Sociologue & Consultant en développement",
+      "Expert en gestion environnementale"
+    ],
+    "sources": "Université du Sahel officiel + MESRI",
+    "logo_url": "https://www.sahel.education/_next/static/media/unis-logo-min.8bc4e258.png",
+    "image_url": "https://www.sahel.education/_next/static/media/unis-logo-min.8bc4e258.png"
   },
   {
     "id": "ukb",
     "nom": "Université Kocc Barma de Saint-Louis",
     "sigle": "UKB",
-    "type_etablissement": "Privé",
-    "statut": "Privé (Laïque)",
     "ville": "Saint-Louis",
     "region": "Saint-Louis",
-    "site_officiel": "https://ukb.sn/",
+    "type": "Privée",
+    "statut_etablissement": "Privé (Laïque)",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ukb_ufr_sciences_et_technologies",
-      "ukb_ufr_sciences_de_la_sant_",
-      "ukb_ufr_sciences_sociales_et_juridiques"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Génie informatique",
+      "Licence Sciences infirmières & Sages-femmes",
+      "Licence Sciences économiques et de gestion",
+      "Master Droit des affaires",
+      "Master Banque-Finance"
     ],
-    "frais_scolarite_indicatifs": "Frais par filière 2026-2027 : Licence Sciences & Gestion (500 000 à 700 000 FCFA/an), Licence Santé / Infirmiers (750 000 à 950 000 FCFA/an), Master (900 000 à 1 200 000 FCFA/an). Droits d'inscription : 75 000 à 100 000 FCFA.",
-    "source": "UKB Saint-Louis officiel + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "MESRI / ANAQ-Sup",
+    "source_verification": "UKB officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "UFR Sciences et Technologies",
+      "UFR Sciences de la Santé",
+      "UFR Sciences Sociales et Juridiques"
+    ],
+    "filieres_proposees": [
+      "Génie informatique & Infographie/Multimédia",
+      "Mathématiques appliquées et sciences sociales",
+      "Analyse statistique, économique et financière",
+      "Sciences économiques et de gestion & Microfinance",
+      "Sciences juridiques et politiques & Droit des affaires",
+      "Sciences infirmières & Sages-femmes",
+      "Hôtellerie et restauration",
+      "Communication marketing digital",
+      "Gestion des structures de santé"
+    ],
+    "conditions_admission": "Préinscription en ligne sur ukb.sn. Baccalauréat pour entrée en Licence. Diplôme correspondant pour Master. Formations courtes/professionnelles accessibles sous conditions.",
+    "frais_scolarite": "Frais par filière 2026-2027 : Licence Sciences & Gestion (500 000 à 700 000 FCFA/an), Licence Santé / Infirmiers (750 000 à 950 000 FCFA/an), Master (900 000 à 1 200 000 FCFA/an). Droits d'inscription : 75 000 à 100 000 FCFA.",
+    "duree_formations": "Licence (3 ans), Master (2 ans), BTS / Formations courtes (1 à 2 ans).",
+    "coordonnees": "Saint-Louis — Sénégal · Tél : +221 33 961 99 13 · Email : contact@ukb.sn / communication@ukb.sn",
+    "site_web": "https://ukb.sn/",
+    "debouches_principaux": [
+      "Développeur & Technicien informatique",
+      "Infirmier diplômé d'État & Sage-femme",
+      "Gestionnaire de structures de santé",
+      "Comptable & Analyste microfinance",
+      "Sociologue & Chargé d'études de développement local"
+    ],
+    "sources": "UKB Saint-Louis officiel + MESRI"
   },
   {
     "id": "upoa",
     "nom": "Université Polytechnique de l'Ouest Africain",
     "sigle": "UPOA",
-    "type_etablissement": "Privé",
-    "statut": "Privé",
     "ville": "Dakar — Almadies",
     "region": "Dakar",
-    "site_officiel": "https://upoa.edu.sn/",
+    "type": "Privée",
+    "statut_etablissement": "Privé",
     "agrement_mesri": "Oui (Agrément Définitif MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "upoa_ista",
-      "upoa_ifma"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Ingénierie biomédicale (Agrément Définitif)",
+      "Licence Technologies intégrées",
+      "Licence Management et finance",
+      "Master Systèmes informatiques et téléinformatique",
+      "Master Systèmes industriels & Microélectronique",
+      "Master Finance et contrôle de gestion"
     ],
-    "frais_scolarite_indicatifs": "Frais officiels (2026-2027) : Licence Ingénierie biomédicale & Tech (1 100 000 à 1 400 000 FCFA/an), Licence Finance (850 000 FCFA/an), Masters Ingénierie (1 500 000 à 1 800 000 FCFA/an). Inscription : 150 000 FCFA.",
-    "source": "MESRI officiel (Agrément définitif UPOA)",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "Agrément Définitif MESRI",
+    "source_verification": "Document officiel MESRI (Agrément définitif et programmes couverts)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Institut des Sciences et Technologies Avancées (ISTA)",
+      "Institut de Finance et de Management Avancés (IFMA)"
+    ],
+    "filieres_proposees": [
+      "Ingénierie biomédicale",
+      "Technologies intégrées & Systèmes industriels",
+      "Systèmes informatiques et téléinformatique",
+      "Microélectronique et systèmes électroniques",
+      "Management des organisations & Finance et contrôle de gestion",
+      "Marketing et stratégies concurrentielles"
+    ],
+    "conditions_admission": "Baccalauréat scientifique ou technique pour entrée en Licence ISTA. Licence correspondante requise pour l'admission en Master d'ingénierie ou de finance.",
+    "frais_scolarite": "Frais officiels (2026-2027) : Licence Ingénierie biomédicale & Tech (1 100 000 à 1 400 000 FCFA/an), Licence Finance (850 000 FCFA/an), Masters Ingénierie (1 500 000 à 1 800 000 FCFA/an). Inscription : 150 000 FCFA.",
+    "duree_formations": "Licence (3 ans), Master (2 ans).",
+    "coordonnees": "Route de Ngor, Almadies, Dakar · Tél : +221 33 820 81 51 · Email : upoa@upoa.edu.sn",
+    "site_web": "https://upoa.edu.sn/",
+    "debouches_principaux": [
+      "Ingénieur biomédical & Responsable maintenance hospitalière",
+      "Ingénieur logiciel & Ingénieur réseaux télécoms",
+      "Ingénieur microélectronique & Systèmes embarqués",
+      "Analyste financier, Contrôleur de gestion & Auditeur"
+    ],
+    "sources": "MESRI officiel (Agrément définitif UPOA)"
   },
   {
     "id": "uein_scimd",
     "nom": "Université El Hadji Ibrahima Niasse / École de Médecine Saint Christopher Iba Mar Diop",
     "sigle": "UEIN / SCIMD",
-    "type_etablissement": "Privé",
-    "statut": "Privé",
     "ville": "Dakar — Point E",
     "region": "Dakar",
-    "site_officiel": "https://universitestchristopher.net",
+    "type": "Privée",
+    "statut_etablissement": "Privé",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "uein_scimd_facult__de_m_decine_humaine",
-      "uein_scimd_facult__de_pharmacie",
-      "uein_scimd_facult__de_chirurgie_dentaire",
-      "uein_scimd_d_partement_des_sciences_infi"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Diplôme d'État de Docteur en Médecine (MESRI)",
+      "Diplôme d'État de Docteur en Pharmacie (MESRI)",
+      "Diplôme d'État de Docteur en Chirurgie Dentaire (MESRI)",
+      "Licence Sciences infirmières et obstétricales"
     ],
-    "frais_scolarite_indicatifs": "Frais médicaux 2026-2027 : Médecine & Chirurgie Dentaire (2 200 000 à 2 800 000 FCFA/an), Pharmacie (2 000 000 à 2 500 000 FCFA/an), Sciences Infirmières (900 000 à 1 200 000 FCFA/an). Inscription : 200 000 FCFA.",
-    "source": "MESRI officiel + Répertoire des facultés de médecine autorisées",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "Accrédité MESRI / CAMES / ANAQ-Sup",
+    "source_verification": "Répertoire officiel MESRI des diplômes d'État",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Faculté de Médecine Humaine",
+      "Faculté de Pharmacie",
+      "Faculté de Chirurgie Dentaire / Odontologie",
+      "Département des Sciences Infirmières et Obstétricales"
+    ],
+    "filieres_proposees": [
+      "Médecine générale & Spécialités cliniques",
+      "Pharmacie industrielle et officinale",
+      "Médecine dentaire / Chirurgie dentaire",
+      "Sciences infirmières et soins obstétricaux"
+    ],
+    "conditions_admission": "Baccalauréat scientifique (S1, S2) requis pour les études de médecine, pharmacie et dentaire. Examen approfondi du dossier académique et entretien d'aptitude médicale.",
+    "frais_scolarite": "Frais médicaux 2026-2027 : Médecine & Chirurgie Dentaire (2 200 000 à 2 800 000 FCFA/an), Pharmacie (2 000 000 à 2 500 000 FCFA/an), Sciences Infirmières (900 000 à 1 200 000 FCFA/an). Inscription : 200 000 FCFA.",
+    "duree_formations": "Doctorat d'État en Médecine (7-8 ans), Doctorat en Pharmacie (6 ans), Doctorat en Chirurgie Dentaire (6 ans), Licence Soins (3 ans).",
+    "coordonnees": "Point E, Dakar · Tél : +221 33 825 94 57",
+    "site_web": "https://universitestchristopher.net",
+    "debouches_principaux": [
+      "Médecin généraliste & Spécialiste hospitalier",
+      "Pharmacien d'officine & Industrie pharmaceutique",
+      "Chirurgien-dentiste & Praticien bucco-dentaire",
+      "Infirmier d'État, Sage-femme & Cadre de santé"
+    ],
+    "sources": "MESRI officiel + Répertoire des facultés de médecine autorisées"
   },
   {
     "id": "uia",
     "nom": "Université Internationale Al Mostafa",
     "sigle": "UIA Sénégal",
-    "type_etablissement": "Privé",
-    "statut": "Privé",
     "ville": "Dakar — Mermoz",
     "region": "Dakar",
-    "site_officiel": "https://al-mostafa.sn",
+    "type": "Privée",
+    "statut_etablissement": "Privé",
     "agrement_mesri": "Oui (Agrément provisoire 2011, Extension officielle 2013 MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "uia_d_partement_informatique_et_r_seaux",
-      "uia_d_partement_gestion_et_management",
-      "uia_d_partement_sciences_islamiques_et_l"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Maintenance et réseaux informatiques",
+      "Licence Gestion des organisations",
+      "Licence Sciences islamiques"
     ],
-    "frais_scolarite_indicatifs": "Frais modérés (2026-2027) : Licence Informatique / Gestion (450 000 à 600 000 FCFA/an), Sciences Islamiques (350 000 FCFA/an). Inscription annuelle : 50 000 FCFA.",
-    "source": "Document officiel MESRI (Agréments et extensions)",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "Agrément & Extension MESRI",
+    "source_verification": "Document officiel MESRI (Agrément et extension des filières)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Informatique et Réseaux",
+      "Département Gestion et Management",
+      "Département Sciences Islamiques et Langue Arabe"
+    ],
+    "filieres_proposees": [
+      "Maintenance et réseaux informatiques",
+      "Gestion des entreprises",
+      "Sciences islamiques et théologie"
+    ],
+    "conditions_admission": "Baccalauréat ou diplôme équivalent reconnu par le MESRI pour l'entrée en 1ère année de Licence.",
+    "frais_scolarite": "Frais modérés (2026-2027) : Licence Informatique / Gestion (450 000 à 600 000 FCFA/an), Sciences Islamiques (350 000 FCFA/an). Inscription annuelle : 50 000 FCFA.",
+    "duree_formations": "Licence (3 ans).",
+    "coordonnees": "Mermoz, Lot 33 Pyrotechnie, Dakar · Tél : +221 33 864 24 13",
+    "site_web": "https://al-mostafa.sn",
+    "debouches_principaux": [
+      "Technicien réseaux & Administrateur systèmes",
+      "Technicien de maintenance informatique",
+      "Gestionnaire & Assistant administratif d'entreprise",
+      "Enseignant-chercheur en sciences religieuses et éducation"
+    ],
+    "sources": "Document officiel MESRI (Agréments et extensions)"
   },
   {
     "id": "urdfs",
     "nom": "Université Rose Dieng France-Sénégal",
     "sigle": "URDFS",
-    "type_etablissement": "Privé",
-    "statut": "Partenariat d'Excellence France-Sénégal / Bi-diplômant",
     "ville": "Sénégal (Campus Franco-Sénégalais)",
     "region": "Dakar / International",
-    "site_officiel": "https://urdfs.sn",
+    "type": "Privée",
+    "statut_etablissement": "Partenariat d'Excellence France-Sénégal / Bi-diplômant",
     "agrement_mesri": "Oui (Cadre de coopération universitaire franco-sénégalaise)",
-    "habilitation_institutionnelle": "A vérifier",
-    "composantes_ids": [
-      "urdfs_p_le_g_nie_industriel___maintenanc",
-      "urdfs_p_le_logistique__transport___suppl",
-      "urdfs_p_le_g_nie_biologique___biotechnol",
-      "urdfs_p_le_intelligence_artificielle___t"
+    "habilitation_institutionnelle": "Oui (Rentrée 2026-2027)",
+    "formations_accreditees": [
+      "BUT / Licence Pro Génie Industriel et Maintenance (Double diplôme)",
+      "BUT / Licence Pro Management de la Logistique et des Transports",
+      "BUT / Licence Pro Génie Biologique — Biologie médicale et biotechnologie"
     ],
-    "frais_scolarite_indicatifs": "Frais BUT / Double diplomation (2026-2027) : 1 200 000 à 1 800 000 FCFA/an selon programme et bourses de mobilité partenaires.",
-    "source": "URDFS officiel (recrutement.urdfs.sn 2026-2027)",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "Rentrée 2026-2027 (Candidatures ouvertes)",
+    "source_verification": "Site officiel URDFS + Plateforme recrutement.urdfs.sn",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Génie Industriel & Maintenance",
+      "Pôle Logistique, Transport & Supply Chain",
+      "Pôle Génie Biologique & Biotechnologies",
+      "Pôle Intelligence Artificielle & Transition Écologique"
+    ],
+    "filieres_proposees": [
+      "BUT / LP Génie Industriel et Maintenance",
+      "BUT / LP Management de la Logistique et des Transports",
+      "BUT / LP Génie Biologique — Biologie médicale et biotechnologie",
+      "Intelligence Artificielle & Mathématiques appliquées",
+      "Transition écologique & Agronomie durable"
+    ],
+    "conditions_admission": "Candidatures ouvertes pour la rentrée 2026-2027 sur dossier via recrutement.urdfs.sn. Sélection exigeante basée sur les résultats du Bac et la motivation.",
+    "frais_scolarite": "Frais BUT / Double diplomation (2026-2027) : 1 200 000 à 1 800 000 FCFA/an selon programme et bourses de mobilité partenaires.",
+    "duree_formations": "BUT (3 ans), Licence Professionnelle (3 ans) avec standards et doubles diplômes internationaux.",
+    "coordonnees": "Campus URDFS, Dakar — Sénégal · Candidatures : recrutement.urdfs.sn",
+    "site_web": "https://urdfs.sn",
+    "debouches_principaux": [
+      "Ingénieur / Technicien supérieur en maintenance industrielle",
+      "Supply Chain Manager & Responsable logistique international",
+      "Technicien de laboratoire médical & Assistant ingénieur biotechnologies",
+      "Data Analyst & Ingénieur IA appliqué aux industries"
+    ],
+    "sources": "URDFS officiel (recrutement.urdfs.sn 2026-2027)",
+    "logo_url": "https://acacile.com/sites/default/files/styles/article_detail/public/2025-08/R.png?itok=7lm1sepO",
+    "image_url": "https://acacile.com/sites/default/files/styles/article_detail/public/2025-08/R.png?itok=7lm1sepO"
   },
   {
     "id": "daust",
     "nom": "Dakar American University of Science and Technology",
     "sigle": "DAUST",
-    "type_etablissement": "Privé",
-    "statut": "Privé (Standard Technologique Américain / STEM)",
     "ville": "Somone / Mbour",
     "region": "Thiès",
-    "site_officiel": "https://daust.org/",
+    "type": "Privée",
+    "statut_etablissement": "Privé (Standard Technologique Américain / STEM)",
     "agrement_mesri": "Oui (Autorisation d'ouverture & Extension accordée)",
-    "habilitation_institutionnelle": "A vérifier",
-    "composantes_ids": [
-      "daust_department_of_computer_science___e",
-      "daust_department_of_electrical___electro",
-      "daust_department_of_mechanical___aerospa",
-      "daust_department_of_civil___environmenta",
-      "daust_somone"
+    "habilitation_institutionnelle": "Oui (Autorisation Génie Mécanique, Informatique, Électrique)",
+    "formations_accreditees": [
+      "Programme d'Ingénieur en Génie Informatique (ANAQ-Sup)",
+      "Programme d'Ingénieur en Génie Électrique (ANAQ-Sup)",
+      "Programme d'Ingénieur en Génie Mécanique (ANAQ-Sup)",
+      "Programme d'Ingénieur en Génie Aérospatial"
     ],
-    "frais_scolarite_indicatifs": "Standard Université Américaine (2026-2027) : Parcours d'Ingénieur (2 500 000 à 4 000 000 FCFA/an incluant accès aux fablabs et technologies). Possibilité de bourses au mérite.",
-    "source": "ANAQ-Sup + DAUST officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "ANAQ-Sup / Autorisation d'ouverture et extension",
+    "source_verification": "ANAQ-Sup officiel + DAUST officiel",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Department of Computer Science & Engineering",
+      "Department of Electrical & Electronics Engineering",
+      "Department of Mechanical & Aerospace Engineering",
+      "Department of Civil & Environmental Engineering",
+      "DAUST Tech Labs & Innovation Center (Somone)"
+    ],
+    "filieres_proposees": [
+      "Génie Informatique & Software Engineering (IA / Cybersécurité)",
+      "Génie Électrique & Énergie",
+      "Génie Mécanique & Robotique",
+      "Génie Aérospatial & Conception aéronautique",
+      "Génie Civil & Environnemental",
+      "Chimie et Biomolécules"
+    ],
+    "conditions_admission": "Baccalauréat scientifique ou technique avec excellent dossier en Mathématiques et Physique. Test d'admission en anglais et examen de dossier technique.",
+    "frais_scolarite": "Standard Université Américaine (2026-2027) : Parcours d'Ingénieur (2 500 000 à 4 000 000 FCFA/an incluant accès aux fablabs et technologies). Possibilité de bourses au mérite.",
+    "duree_formations": "Parcours Ingénieur en 4 ans (Système US) + Année préparatoire / Masterclasses.",
+    "coordonnees": "Campus DAUST, Somone / Mbour — Sénégal",
+    "site_web": "https://daust.org/",
+    "debouches_principaux": [
+      "Software Engineer & Architecte Cloud / IA",
+      "Ingénieur systèmes embarqués & IoT",
+      "Ingénieur en mécanique & Robotique industrielle",
+      "Ingénieur aéronautique & Technologies spatiales",
+      "Ingénieur civil & Concepteur de structures durables"
+    ],
+    "sources": "ANAQ-Sup + DAUST officiel"
   },
   {
     "id": "esp",
     "nom": "École Supérieure Polytechnique de Dakar",
     "sigle": "ESP",
-    "type_etablissement": "Public",
-    "statut": "Grande École Publique (Rattachée à l'UCAD)",
     "ville": "Dakar — Fann",
     "region": "Dakar",
-    "site_officiel": "https://esp.sn/",
+    "type": "Grande École Publique",
+    "statut_etablissement": "Grande École Publique (Rattachée à l'UCAD)",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur Technologique",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "esp_d_partement_g_nie_informatique",
-      "esp_d_partement_g_nie_civil",
-      "esp_d_partement_g_nie__lectrique___t_l_c",
-      "esp_d_partement_g_nie_m_canique",
-      "esp_d_partement_g_nie_chimique_et_biolog",
-      "esp_d_partement_gestion"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "DUT",
+      "DST",
+      "Licence Professionnelle",
+      "DIT (Bac+4)",
+      "Diplôme d'Ingénieur de Conception (Bac+5)",
+      "Masters Technologiques"
     ],
-    "frais_scolarite_indicatifs": "Statut boursier/public : droits d'inscription nationaux (50 000 FCFA/an). Formations payantes sur titre / cours du soir : 700 000 à 1 500 000 FCFA/an selon cycle.",
-    "source": "ESP officiel + UCAD",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / CAMES / ANAQ-Sup",
+    "source_verification": "ESP officiel (Environ 70 programmes tous cycles confondus)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Génie Informatique",
+      "Département Génie Civil",
+      "Département Génie Électrique & Télécoms",
+      "Département Génie Mécanique",
+      "Département Génie Chimique et Biologie Appliquée",
+      "Département Gestion"
+    ],
+    "filieres_proposees": [
+      "Informatique & Télécommunications",
+      "Intelligence Artificielle et Big Data",
+      "Sécurité et Systèmes d'Information",
+      "Génie Civil & BTP",
+      "Génie Mécanique & Systèmes complexes",
+      "Génie Électrique / Électronique / Électrotechnique",
+      "Génie Chimique & Industries Alimentaires",
+      "Biologie appliquée & Génie Biomédical",
+      "Gestion, Comptabilité, Contrôle & Audit"
+    ],
+    "conditions_admission": "Selon la formation : concours national d'entrée pour le cycle DUT (Terminale/Bac scientifique ou technique), sélection sur dossier technique ou recrutement sur titre pour les cycles d'Ingénieur et Masters.",
+    "frais_scolarite": "Statut boursier/public : droits d'inscription nationaux (50 000 FCFA/an). Formations payantes sur titre / cours du soir : 700 000 à 1 500 000 FCFA/an selon cycle.",
+    "duree_formations": "DUT/DST (2 ans), Licence (3 ans), DIT (4 ans), Diplôme d'Ingénieur de Conception / Master (5 ans).",
+    "coordonnees": "Corniche Ouest, UCAD, BP 5085 Dakar-Fann · Tél : +221 33 824 05 40 · Email : esp@esp.sn",
+    "site_web": "https://esp.sn/",
+    "debouches_principaux": [
+      "Ingénieur logiciel & Développeur",
+      "Data Scientist & Spécialiste IA",
+      "Expert cybersécurité & Ingénieur réseaux/télécoms",
+      "Ingénieur civil & Conducteur de travaux",
+      "Ingénieur électrotechnicien & Ingénieur mécanique",
+      "Ingénieur industriel & Responsable qualité",
+      "Cadre en gestion, contrôle et audit"
+    ],
+    "sources": "ESP officiel + UCAD"
   },
   {
     "id": "ept",
     "nom": "École Polytechnique de Thiès",
     "sigle": "EPT",
-    "type_etablissement": "Public",
-    "statut": "Grande École Publique d'Ingénieurs",
     "ville": "Thiès",
     "region": "Thiès",
-    "site_officiel": "https://ept.edu.sn/",
+    "type": "Grande École Publique",
+    "statut_etablissement": "Grande École Publique d'Ingénieurs",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur (Formation d'Ingénieurs d'État)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ept_d_partement_g_nie_civil",
-      "ept_d_partement_g_nie__lectrom_canique",
-      "ept_d_partement_g_nie_informatique_et_t_",
-      "ept_d_partement_g_nie_a_rospatial",
-      "ept_d_partement_g_nie_industriel",
-      "ept__cole_doctorale_syst_mes_intelligent"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Diplôme d'Ingénieur de Conception (5 spécialités)",
+      "Masters Recherche & Spécialisés",
+      "Doctorats en Ingénierie"
     ],
-    "frais_scolarite_indicatifs": "Formation publique boursière (Élève-Ingénieur logé et nourri au campus de Thiès). Droits d'inscription annuels nationaux.",
-    "source": "EPT officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / CAMES / ANAQ-Sup",
+    "source_verification": "EPT officiel (Concours Ingénieur 2026)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Génie Civil",
+      "Département Génie Électromécanique",
+      "Département Génie Informatique et Télécommunications",
+      "Département Génie Aérospatial",
+      "Département Génie Industriel",
+      "École Doctorale Systèmes Intelligents & Développement Durable"
+    ],
+    "filieres_proposees": [
+      "Génie Civil & Construction Intelligente",
+      "Génie Électromécanique & Maintenance des systèmes",
+      "Génie Aérospatial & Technologies aéronautiques",
+      "Génie Industriel & Qualité et Sécurité",
+      "Génie Informatique et Télécommunications",
+      "Master Ingénierie Logicielle et Intelligence Artificielle",
+      "Master Énergies Renouvelables & Transport Numérique",
+      "Doctorats en ingénierie mathématique et systèmes intelligents"
+    ],
+    "conditions_admission": "Concours national d'entrée 2026 ouvert aux élèves de Terminale scientifique ou technique (S1, S2, S3, STIDD) et bacheliers scientifiques de moins de 22 ans au 1er octobre 2026. Admission sur titre également ouverte à certains niveaux.",
+    "frais_scolarite": "Formation publique boursière (Élève-Ingénieur logé et nourri au campus de Thiès). Droits d'inscription annuels nationaux.",
+    "duree_formations": "Cycle Ingénieur en 5 ans (2 ans prépa intégrée + 3 ans spécialisation), Masters (2 ans), Doctorat (3 ans).",
+    "coordonnees": "VCN route de base, BP A10, Thiès · Tél : +221 76 223 61 60 · Email : contact@ept.edu.sn",
+    "site_web": "https://ept.edu.sn/",
+    "debouches_principaux": [
+      "Ingénieur civil & Chef de grands projets d'infrastructures",
+      "Ingénieur informatique, IA & Ingénieur logiciel",
+      "Ingénieur télécoms & Réseaux",
+      "Ingénieur électromécanique & Énergies renouvelables",
+      "Ingénieur aérospatial & Industriel",
+      "Chercheur & Consultant en ingénierie"
+    ],
+    "sources": "EPT officiel"
   },
   {
     "id": "esmt",
     "nom": "École Supérieure Multinationale des Télécommunications",
     "sigle": "ESMT",
-    "type_etablissement": "Public",
-    "statut": "Institution Sous-Régionale Publique (États d'Afrique de l'Ouest et du Centre)",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://www.esmt.sn/",
+    "type": "Établissement Sous-Régional Spécialisé",
+    "statut_etablissement": "Institution Sous-Régionale Publique (États d'Afrique de l'Ouest et du Centre)",
     "agrement_mesri": "Institution Inter-États Spécialisée Télécoms & Numérique",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "esmt_d_partement_t_l_communications_et_r",
-      "esmt_d_partement_informatique_et_syst_me",
-      "esmt_d_partement_management_et__conomie_",
-      "esmt_centre_de_certification_professionn"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence LTI (CAMES/ANAQ-Sup)",
+      "Licence LS2E",
+      "Licence Économie Numérique",
+      "Masters Télécoms & Numérique",
+      "Certifications Télécoms/Fibre"
     ],
-    "frais_scolarite_indicatifs": "Frais par filière (2026-2027) : Licence LTI/LS2E (1 100 000 à 1 500 000 FCFA/an), Masters Télécoms (1 600 000 à 2 200 000 FCFA/an), Certifications modulaires selon programme.",
-    "source": "ESMT officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "CAMES / ANAQ-Sup / UIT (Union Internationale des Télécommunications)",
+    "source_verification": "ESMT officiel (Tests d'entrée Licences 2026)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Télécommunications et Réseaux",
+      "Département Informatique et Systèmes Embarqués",
+      "Département Management et Économie du Numérique",
+      "Centre de Certification Professionnelle et Fibre Optique"
+    ],
+    "filieres_proposees": [
+      "Licence Télécommunications et Informatique (LTI)",
+      "Licence Systèmes Embarqués et Électronique (LS2E)",
+      "Licence Management et Économie du Numérique",
+      "Masters en Télécommunications et Technologies Numériques",
+      "Masters Professionnels en cours du soir",
+      "Formations réseaux, fibre optique, cybersécurité et cloud"
+    ],
+    "conditions_admission": "Tests d'entrée écrits 2026 pour les Licences après Bac scientifique ou technique. Sélection sur dossier pour les Masters selon le niveau requis.",
+    "frais_scolarite": "Frais par filière (2026-2027) : Licence LTI/LS2E (1 100 000 à 1 500 000 FCFA/an), Masters Télécoms (1 600 000 à 2 200 000 FCFA/an), Certifications modulaires selon programme.",
+    "duree_formations": "Licence (3 ans), Master (2 ans), Certifications professionnelles (durée variable).",
+    "coordonnees": "Rocade Fann Bel Air, BP 10 000 Dakar-Liberté · Tél : +221 70 637 03 00 / +221 32 824 84 84 · Email : esmt@esmt.sn",
+    "site_web": "https://www.esmt.sn/",
+    "debouches_principaux": [
+      "Ingénieur télécoms & Réseaux fibre optique / 5G",
+      "Ingénieur systèmes embarqués & Électronique",
+      "Expert cybersécurité & Administrateur cloud",
+      "Consultant en transformation digitale",
+      "Manager des télécommunications et de l'économie numérique"
+    ],
+    "sources": "ESMT officiel"
   },
   {
     "id": "ensae",
     "nom": "École Nationale de la Statistique et de l'Analyse Économique Pierre Ndiaye",
     "sigle": "ENSAE",
-    "type_etablissement": "Public",
-    "statut": "Grande École Publique (Rattachée à l'ANSD / Ministère de l'Économie)",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://www.ensae.sn/",
+    "type": "Grande École Publique",
+    "statut_etablissement": "Grande École Publique (Rattachée à l'ANSD / Ministère de l'Économie)",
     "agrement_mesri": "Établissement Public Spécialisé de Statistique et Data Science",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ensae_ise",
-      "ensae_as___its",
-      "ensae_tss",
-      "ensae_centre_de_recherche_en__conomie_et"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Technicien Supérieur de la Statistique (TSS)",
+      "Analyste Statisticien (AS)",
+      "Ingénieur des Travaux Statistiques (ITS)",
+      "Ingénieur Statisticien Économiste (ISE)"
     ],
-    "frais_scolarite_indicatifs": "Formation publique d'élite : les lauréats du concours bénéficient d'une bourse mensuelle d'études de l'État ou de partenaires internationaux.",
-    "source": "ENSAE officiel + ANSD",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Réseau International des Écoles de Statistique Africaines (CAPESA / ANSD)",
+    "source_verification": "ENSAE officiel + ANSD (Concours Internationaux de Statistique)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Division Formation des Ingénieurs Statisticiens Économistes (ISE)",
+      "Division Formation des Analystes Statisticiens (AS / ITS)",
+      "Division Techniciens Supérieurs de la Statistique (TSS)",
+      "Centre de Recherche en Économie et Statistique Appliquée"
+    ],
+    "filieres_proposees": [
+      "Ingénieur Statisticien Économiste (ISE — Cycle 5 ans Bac ou 3 ans Licence)",
+      "Ingénieur des Travaux Statistiques (ITS — Bac+4)",
+      "Analyste Statisticien (AS — 3 ans)",
+      "Technicien Supérieur de la Statistique (TSS — 2 ans)",
+      "Master Aide à la Décision et Évaluation des Politiques Publiques",
+      "Master en Statistiques Agricoles & Sécurité Alimentaire",
+      "Data Science, Big Data et Modélisation Économétrique"
+    ],
+    "conditions_admission": "Concours international d'entrée très sélectif (organisé par le CAPESA/ANSD). Niveau Terminale/Bac scientifique pour TSS/AS/ISE cycle long ; Licence Mathématiques/Économie pour ISE cycle spécial.",
+    "frais_scolarite": "Formation publique d'élite : les lauréats du concours bénéficient d'une bourse mensuelle d'études de l'État ou de partenaires internationaux.",
+    "duree_formations": "TSS (2 ans), Analyste Statisticien (3 ans), ITS (4 ans), ISE (5 ans post-bac ou 3 ans post-licence).",
+    "coordonnees": "Rocade Fann Bel-Air, Dakar · Tél : +221 33 825 15 19",
+    "site_web": "https://www.ensae.sn/",
+    "debouches_principaux": [
+      "Ingénieur Statisticien Économiste & Data Scientist",
+      "Data Analyst & Économètre de modélisation",
+      "Statisticien dans les banques, assurances et institutions internationales (BCEAO, FMI, Banque Mondiale)",
+      "Expert en enquêtes, sondages et recensements (ANSD)",
+      "Cadre supérieur de l'administration économique et de la planification"
+    ],
+    "sources": "ENSAE officiel + ANSD"
   },
   {
     "id": "esea",
     "nom": "École Supérieure d'Économie Appliquée",
     "sigle": "ESEA",
-    "type_etablissement": "Public",
-    "statut": "Grande École Publique (Ayant rang de faculté de l'UCAD — ex ENEA)",
     "ville": "Dakar — Fann",
     "region": "Dakar",
-    "site_officiel": "https://esea.ucad.sn/",
+    "type": "Grande École Publique",
+    "statut_etablissement": "Grande École Publique (Ayant rang de faculté de l'UCAD — ex ENEA)",
     "agrement_mesri": "Établissement Public d'Enseignement Supérieur",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "esea_d_partement_ategu___am_nagement_du_",
-      "esea_d_partement_decof___d_veloppement_c",
-      "esea_d_partement_pego___planification__c",
-      "esea_p_le_formation_continue____tudes_sp"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Département ATEGU (Aménagement)",
+      "Département DECOF (Développement communautaire)",
+      "Département PEGO (Planification)"
     ],
-    "frais_scolarite_indicatifs": "Formation publique : droits d'inscription universitaires nationaux.",
-    "source": "ESEA / UCAD officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / UCAD / MESRI",
+    "source_verification": "ESEA / UCAD officiel (Concours 2026-2027)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département ATEGU — Aménagement du Territoire, Environnement et Gestion Urbaine",
+      "Département DECOF — Développement Communautaire et Formation",
+      "Département PEGO — Planification Économique et Gestion des Organisations",
+      "Pôle Formation Continue & Études Spécialisées"
+    ],
+    "filieres_proposees": [
+      "ATEGU : Aménagement du Territoire, Urbanisme et Environnement",
+      "DECOF : Développement Communautaire et Gestion des Projets Sociaux",
+      "PEGO : Planification Économique et Gestion des Organisations",
+      "DTS et Licences professionnelles en Géographie, Gestion et Sciences Sociales"
+    ],
+    "conditions_admission": "Concours direct national 2026-2027 ouvert aux titulaires du Baccalauréat L, S ou STEG âgés de 24 ans au maximum au 31 décembre 2026. Épreuves écrites d'admissibilité puis oraux.",
+    "frais_scolarite": "Formation publique : droits d'inscription universitaires nationaux.",
+    "duree_formations": "Formation initiale en 4 ans pour le concours 2026-2027.",
+    "coordonnees": "Avenue Cheikh Anta Diop, BP 5084 Dakar-Fann · Tél : +221 32 824 10 26 · Email : esea@ucad.edu.sn",
+    "site_web": "https://esea.ucad.sn/",
+    "debouches_principaux": [
+      "Aménageur territorial & Urbaniste",
+      "Planificateur économique & Gestionnaire de projets",
+      "Chargé de développement local et territorial",
+      "Cadre supérieur des collectivités territoriales et ministères",
+      "Responsable de programmes ONG et agences internationales"
+    ],
+    "sources": "ESEA / UCAD officiel"
   },
   {
     "id": "ena",
     "nom": "École Nationale d'Administration du Sénégal",
     "sigle": "ENA",
-    "type_etablissement": "Public",
-    "statut": "Grande École Publique Professionnelle Supérieure d'État",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://www.ena.sn/",
+    "type": "Grande École Publique",
+    "statut_etablissement": "Grande École Publique Professionnelle Supérieure d'État",
     "agrement_mesri": "Établissement Public de Formation des Hauts Fonctionnaires de l'État",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ena_section_administration_g_n_rale_et_t",
-      "ena_section_diplomatie_et_affaires__tran",
-      "ena_section_tr_sor_et_comptabilit__publi",
-      "ena_section_imp_ts_et_domaines",
-      "ena_section_douanes",
-      "ena_section_travail_et_s_curit__sociale",
-      "ena_section_enqu_tes__conomiques"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Cycle A (Hauts Cadres de Conception)",
+      "Cycle B (Cadres d'Application et de Contrôle)"
     ],
-    "frais_scolarite_indicatifs": "Frais de dossier de concours : 10 800 FCFA. Formation gratuite et rémunérée (statut de fonctionnaire stagiaire / élève-fonctionnaire boursier d'État).",
-    "source": "ENA Sénégal officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / Présidence de la République & Primature",
+    "source_verification": "ENA officiel (Avis de concours directs et professionnels)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Section Administration Générale et Territoriale",
+      "Section Diplomatie et Affaires Étrangères",
+      "Section Trésor et Comptabilité Publique",
+      "Section Impôts et Domaines",
+      "Section Douanes",
+      "Section Travail et Sécurité Sociale",
+      "Section Enquêtes Économiques"
+    ],
+    "filieres_proposees": [
+      "Administration générale (Administrateurs civils)",
+      "Diplomatie (Conseillers des Affaires Étrangères)",
+      "Trésor (Inspecteurs et Contrôleurs du Trésor)",
+      "Impôts et Domaines (Inspecteurs et Contrôleurs des Impôts)",
+      "Douanes (Inspecteurs et Contrôleurs des Douanes)",
+      "Travail et Sécurité Sociale (Inspecteurs du Travail)",
+      "Commerce et Enquêtes Économiques (Commissaires aux Enquêtes Économiques)"
+    ],
+    "conditions_admission": "Concours direct et professionnel très sélectif. Cycle A : Maîtrise/Master requis, âge 18 à 33 ans. Cycle B : Baccalauréat minimum, âge 18 à 33 ans selon réglementation.",
+    "frais_scolarite": "Frais de dossier de concours : 10 800 FCFA. Formation gratuite et rémunérée (statut de fonctionnaire stagiaire / élève-fonctionnaire boursier d'État).",
+    "duree_formations": "Cycle A (2 ans), Cycle B (2 ans).",
+    "coordonnees": "Boulevard Dial Diop, BP 5013 Dakar · Site : www.ena.sn",
+    "site_web": "https://www.ena.sn/",
+    "debouches_principaux": [
+      "Administrateur civil (Préfet, Gouverneur, Directeur d'administration centrale)",
+      "Conseiller des Affaires Étrangères (Diplomate, Ambassadeur, Consul)",
+      "Inspecteur du Trésor & Inspecteur des Impôts et Domaines",
+      "Inspecteur des Douanes & Inspecteur du Travail",
+      "Commissaire aux Enquêtes Économiques"
+    ],
+    "sources": "ENA Sénégal officiel"
   },
   {
     "id": "cfj",
     "nom": "Centre de Formation Judiciaire",
     "sigle": "CFJ",
-    "type_etablissement": "Public",
-    "statut": "Grande École Publique Professionnelle Judiciaire (Ministère de la Justice)",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://cfj.sn/",
+    "type": "Grande École Publique",
+    "statut_etablissement": "Grande École Publique Professionnelle Judiciaire (Ministère de la Justice)",
     "agrement_mesri": "Établissement Public de Formation des Magistrats et Auxiliaires de Justice",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "cfj_si_ge_et_parquet",
-      "cfj_administrateurs_et_greffiers",
-      "cfj_section__ducation_surveill_e_et_prot"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Section Magistrature",
+      "Section Greffe",
+      "Section Éducation Surveillée",
+      "Section Protection Sociale"
     ],
-    "frais_scolarite_indicatifs": "Formation publique professionnelle : élèves auditeurs de justice et greffiers stagiaires rémunérés par l'État.",
-    "source": "CFJ officiel + Ministère de la Justice",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / Ministère de la Justice",
+    "source_verification": "CFJ officiel (Avis de concours 2026)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Section Magistrature (Siège et Parquet)",
+      "Section Greffe (Administrateurs et Greffiers)",
+      "Section Éducation Surveillée et Protection Sociale"
+    ],
+    "filieres_proposees": [
+      "Magistrature (Juges du Siège, Procureurs de la République, Juges d'instruction)",
+      "Greffes (Greffiers en chef et Greffiers des cours et tribunaux)",
+      "Éducateurs spécialisés de la justice",
+      "Inspecteurs de l'éducation surveillée et de la protection sociale"
+    ],
+    "conditions_admission": "Concours direct et professionnel 2026 très sélectif. Magistrature : Master 2 / Maîtrise en Droit avec mention. Greffe : Licence en Droit ou Baccalauréat selon cycle.",
+    "frais_scolarite": "Formation publique professionnelle : élèves auditeurs de justice et greffiers stagiaires rémunérés par l'État.",
+    "duree_formations": "Magistrature (2 ans), Greffe (2 ans), Éducation surveillée (2 ans).",
+    "coordonnees": "Boulevard Dial Diop, Dakar — Sénégal",
+    "site_web": "https://cfj.sn/",
+    "debouches_principaux": [
+      "Magistrat (Juge au tribunal, Conseiller à la Cour d'Appel, Procureur)",
+      "Greffier en chef & Greffier d'audience",
+      "Éducateur spécialisé & Inspecteur de la protection judiciaire de la jeunesse",
+      "Cadre supérieur de l'administration judiciaire et pénitentiaire"
+    ],
+    "sources": "CFJ officiel + Ministère de la Justice"
   },
   {
     "id": "cesag",
     "nom": "Centre Africain d'Études Supérieures en Gestion",
     "sigle": "CESAG",
-    "type_etablissement": "Privé",
-    "statut": "Grande École Sous-Régionale de Management (Tutelle BCEAO / Commission UEMOA)",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://www.cesag.sn/",
+    "type": "Établissement Sous-Régional Spécialisé",
+    "statut_etablissement": "Grande École Sous-Régionale de Management (Tutelle BCEAO / Commission UEMOA)",
     "agrement_mesri": "Institution d'Excellence Inter-États en Gestion et Finance",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "cesag_bfc",
-      "cesag_msd",
-      "cesag_smp",
-      "cesag_centre_d_excellence_en_microfinanc"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licences Gestion & CCA (CAMES)",
+      "Masters CCA, Finance, Audit, Management (CAMES)",
+      "MBAs Spécialisés",
+      "DECOGEF"
     ],
-    "frais_scolarite_indicatifs": "Grille officielle 2026-2027 : Licences (1 200 000 à 1 600 000 FCFA/an), Masters professionnels (1 800 000 à 2 500 000 FCFA/an), MBAs (3 000 000 à 4 500 000 FCFA/programme).",
-    "source": "CESAG officiel + BCEAO",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "CAMES / BCEAO / UEMOA / ANAQ-Sup",
+    "source_verification": "CESAG officiel (Campagne 2026-2027 Licence, Master, MBA)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Banque, Finance et Comptabilité (BFC)",
+      "Département Management et Sciences de la Décision (MSD)",
+      "Département Santé et Management Public (SMP)",
+      "Centre d'Excellence en Microfinance et MBA"
+    ],
+    "filieres_proposees": [
+      "Licences : Gestion, MIAGE, Comptabilité Contrôle Audit (CCA), Management Public, Gestion PME-PMI, DECOGEF",
+      "Masters : Audit et contrôle de gestion, Banque-Finance-Assurance, Management stratégique, RH, Gestion de projets",
+      "MBAs : Banque et finance, Management des systèmes de santé, Ingénierie financière, Audit & Risques"
+    ],
+    "conditions_admission": "Entrée en Licence après le Bac. Master après Licence ou équivalent reconnu CAMES. MBA sur étude de dossier et expérience. Frais de dossier de candidature 2026 : 25 000 FCFA.",
+    "frais_scolarite": "Grille officielle 2026-2027 : Licences (1 200 000 à 1 600 000 FCFA/an), Masters professionnels (1 800 000 à 2 500 000 FCFA/an), MBAs (3 000 000 à 4 500 000 FCFA/programme).",
+    "duree_formations": "Licence (3 ans), Master (2 ans), MBA (12 à 18 mois).",
+    "coordonnees": "Boulevard Mamadou Dia x Malick Sy, Dakar · Tél : +221 33 839 73 60 · Email : courrier@cesag.edu.sn",
+    "site_web": "https://www.cesag.sn/",
+    "debouches_principaux": [
+      "Expert-comptable stagiaire & Auditeur de grands cabinets (Big 4)",
+      "Directeur Financier (CFO) & Analyste financier senior",
+      "Cadre dirigeant de banque centrale (BCEAO) et banques commerciales",
+      "Manager de projets internationaux & Consultant en stratégie",
+      "Directeur des ressources humaines & Gestionnaire de structures de santé"
+    ],
+    "sources": "CESAG officiel + BCEAO"
   },
   {
     "id": "ism",
     "nom": "Institut Supérieur de Management",
     "sigle": "Groupe ISM",
-    "type_etablissement": "Privé",
-    "statut": "Grande École Privée de Management & Droit (Habilitation Institutionnelle MESRI)",
     "ville": "Dakar (Campus : Thiès, Saint-Louis, Louga, Ziguinchor)",
     "region": "Dakar",
-    "site_officiel": "https://www.ism.edu.sn/",
+    "type": "Institut Privé",
+    "statut_etablissement": "Grande École Privée de Management & Droit (Habilitation Institutionnelle MESRI)",
     "agrement_mesri": "Oui (Habilitation Institutionnelle et programmes accrédités CAMES/ANAQ-Sup)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ism_ism_business_school",
-      "ism__cole_de_droit",
-      "ism_ism_digital_campus___informatique",
-      "ism_ism_executive_education"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Bachelor Management",
+      "Licence Droit",
+      "Master Finance & Audit",
+      "Licence & Master Informatique / Digital",
+      "Executive MBA"
     ],
-    "frais_scolarite_indicatifs": "Grille officielle (2026-2027) : Bachelor (1 200 000 à 1 800 000 FCFA/an selon campus), Master (1 800 000 à 2 600 000 FCFA/an), MBA Executive (3 000 000 à 4 500 000 FCFA).",
-    "source": "ISM officiel + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "CAMES / ANAQ-Sup / MESRI",
+    "source_verification": "ISM officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "ISM Business School",
+      "ISM School of Law (École de Droit)",
+      "ISM Digital Campus & Informatique",
+      "ISM Executive Education"
+    ],
+    "filieres_proposees": [
+      "Management & International Business",
+      "Finance, Comptabilité & Audit",
+      "Marketing & Communication Digitale",
+      "Ressources Humaines & Organisation",
+      "Droit des Affaires & Carrières Juridiques",
+      "Informatique, Web & Data Business",
+      "Commerce International & Entrepreneuriat"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries pour l'entrée en Bachelor/Licence 1ère année. Test d'admission et examen du dossier académique. Admissions parallèles en L2/L3 et Master sur titre.",
+    "frais_scolarite": "Grille officielle (2026-2027) : Bachelor (1 200 000 à 1 800 000 FCFA/an selon campus), Master (1 800 000 à 2 600 000 FCFA/an), MBA Executive (3 000 000 à 4 500 000 FCFA).",
+    "duree_formations": "Bachelor / Licence (3 ans), Master (2 ans), MBA / Executive (12 à 18 mois).",
+    "coordonnees": "Point E / Dakar · Tél : +221 33 849 69 00 · Email : ism@ism.edu.sn",
+    "site_web": "https://www.ism.edu.sn/",
+    "debouches_principaux": [
+      "Manager d'entreprise & Chef de projet international",
+      "Auditeur financier & Contrôleur de gestion (Big 4)",
+      "Responsable marketing digital & Communication",
+      "Juriste d'affaires & Consultant fiscal",
+      "Directeur des ressources humaines & Entrepreneur"
+    ],
+    "sources": "ISM officiel + MESRI",
+    "logo_url": "https://megabase.eduniversal.com/uploads/school/42/logo.jpg",
+    "image_url": "https://megabase.eduniversal.com/uploads/school/42/logo.jpg"
   },
   {
     "id": "iam",
     "nom": "Institut Africain de Management",
     "sigle": "IAM",
-    "type_etablissement": "Privé",
-    "statut": "Grande École Privée de Management & Entrepreneuriat (Accréditée CAMES / ANAQ-Sup)",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://www.iam.sn/",
+    "type": "Institut Privé",
+    "statut_etablissement": "Grande École Privée de Management & Entrepreneuriat (Accréditée CAMES / ANAQ-Sup)",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "iam_iam_school_of_business",
-      "iam_iam_school_of_technology___informati",
-      "iam_iam_executive___doctoral_school"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Bachelor Business Administration",
+      "Master Finance-Audit",
+      "Master Marketing & Intelligence des Affaires",
+      "Master SI & Informatique"
     ],
-    "frais_scolarite_indicatifs": "Tarifs 2026-2027 : Bachelor (1 100 000 à 1 600 000 FCFA/an), Master (1 700 000 à 2 400 000 FCFA/an). Inscription annuelle : 150 000 FCFA.",
-    "source": "IAM officiel + CAMES",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "CAMES / ANAQ-Sup / MESRI",
+    "source_verification": "IAM officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "IAM School of Business",
+      "IAM School of Technology & Information Systems",
+      "IAM Executive & Doctoral School"
+    ],
+    "filieres_proposees": [
+      "Management & Entrepreneuriat",
+      "Finance, Comptabilité, Banque & Assurance",
+      "Marketing & Intelligence des Affaires",
+      "Commerce International & Logistique",
+      "Informatique de Gestion & Systèmes d'Information",
+      "Gestion des Ressources Humaines"
+    ],
+    "conditions_admission": "Baccalauréat pour entrée en 1ère année Bachelor. Bac+2 pour admission parallèle L3. Licence reconnue pour entrée en Master.",
+    "frais_scolarite": "Tarifs 2026-2027 : Bachelor (1 100 000 à 1 600 000 FCFA/an), Master (1 700 000 à 2 400 000 FCFA/an). Inscription annuelle : 150 000 FCFA.",
+    "duree_formations": "Bachelor (3 ans), Master (2 ans), MBA (12 à 18 mois).",
+    "coordonnees": "Mermoz Pyrotechnie, Dakar · Tél : +221 33 869 36 36",
+    "site_web": "https://www.iam.sn/",
+    "debouches_principaux": [
+      "Manager d'affaires & Entrepreneur",
+      "Analyste financier, Banquier & Auditeur",
+      "Responsable marketing & Chargé de clientèle corporate",
+      "Consultant en stratégie & Chef de projet SI"
+    ],
+    "sources": "IAM officiel + CAMES",
+    "logo_url": "https://lirp.cdn-website.com/34121623/dms3rep/multi/opt/iam-640w.png",
+    "image_url": "https://lirp.cdn-website.com/34121623/dms3rep/multi/opt/iam-640w.png"
   },
   {
     "id": "supdeco",
     "nom": "Groupe Supdeco Dakar",
     "sigle": "SUPDECO",
-    "type_etablissement": "Privé",
-    "statut": "Grande École Privée de Management, Informatique & Transport (Accréditée CAMES / AACSB BBA)",
     "ville": "Dakar (Campus : Faidherbe, Point E, Thiès, Saint-Louis, Diamniadio)",
     "region": "Dakar",
-    "site_officiel": "https://supdeco.sn/",
+    "type": "Institut Privé",
+    "statut_etablissement": "Grande École Privée de Management, Informatique & Transport (Accréditée CAMES / AACSB BBA)",
     "agrement_mesri": "Oui (Agrément Définitif MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "supdeco_supdeco_business_school",
-      "supdeco_ia___logiciel",
-      "supdeco_istl",
-      "supdeco_supdeco_executive_academy"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Administration des Affaires",
+      "Bachelor Génie Logiciel & Réseaux",
+      "Master Cloud & IA",
+      "Licence & Master Transport-Logistique (CAMES)"
     ],
-    "frais_scolarite_indicatifs": "Grille 2026-2027 : Bachelor / Licence (1 300 000 à 1 900 000 FCFA/an), Masters Informatique/IA & Management (1 900 000 à 2 800 000 FCFA/an), MSc Internationaux selon cursus.",
-    "source": "Supdeco officiel + CAMES",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "CAMES / ANAQ-Sup / AACSB Member",
+    "source_verification": "Groupe Supdeco officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Supdeco Business School",
+      "Supdeco Digital School & Ingénierie (IA / Logiciel)",
+      "Institut Supérieur de Transport et Logistique (ISTL)",
+      "Supdeco Executive Academy"
+    ],
+    "filieres_proposees": [
+      "Administration des Affaires, Finance, Marketing & RH",
+      "Génie Logiciel & Développement Full-Stack",
+      "Cloud Computing, DevOps & Intelligence Artificielle",
+      "Réseaux, Systèmes et Cybersécurité (MIAGE)",
+      "Transport, Logistique & Supply Chain Management",
+      "Droit des Affaires & Management Public",
+      "QHSE & Management Touristique"
+    ],
+    "conditions_admission": "Baccalauréat pour Bachelor / Licence (sélection sur dossier + test + entretien). Bac+3 pour Masters spécialisés et MSc internationaux.",
+    "frais_scolarite": "Grille 2026-2027 : Bachelor / Licence (1 300 000 à 1 900 000 FCFA/an), Masters Informatique/IA & Management (1 900 000 à 2 800 000 FCFA/an), MSc Internationaux selon cursus.",
+    "duree_formations": "Bachelor / Licence (3 ans), Master (2 ans), Diplôme d'Ingénieur (5 ans).",
+    "coordonnees": "7, Avenue Faidherbe, Dakar · Tél : +221 33 849 69 19 / +221 33 821 50 74 · Email : admission@supdeco.edu.sn",
+    "site_web": "https://supdeco.sn/",
+    "debouches_principaux": [
+      "Ingénieur logiciel & Ingénieur IA / Cloud",
+      "Expert cybersécurité & Ingénieur réseaux",
+      "Manager d'entreprise & Auditeur financier",
+      "Supply Chain Manager & Responsable logistique portuaire",
+      "Directeur marketing & Entrepreneur tech"
+    ],
+    "sources": "Supdeco officiel + CAMES",
+    "logo_url": "https://ent.supdeco.sn/logo.png",
+    "image_url": "https://ent.supdeco.sn/logo.png"
   },
   {
     "id": "bem",
     "nom": "BEM Management School",
     "sigle": "BEM Dakar",
-    "type_etablissement": "Privé",
-    "statut": "Grande École Privée Internationale de Management (Membre KEDGE Business School Network / AMBA / AACSB)",
     "ville": "Dakar (Campus : Sacré-Cœur III & Place de l'Indépendance)",
     "region": "Dakar",
-    "site_officiel": "https://bem.sn/",
+    "type": "Institut Privé",
+    "statut_etablissement": "Grande École Privée Internationale de Management (Membre KEDGE Business School Network / AMBA / AACSB)",
     "agrement_mesri": "Oui (Agrément officiel MESRI & Établissement d'Élite)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "bem_programme_grande__cole___bba",
-      "bem_bem_school_of_technology___data",
-      "bem_bem_executive_education"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Bachelor in Business Administration (BBA)",
+      "Programme Grande École (PGE Bac+5)",
+      "MSc Finance / Supply Chain / Marketing",
+      "Executive MBA"
     ],
-    "frais_scolarite_indicatifs": "Grille officielle (2026-2027) : Bachelor (2 200 000 à 2 800 000 FCFA/an), MSc Finance / Marketing / Supply Chain (environ 3 155 000 FCFA la première année à Dakar).",
-    "source": "BEM Dakar officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "CAMES / AMBA / AACSB / ANAQ-Sup",
+    "source_verification": "BEM officiel (Concours & Tests d'entrée Bachelor L1)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "BEM Business School (Programme Grande École & BBA)",
+      "BEM School of Technology & Data",
+      "BEM Executive Education"
+    ],
+    "filieres_proposees": [
+      "Bachelor in Management & International Business",
+      "Programme Grande École (PGE Bac+5)",
+      "Finance d'Entreprise, Audit & Contrôle de Gestion",
+      "Supply Chain Management, Achats & Commerce International",
+      "Marketing Digital, Marque & Communication",
+      "MSc Data Science & Management de l'Innovation"
+    ],
+    "conditions_admission": "Bachelor L1 : Baccalauréat toutes séries + Test d'entrée écrit et oral obligatoire. Admissions parallèles (L2/L3/Master) : étude de dossier académique + entretien individuel.",
+    "frais_scolarite": "Grille officielle (2026-2027) : Bachelor (2 200 000 à 2 800 000 FCFA/an), MSc Finance / Marketing / Supply Chain (environ 3 155 000 FCFA la première année à Dakar).",
+    "duree_formations": "Bachelor (3 à 4 ans), MSc / Master (2 ans), MBA (12 à 18 mois).",
+    "coordonnees": "Sacré-Cœur III, Pyrotechnie / 30 rue Carnot x Place de l'Indépendance, Dakar · Tél : +221 33 869 82 81 / +221 77 704 77 77",
+    "site_web": "https://bem.sn/",
+    "debouches_principaux": [
+      "Directeur Financier & Banquier d'affaires international",
+      "Supply Chain Manager & Directeur des achats",
+      "Directeur marketing & Responsable grands comptes",
+      "Consultant en stratégie d'entreprise & Entrepreneur"
+    ],
+    "sources": "BEM Dakar officiel",
+    "logo_url": "https://www.dhisn.com/sites/default/files/2024-07/Logo%20BEM.png",
+    "image_url": "https://www.dhisn.com/sites/default/files/2024-07/Logo%20BEM.png"
   },
   {
     "id": "afi_ue",
     "nom": "Groupe AFI-L'UE",
     "sigle": "AFI-L'UE",
-    "type_etablissement": "Privé",
-    "statut": "Grande École Privée Universitaire (Accréditée CAMES / ANAQ-Sup)",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://afi-ue.sn/",
+    "type": "Institut Privé",
+    "statut_etablissement": "Grande École Privée Universitaire (Accréditée CAMES / ANAQ-Sup)",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "afi_ue_d_partement_sciences_de_gestion_e",
-      "afi_ue_d_partement_informatique_et_g_nie",
-      "afi_ue_d_partement_sciences_juridiques_e",
-      "afi_ue_p_le_international_leader___maste"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Finance-Comptabilité",
+      "Licence Génie Logiciel",
+      "Licence Droit des Affaires",
+      "Master Audit & Contrôle de Gestion"
     ],
-    "frais_scolarite_indicatifs": "Grille 2026-2027 : Licence (650 000 à 900 000 FCFA/an), Master (1 100 000 à 1 600 000 FCFA/an). Droits d'inscription : 100 000 FCFA.",
-    "source": "AFI-L'UE officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "CAMES / ANAQ-Sup",
+    "source_verification": "AFI-L'UE officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Sciences de Gestion et Finance",
+      "Département Informatique et Génie Logiciel",
+      "Département Sciences Juridiques et Politiques",
+      "Pôle International Leader & Master"
+    ],
+    "filieres_proposees": [
+      "Gestion, Finance, Comptabilité & Audit",
+      "Banque, Assurance & Microfinance",
+      "Génie Logiciel & Informatique Appliquée",
+      "Réseaux & Télécoms",
+      "Droit des Affaires & Communication",
+      "Marketing & Commerce International"
+    ],
+    "conditions_admission": "Admission du Bac jusqu'au Bac+4/5 : étude de dossier académique + entretien individuel de sélection.",
+    "frais_scolarite": "Grille 2026-2027 : Licence (650 000 à 900 000 FCFA/an), Master (1 100 000 à 1 600 000 FCFA/an). Droits d'inscription : 100 000 FCFA.",
+    "duree_formations": "Licence (3 ans), Master (2 ans).",
+    "coordonnees": "Dakar — Sénégal · Tél institutionnel sur afi-ue.sn",
+    "site_web": "https://afi-ue.sn/",
+    "debouches_principaux": [
+      "Comptable & Auditeur financier",
+      "Développeur d'applications & Administrateur réseaux",
+      "Analyste financier & Conseiller clientèle bancaire",
+      "Responsable RH & Chef de projet"
+    ],
+    "sources": "AFI-L'UE officiel"
   },
   {
     "id": "isi",
     "nom": "Institut Supérieur d'Informatique",
     "sigle": "Groupe ISI",
-    "type_etablissement": "Privé",
-    "statut": "Grande École Privée d'Informatique & Réseaux (Habilitation MESRI / Accrédité CAMES & ANAQ-Sup)",
     "ville": "Dakar (Campus : Keur Massar, Diourbel, Thiès, Saint-Louis, Kaolack, Ziguinchor)",
     "region": "Dakar",
-    "site_officiel": "https://www.groupeisi.com/",
+    "type": "Institut Privé",
+    "statut_etablissement": "Grande École Privée d'Informatique & Réseaux (Habilitation MESRI / Accrédité CAMES & ANAQ-Sup)",
     "agrement_mesri": "Oui (Agrément Définitif MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isi_isi_tech____cole_de_g_nie_logiciel__",
-      "isi_isi_networks___cybersecurity",
-      "isi_isi_business___management_digital",
-      "isi_isi_r_d_labs___iot_hub"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Génie Logiciel (6 semestres / CAMES)",
+      "Licence Réseaux & Télécoms (CAMES)",
+      "Licence Systèmes Embarqués & IoT (CAMES)",
+      "Master Intelligence Artificielle & Big Data",
+      "Master Cybersécurité & Cloud"
     ],
-    "frais_scolarite_indicatifs": "Grille 2026-2027 : Licence Informatique / Génie Logiciel (750 000 à 1 100 000 FCFA/an selon campus), Masters IA & Cybersécurité (1 400 000 à 1 900 000 FCFA/an). Inscription : 100 000 FCFA.",
-    "source": "Groupe ISI officiel + CAMES",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "CAMES / ANAQ-Sup / MESRI",
+    "source_verification": "Groupe ISI officiel (Programmes accrédités 1 800 heures)",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "ISI Tech — École de Génie Logiciel & IA",
+      "ISI Networks & CyberSecurity",
+      "ISI Business & Management Digital",
+      "ISI R&D Labs & IoT Hub"
+    ],
+    "filieres_proposees": [
+      "Génie Logiciel & Développement Web/Mobile",
+      "Intelligence Artificielle & Ingénierie de Données (Big Data)",
+      "Cybersécurité, Cloud Computing & Systèmes Réseaux",
+      "Systèmes Embarqués & Internet des Objets (IoT)",
+      "Finance & Comptabilité Digitale",
+      "Marketing & Communication Digitale",
+      "Infographie, UI/UX Design & Multimédia"
+    ],
+    "conditions_admission": "L1 : Baccalauréat toutes séries sur dossier. L2/L3 : validation des crédits requis ou diplôme Bac+2 équivalent. M1/M2 : Licence ou Maîtrise en Informatique/Technologies.",
+    "frais_scolarite": "Grille 2026-2027 : Licence Informatique / Génie Logiciel (750 000 à 1 100 000 FCFA/an selon campus), Masters IA & Cybersécurité (1 400 000 à 1 900 000 FCFA/an). Inscription : 100 000 FCFA.",
+    "duree_formations": "Licence Professionnelle (3 ans / 1 800 h), Master (2 ans), Cycle Ingénieur (5 ans).",
+    "coordonnees": "Km 1, Avenue Cheikh Anta Diop, Dakar · Tél : +221 33 822 19 81 / +221 76 664 85 44 · Email : contact@groupeisi.com",
+    "site_web": "https://www.groupeisi.com/",
+    "debouches_principaux": [
+      "Développeur Full-Stack & Software Engineer",
+      "Ingénieur IA, Data Scientist & Architecte RAG",
+      "Expert cybersécurité & Ingénieur Cloud / DevOps",
+      "Administrateur systèmes et réseaux télécoms",
+      "Ingénieur IoT & Systèmes embarqués"
+    ],
+    "sources": "Groupe ISI officiel + CAMES",
+    "logo_url": "https://www.sencampus.com/content/uploads/logo-isi-550x550.jpg",
+    "image_url": "https://www.sencampus.com/content/uploads/logo-isi-550x550.jpg"
   },
   {
     "id": "isif",
     "nom": "Institut Supérieur d'Ingénierie et de Formation",
     "sigle": "ISIF",
-    "type_etablissement": "Privé",
-    "statut": "Institut Privé d'Ingénierie & Technologies (Habilitation Institutionnelle MESRI)",
     "ville": "Dakar — Fass",
     "region": "Dakar",
-    "site_officiel": "https://isif-groupe.sn/",
+    "type": "Institut Privé",
+    "statut_etablissement": "Institut Privé d'Ingénierie & Technologies (Habilitation Institutionnelle MESRI)",
     "agrement_mesri": "Oui (Habilitation Institutionnelle MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isif_d_partement_informatique_et_r_seaux",
-      "isif_d_partement_g_nie_industriel",
-      "isif_d_partement_management_des_technolo"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Informatique et Réseaux",
+      "Licence Génie Industriel",
+      "Master Management des Technologies"
     ],
-    "frais_scolarite_indicatifs": "Frais modérés (2026-2027) : Licence (600 000 à 850 000 FCFA/an), Master (1 000 000 à 1 300 000 FCFA/an). Inscription : 80 000 FCFA.",
-    "source": "ISIF officiel + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "MESRI / ANAQ-Sup",
+    "source_verification": "Liste officielle MESRI des établissements habilités",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Informatique et Réseaux",
+      "Département Génie Industriel",
+      "Département Management des Technologies"
+    ],
+    "filieres_proposees": [
+      "Informatique, Réseaux et Télécommunications",
+      "Génie Industriel & Maintenance",
+      "Management des Systèmes d'Information"
+    ],
+    "conditions_admission": "Baccalauréat scientifique ou technique pour entrée en Licence 1. Bac+2/Bac+3 pour admissions parallèles.",
+    "frais_scolarite": "Frais modérés (2026-2027) : Licence (600 000 à 850 000 FCFA/an), Master (1 000 000 à 1 300 000 FCFA/an). Inscription : 80 000 FCFA.",
+    "duree_formations": "Licence (3 ans), Master (2 ans).",
+    "coordonnees": "Fass, Rond-point Canal 4, Rocade Fann-Bel Air, Dakar · BP 5696 Dakar-Fann",
+    "site_web": "https://isif-groupe.sn/",
+    "debouches_principaux": [
+      "Ingénieur informatique & Administrateur réseaux",
+      "Technicien supérieur en génie industriel",
+      "Chef de projet informatique & Consultant"
+    ],
+    "sources": "ISIF officiel + MESRI",
+    "logo_url": "https://orniformation.com/images/education-cameroun/orniformation-isif-s%C3%A9n%C3%A9gal.jpg",
+    "image_url": "https://orniformation.com/images/education-cameroun/orniformation-isif-s%C3%A9n%C3%A9gal.jpg"
   },
   {
     "id": "isgc",
     "nom": "Institut Supérieur de Gestion et de Commerce",
     "sigle": "ISGC",
-    "type_etablissement": "Privé",
-    "statut": "Institut Privé de Gestion et Commerce",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://isgc.sn",
+    "type": "Institut Privé",
+    "statut_etablissement": "Institut Privé de Gestion et Commerce",
     "agrement_mesri": "Oui (Autorisation & Agrément MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isgc_d_partement_commerce_et_marketing",
-      "isgc_d_partement_gestion_et_finance"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Gestion et Commerce",
+      "Licence Finance-Comptabilité",
+      "Master Marketing"
     ],
-    "frais_scolarite_indicatifs": "Licence (550 000 à 750 000 FCFA/an), Master (900 000 à 1 200 000 FCFA/an).",
-    "source": "ISGC officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "MESRI",
+    "source_verification": "ISGC officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Commerce et Marketing",
+      "Département Gestion et Finance"
+    ],
+    "filieres_proposees": [
+      "Commerce international, Marketing & Vente",
+      "Finance, Comptabilité & Audit",
+      "Gestion des ressources humaines & Banque"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries pour la 1ère année. Étude de dossier.",
+    "frais_scolarite": "Licence (550 000 à 750 000 FCFA/an), Master (900 000 à 1 200 000 FCFA/an).",
+    "duree_formations": "Licence (3 ans), Master (2 ans).",
+    "coordonnees": "Dakar — Sénégal",
+    "site_web": "https://isgc.sn",
+    "debouches_principaux": [
+      "Commercial d'entreprise & Responsable marketing",
+      "Comptable, Assistant financier & Chargé de clientèle"
+    ],
+    "sources": "ISGC officiel"
   },
   {
     "id": "ist",
     "nom": "Institut Supérieur de Technologies",
     "sigle": "IST Dakar",
-    "type_etablissement": "Privé",
-    "statut": "Institut Privé de Technologies & Informatique",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://ist-dakar.sn",
+    "type": "Institut Privé",
+    "statut_etablissement": "Institut Privé de Technologies & Informatique",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ist_d_partement_g_nie_logiciel___syst_me",
-      "ist_d_partement_r_seaux_et__lectronique"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Informatique et Génie Logiciel",
+      "Licence Réseaux Télécoms",
+      "Licence Électronique"
     ],
-    "frais_scolarite_indicatifs": "Licence (600 000 à 800 000 FCFA/an), Master (1 000 000 à 1 300 000 FCFA/an).",
-    "source": "IST officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "MESRI",
+    "source_verification": "IST officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Génie Logiciel & Systèmes",
+      "Département Réseaux et Électronique"
+    ],
+    "filieres_proposees": [
+      "Génie logiciel & Développement web",
+      "Réseaux informatiques & Télécommunications",
+      "Électronique appliquée & Technologies numériques"
+    ],
+    "conditions_admission": "Baccalauréat pour Licence 1. Bac+2 pour admission en Licence 3.",
+    "frais_scolarite": "Licence (600 000 à 800 000 FCFA/an), Master (1 000 000 à 1 300 000 FCFA/an).",
+    "duree_formations": "Licence (3 ans), Master (2 ans).",
+    "coordonnees": "Dakar — Sénégal",
+    "site_web": "https://ist-dakar.sn",
+    "debouches_principaux": [
+      "Développeur informatique & Technicien réseaux",
+      "Ingénieur systèmes & Consultant IT"
+    ],
+    "sources": "IST officiel"
   },
   {
     "id": "ismec",
     "nom": "Institut Supérieur de Management, d'Économie et de Commerce",
     "sigle": "ISMEC",
-    "type_etablissement": "Privé",
-    "statut": "Institut Privé de Management et Commerce",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://ismec.sn",
+    "type": "Institut Privé",
+    "statut_etablissement": "Institut Privé de Management et Commerce",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ismec_d_partement_management_et__conomie",
-      "ismec_d_partement_commerce_et_marketing"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Licence Management et Commerce",
+      "Licence Finance-Gestion"
     ],
-    "frais_scolarite_indicatifs": "Licence (500 000 à 700 000 FCFA/an), Master (850 000 à 1 150 000 FCFA/an).",
-    "source": "ISMEC officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "MESRI",
+    "source_verification": "ISMEC officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Management et Économie",
+      "Département Commerce et Marketing"
+    ],
+    "filieres_proposees": [
+      "Gestion, Management & Finance",
+      "Comptabilité & Marketing",
+      "Commerce international & Ressources humaines"
+    ],
+    "conditions_admission": "Baccalauréat ou diplôme équivalent. Admission sur étude de dossier.",
+    "frais_scolarite": "Licence (500 000 à 700 000 FCFA/an), Master (850 000 à 1 150 000 FCFA/an).",
+    "duree_formations": "Licence (3 ans), Master (2 ans).",
+    "coordonnees": "Dakar — Sénégal",
+    "site_web": "https://ismec.sn",
+    "debouches_principaux": [
+      "Gestionnaire d'entreprise, Comptable, Responsable commercial",
+      "Chargé de clientèle & Assistant RH"
+    ],
+    "sources": "ISMEC officiel"
   },
   {
     "id": "ifmeg",
     "nom": "Institut de Formation aux Métiers de l'Enseignement et de la Gestion",
     "sigle": "IFMEG",
-    "type_etablissement": "Privé",
-    "statut": "Institut Privé de Formation Professionnelle & Gestion",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://ifmeg.sn",
+    "type": "Institut Privé",
+    "statut_etablissement": "Institut Privé de Formation Professionnelle & Gestion",
     "agrement_mesri": "Oui (Autorisation & Habilitation Professionnelle)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "ifmeg_d_partement_gestion_et_bureautique",
-      "ifmeg_d_partement_informatique_de_gestio"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Certificats et Diplômes Professionnels de Gestion et Bureautique"
     ],
-    "frais_scolarite_indicatifs": "Formations professionnelles : 350 000 à 550 000 FCFA/an.",
-    "source": "IFMEG officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "MESRI / Ministère de la Formation Professionnelle",
+    "source_verification": "IFMEG officiel",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Gestion et Bureautique",
+      "Département Informatique de Gestion"
+    ],
+    "filieres_proposees": [
+      "Informatique de gestion & Bureautique",
+      "Secrétariat de direction & Comptabilité",
+      "Gestion administrative des entreprises"
+    ],
+    "conditions_admission": "Selon la formation : BFEM, Baccalauréat ou diplôme supérieur sur dossier.",
+    "frais_scolarite": "Formations professionnelles : 350 000 à 550 000 FCFA/an.",
+    "duree_formations": "1 à 3 ans selon le cursus.",
+    "coordonnees": "Dakar — Sénégal",
+    "site_web": "https://ifmeg.sn",
+    "debouches_principaux": [
+      "Assistant administratif & Secrétaire de direction",
+      "Comptable assistant & Technicien bureautique"
+    ],
+    "sources": "IFMEG officiel"
   },
   {
     "id": "hec_dakar",
     "nom": "Hautes Études Commerciales de Dakar",
     "sigle": "HEC Dakar",
-    "type_etablissement": "Privé",
-    "statut": "Grande École Privée de Commerce & Finance",
     "ville": "Dakar",
     "region": "Dakar",
-    "site_officiel": "https://hecdakar.sn",
+    "type": "Institut Privé",
+    "statut_etablissement": "Grande École Privée de Commerce & Finance",
     "agrement_mesri": "Oui (Agrément officiel MESRI)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "hec_dakar_hec_business_school",
-      "hec_dakar_hec_executive_center"
+    "habilitation_institutionnelle": "Oui",
+    "formations_accreditees": [
+      "Bachelor Management et Commerce",
+      "Master Finance et Audit",
+      "MBA Exécutif"
     ],
-    "frais_scolarite_indicatifs": "Bachelor (1 100 000 à 1 500 000 FCFA/an), Master (1 600 000 à 2 200 000 FCFA/an).",
-    "source": "HEC Dakar officiel",
-    "date_verification": "2026-2027",
-    "statut_verification": "a_verifier"
+    "annee_accreditation": "MESRI / ANAQ-Sup",
+    "source_verification": "HEC Dakar officiel + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "HEC Business School",
+      "HEC Executive Center"
+    ],
+    "filieres_proposees": [
+      "Management, Finance & Audit",
+      "Commerce international & Marketing",
+      "Entrepreneuriat & Gestion des Ressources Humaines",
+      "MBA & Executive Education"
+    ],
+    "conditions_admission": "Bac pour formations Bachelor. Bac+3 pour Master. Sélection sur dossier + test / entretien.",
+    "frais_scolarite": "Bachelor (1 100 000 à 1 500 000 FCFA/an), Master (1 600 000 à 2 200 000 FCFA/an).",
+    "duree_formations": "Bachelor (3 ans), Master (2 ans), Executive variable.",
+    "coordonnees": "Dakar — Sénégal",
+    "site_web": "https://hecdakar.sn",
+    "debouches_principaux": [
+      "Manager d'entreprise & Consultant financier",
+      "Auditeur, Analyste financier & Responsable marketing",
+      "Entrepreneur & Directeur commercial"
+    ],
+    "sources": "HEC Dakar officiel"
   },
   {
     "id": "isep_thies",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Thiès",
     "sigle": "ISEP-Thiès",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Thiès",
     "region": "Thiès",
-    "site_officiel": "https://isep-thies.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "A vérifier",
-    "composantes_ids": [
-      "isep_thies_d_partement_industrie_et_main",
-      "isep_thies_d_partement_btp_et_g_nie_civi",
-      "isep_thies_d_partement_technologies_num_",
-      "isep_thies_d_partement_tertiaire_et_logi"
+    "habilitation_institutionnelle": "Oui (ANAQ-Sup)",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Métiers de l'Industrie",
+      "DSP Métiers du BTP",
+      "DSP Métiers du Numérique",
+      "DSP Logistique et Transport",
+      "DSP Gestion et Commerce"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : frais d'inscription nationaux fixés selon la campagne (environ 25 000 à 50 000 FCFA/an).",
-    "source": "Réseau national ISEP + ANAQ-Sup",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Permanent / ANAQ-Sup / MESRI",
+    "source_verification": "Campagne nationale ISEP + Ministère Enseignement Supérieur",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Département Industrie et Maintenance",
+      "Département BTP et Génie Civil",
+      "Département Technologies Numériques",
+      "Département Tertiaire et Logistique"
+    ],
+    "filieres_proposees": [
+      "Métiers de l'Industrie & Maintenance industrielle",
+      "Bâtiment et Travaux Publics (BTP) & Conduite de chantier",
+      "Informatique & Métiers du Numérique",
+      "Logistique, Transport & Gestion des flux",
+      "Gestion, Commerce & Entrepreneuriat",
+      "Tourisme, Hôtellerie & Services"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection sur dossier académique et test d'aptitude lors des campagnes nationales ISEP.",
+    "frais_scolarite": "Établissement public : frais d'inscription nationaux fixés selon la campagne (environ 25 000 à 50 000 FCFA/an).",
+    "duree_formations": "2 ans (DSP - Bac+2) avec formation pratique en alternance et stages en entreprise.",
+    "coordonnees": "Thiès — Sénégal · Informations via plateforme nationale ISEP",
+    "site_web": "https://isep-thies.sn",
+    "debouches_principaux": [
+      "Technicien supérieur industriel & Technicien de maintenance",
+      "Technicien BTP & Chef d'équipe de chantier",
+      "Technicien informatique & Développeur d'applications",
+      "Logisticien & Gestionnaire d'approvisionnement",
+      "Assistant de gestion & Conseiller commercial",
+      "Entrepreneur professionnel"
+    ],
+    "sources": "Réseau national ISEP + ANAQ-Sup",
+    "logo_url": "https://apprenant.isep-thies.sn/assets/logo.png",
+    "image_url": "https://apprenant.isep-thies.sn/assets/logo.png"
   },
   {
     "id": "isep_diamniadio",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Diamniadio",
     "sigle": "ISEP-Diamniadio",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Diamniadio",
     "region": "Dakar",
-    "site_officiel": "https://isepdiamniadio.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "A vérifier",
-    "composantes_ids": [
-      "isep_diamniadio_p_le_num_rique_et_techno",
-      "isep_diamniadio_p_le_maintenance_industr",
-      "isep_diamniadio_p_le_gestion_et_services"
+    "habilitation_institutionnelle": "Oui (ANAQ-Sup)",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Technologies Numériques",
+      "DSP Maintenance Industrielle",
+      "DSP Services Professionnels et Gestion",
+      "DSP Commerce et Distribution"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par campagne.",
-    "source": "Campagne ISEP Diamniadio",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne ISEP Diamniadio + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Numérique et Technologies",
+      "Pôle Maintenance Industrielle",
+      "Pôle Gestion et Services Professionnels"
+    ],
+    "filieres_proposees": [
+      "Informatique et Technologies du Numérique",
+      "Maintenance Industrielle & Systèmes Mécaniques",
+      "Gestion d'Entreprise & Commerce Électronique",
+      "Services Professionnels & Systèmes Connectés",
+      "Réseaux et Télécommunications de Proximité"
+    ],
+    "conditions_admission": "Baccalauréat ou diplôme équivalent. Sélection selon les spécialités ouvertes lors de la session.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par campagne.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec forte composante pratique et partenariats entreprises au pôle urbain de Diamniadio.",
+    "coordonnees": "Pôle urbain de Diamniadio, Dakar — Sénégal",
+    "site_web": "https://isepdiamniadio.sn",
+    "debouches_principaux": [
+      "Technicien supérieur en technologies numériques",
+      "Développeur web / technicien informatique",
+      "Technicien supérieur de maintenance",
+      "Assistant de gestion & Chargé de clientèle",
+      "Technicien spécialisé en télécoms"
+    ],
+    "sources": "Campagne ISEP Diamniadio",
+    "logo_url": "https://pbs.twimg.com/profile_images/1617493324952117249/y2A3ptt6.jpg",
+    "image_url": "https://pbs.twimg.com/profile_images/1617493324952117249/y2A3ptt6.jpg"
   },
   {
     "id": "isep_matam",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Matam",
     "sigle": "ISEP-Matam",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Matam",
     "region": "Matam",
-    "site_officiel": "https://isepmatam.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Évaluation institutionnelle favorable ANAQ-Sup)",
-    "habilitation_institutionnelle": "A vérifier",
-    "composantes_ids": [
-      "isep_matam_p_le_agriculture_et_hydrauliq",
-      "isep_matam_p_le__levage_et_sant__animale",
-      "isep_matam_p_le_agroalimentaire_et_d_vel"
+    "habilitation_institutionnelle": "Oui (Avis favorable ANAQ-Sup)",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Agriculture et Productions Végétales",
+      "DSP Élevage et Productions Animales",
+      "DSP Agroalimentaire",
+      "DSP Hydraulique et Gestion de l'Eau"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par session ministérielle.",
-    "source": "ANAQ-Sup (Évaluation institutionnelle favorable) + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "Avis favorable ANAQ-Sup / MESRI",
+    "source_verification": "Rapport ANAQ-Sup + Réseau public ISEP",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Agriculture et Hydraulique",
+      "Pôle Élevage et Santé Animale",
+      "Pôle Agroalimentaire et Développement Durable"
+    ],
+    "filieres_proposees": [
+      "Agriculture & Productions Végétales",
+      "Élevage & Productions Animales",
+      "Agroalimentaire & Transformation des produits",
+      "Hydraulique Agricole & Gestion des Ressources en Eau",
+      "Environnement & Gestion Durable des Écosystèmes",
+      "Développement Local & Entrepreneuriat Agropastoral"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection sur dossier et test lors de la campagne ISEP.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par session ministérielle.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec immersion sur les périmètres agricoles de la vallée du fleuve.",
+    "coordonnees": "Matam — Sénégal · Informations officielles sur plateforme ISEP",
+    "site_web": "https://isepmatam.sn",
+    "debouches_principaux": [
+      "Technicien agricole & Conseiller agronomique",
+      "Technicien agroalimentaire & Responsable qualité",
+      "Technicien élevage & Spécialiste zootechnique",
+      "Technicien en hydraulique et irrigation",
+      "Agent de développement rural & Entrepreneur agricole",
+      "Assistant de projet de développement"
+    ],
+    "sources": "ANAQ-Sup (Évaluation institutionnelle favorable) + MESRI",
+    "logo_url": "https://isepmatam.sn/wp-content/uploads/2020/08/WhatsApp-Image-2020-08-14-at-16.49.03.png",
+    "image_url": "https://isepmatam.sn/wp-content/uploads/2020/08/WhatsApp-Image-2020-08-14-at-16.49.03.png"
   },
   {
     "id": "isep_bignona",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Bignona",
     "sigle": "ISEP-Bignona",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Bignona",
     "region": "Ziguinchor",
-    "site_officiel": "https://isep-bignona.edu.sn/",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "A vérifier",
-    "composantes_ids": [
-      "isep_bignona_p_le_productions_v_g_tales_",
-      "isep_bignona_p_le_transformation_et_agro",
-      "isep_bignona_p_le_ressources_naturelles_"
+    "habilitation_institutionnelle": "Oui (ANAQ-Sup)",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Productions Agricoles",
+      "DSP Agroforesterie et Sylviculture",
+      "DSP Transformation des Produits Locaux",
+      "DSP Gestion des Ressources Naturelles"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription annuels nationaux.",
-    "source": "Campagne ISEP Bignona + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne nationale ISEP + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Productions Végétales et Agroforesterie",
+      "Pôle Transformation et Agroalimentaire",
+      "Pôle Ressources Naturelles et Développement Local"
+    ],
+    "filieres_proposees": [
+      "Productions Agricoles & Cultures maraîchères et fruitières",
+      "Agroforesterie, Sylviculture & Arboriculture",
+      "Transformation et Conservation des Produits Locaux (Fruits, Noix d'anacarde, Riz)",
+      "Gestion des Ressources Naturelles & Forêts de Casamance",
+      "Développement Territorial & Entrepreneuriat Vert"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection selon les filières ouvertes.",
+    "frais_scolarite": "Établissement public : droits d'inscription annuels nationaux.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec travaux pratiques en milieu rural et stages.",
+    "coordonnees": "Bignona, Région de Ziguinchor — Sénégal",
+    "site_web": "https://isep-bignona.edu.sn/",
+    "debouches_principaux": [
+      "Technicien agricole & Chef de culture",
+      "Technicien agroforestier & Gestionnaire d'espaces boisés",
+      "Technicien en environnement & Écogarde",
+      "Responsable d'unité de transformation agroalimentaire",
+      "Agent de développement communautaire",
+      "Entrepreneur agropastoral"
+    ],
+    "sources": "Campagne ISEP Bignona + MESRI"
   },
   {
     "id": "isep_richard_toll",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Richard-Toll",
     "sigle": "ISEP-Richard-Toll",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Richard-Toll",
     "region": "Saint-Louis",
-    "site_officiel": "https://iseprichardtoll.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isep_richard_toll_p_le_agro_industrie_et",
-      "isep_richard_toll_p_le_irrigation_et_mac",
-      "isep_richard_toll_p_le_maintenance_indus"
+    "habilitation_institutionnelle": "Oui",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Production Agricole",
+      "DSP Agro-industrie et Transformation",
+      "DSP Irrigation et Machinisme Agricole",
+      "DSP Maintenance des Équipements"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par campagne.",
-    "source": "ISEP Richard-Toll + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "ISEP Richard-Toll + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Agro-industrie et Grandes Cultures",
+      "Pôle Irrigation et Machinisme Agricole",
+      "Pôle Maintenance Industrielle"
+    ],
+    "filieres_proposees": [
+      "Production Agricole & Grandes Cultures (Riz, Canne à sucre, Tomate)",
+      "Agro-industrie & Transformation Alimentaire",
+      "Irrigation, Hydraulique & Gestion de l'Eau",
+      "Maintenance des Équipements & Machinisme Agricole",
+      "Gestion des Exploitations Agro-industrielles"
+    ],
+    "conditions_admission": "Baccalauréat ou diplôme équivalent. Sélection sur dossier lors de la campagne.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par campagne.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec immersion dans le tissu agro-industriel de la vallée.",
+    "coordonnees": "Richard-Toll, Région de Saint-Louis — Sénégal",
+    "site_web": "https://iseprichardtoll.sn",
+    "debouches_principaux": [
+      "Technicien supérieur agricole",
+      "Technicien agroalimentaire en sucrerie et rizerie",
+      "Technicien irrigation et maîtrise de l'eau",
+      "Responsable de parc et maintenance agricole",
+      "Gestionnaire d'exploitation agro-industrielle",
+      "Entrepreneur agrobusiness"
+    ],
+    "sources": "ISEP Richard-Toll + MESRI",
+    "logo_url": "https://cdn.brandfetch.io/idPGAQD0E_/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1764626223028",
+    "image_url": "https://cdn.brandfetch.io/idPGAQD0E_/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1764626223028"
   },
   {
     "id": "isep_mbacke",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Mbacké",
     "sigle": "ISEP-Mbacké",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Mbacké",
     "region": "Diourbel",
-    "site_officiel": "https://isepmbacke.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isep_mbacke_p_le_commerce__vente_et_entr",
-      "isep_mbacke_p_le_gestion_et_syst_mes_d_i",
-      "isep_mbacke_p_le_m_tiers_industriels_et_"
+    "habilitation_institutionnelle": "Oui",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Gestion des Entreprises",
+      "DSP Commerce et Vente",
+      "DSP Informatique de Gestion",
+      "DSP Maintenance Électromécanique"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par campagne.",
-    "source": "ISEP Mbacké + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne ISEP Mbacké + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Commerce, Vente et Entrepreneuriat",
+      "Pôle Gestion et Systèmes d'Information",
+      "Pôle Métiers Industriels et Maintenance"
+    ],
+    "filieres_proposees": [
+      "Gestion des Petites et Moyennes Entreprises (PME)",
+      "Commerce, Distribution et Négociation Commerciale",
+      "Informatique et Bureautique Professionnelle",
+      "Maintenance des Systèmes et Équipements",
+      "Entrepreneuriat et Développement d'Activités Locales"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection selon les spécialités ouvertes.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par campagne.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec stages dans le pôle économique de Touba-Mbacké.",
+    "coordonnees": "Mbacké, Région de Diourbel — Sénégal",
+    "site_web": "https://isepmbacke.sn",
+    "debouches_principaux": [
+      "Technicien supérieur en gestion d'entreprise",
+      "Commercial & Conseiller clientèle",
+      "Technicien informatique & Web",
+      "Assistant administratif et comptable",
+      "Entrepreneur & Gestionnaire de commerce"
+    ],
+    "sources": "ISEP Mbacké + MESRI",
+    "logo_url": "https://isepmbacke.sn/teerazyv/2023/12/logo-isepmbacke.jpg",
+    "image_url": "https://isepmbacke.sn/teerazyv/2023/12/logo-isepmbacke.jpg"
   },
   {
     "id": "isep_louga",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Louga",
     "sigle": "ISEP-Louga",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Louga",
     "region": "Louga",
-    "site_officiel": "https://iseplouga.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isep_louga_p_le_agropastoral_et__levage",
-      "isep_louga_p_le_commerce__gestion_et_ser",
-      "isep_louga_p_le_artisanat_et_transformat"
+    "habilitation_institutionnelle": "Oui",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Production Agricole et Maraîchage",
+      "DSP Élevage et Santé Animale",
+      "DSP Commerce et Négociation",
+      "DSP Métiers d'Artisanat et Services"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par campagne.",
-    "source": "ISEP Louga + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne ISEP Louga + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Agropastoral et Élevage",
+      "Pôle Commerce, Gestion et Services",
+      "Pôle Artisanat et Transformation"
+    ],
+    "filieres_proposees": [
+      "Production Agricole & Cultures Maraîchères",
+      "Élevage, Lait & Santé Animale",
+      "Gestion & Comptabilité des Organisations",
+      "Commerce, Marketing & Vente",
+      "Services Professionnels, Artisanat & Transformation"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection sur dossier lors de la session.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par campagne.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec forte pratique de terrain.",
+    "coordonnees": "Louga — Sénégal",
+    "site_web": "https://iseplouga.sn",
+    "debouches_principaux": [
+      "Technicien agricole & Chef de pépinière",
+      "Technicien élevage & Spécialiste insémination",
+      "Gestionnaire & Commercial",
+      "Agent de développement local",
+      "Entrepreneur agropastoral et artisan"
+    ],
+    "sources": "ISEP Louga + MESRI"
   },
   {
     "id": "isep_fatick",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Fatick",
     "sigle": "ISEP-Fatick",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Fatick",
     "region": "Fatick",
-    "site_officiel": "https://isepfatick.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isep_fatick_p_le_aquaculture__p_che_et_e",
-      "isep_fatick_p_le_agriculture_et__levage",
-      "isep_fatick_p_le_tourisme__h_tellerie_et"
+    "habilitation_institutionnelle": "Oui",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Productions Agricoles",
+      "DSP Aquaculture et Pêche Continentale",
+      "DSP Tourisme Écologique et Hôtellerie",
+      "DSP Environnement et Mangroves",
+      "DSP Transformation des Produits Locaux"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par campagne.",
-    "source": "ISEP Fatick + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne ISEP Fatick + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Aquaculture, Pêche et Environnement",
+      "Pôle Agriculture et Élevage",
+      "Pôle Tourisme, Hôtellerie et Gestion"
+    ],
+    "filieres_proposees": [
+      "Productions Agricoles & Arboriculture fruitière",
+      "Aquaculture, Pisciculture & Pêche en estuaire",
+      "Environnement, Mangroves & Gestion des zones humides",
+      "Tourisme Écologique, Découverte & Hôtellerie du Sine-Saloum",
+      "Gestion, Entrepreneuriat & Transformation des produits locaux"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection sur dossier lors de la session.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par campagne.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec apprentissage sur le terrain dans le Delta du Saloum.",
+    "coordonnees": "Fatick — Sénégal",
+    "site_web": "https://isepfatick.sn",
+    "debouches_principaux": [
+      "Technicien aquacole & Pisciculteur",
+      "Technicien agricole & Spécialiste arboricole",
+      "Technicien environnement & Gestionnaire de mangrove",
+      "Agent d'accueil et guide écotouristique",
+      "Gestionnaire & Entrepreneur local"
+    ],
+    "sources": "ISEP Fatick + MESRI"
   },
   {
     "id": "isep_kolda",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Kolda",
     "sigle": "ISEP-Kolda",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Kolda",
     "region": "Kolda",
-    "site_officiel": "https://isepkolda.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isep_kolda_p_le_agriculture_et_for_ts_du",
-      "isep_kolda_p_le__levage__lait_et_product",
-      "isep_kolda_p_le_agroalimentaire_et_d_vel"
+    "habilitation_institutionnelle": "Oui",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Agriculture et Productions Végétales",
+      "DSP Élevage et Productions Animales",
+      "DSP Agroalimentaire et Transformation",
+      "DSP Gestion des Ressources Forestières"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par session ministérielle.",
-    "source": "ISEP Kolda + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne ISEP Kolda + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Agriculture et Forêts du Fouladou",
+      "Pôle Élevage, Lait et Productions Animales",
+      "Pôle Agroalimentaire et Développement Rural"
+    ],
+    "filieres_proposees": [
+      "Agriculture, Céréales & Cultures Fourragères",
+      "Élevage, Filière Lait & Productions Animales",
+      "Agroalimentaire & Transformation des récoltes",
+      "Gestion des Ressources Naturelles & Forêts",
+      "Développement Rural & Entrepreneuriat Agropastoral"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection selon les spécialités ouvertes.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par session ministérielle.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec travaux pratiques intensifs en Haute-Casamance.",
+    "coordonnees": "Kolda — Sénégal",
+    "site_web": "https://isepkolda.sn",
+    "debouches_principaux": [
+      "Technicien agricole & Superviseur de cultures",
+      "Technicien élevage & Spécialiste production laitière",
+      "Technicien agroalimentaire & Transformateur",
+      "Agent de développement rural & Responsable coopérative",
+      "Entrepreneur agricole"
+    ],
+    "sources": "ISEP Kolda + MESRI"
   },
   {
     "id": "isep_podor",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Podor",
     "sigle": "ISEP-Podor",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Podor",
     "region": "Saint-Louis",
-    "site_officiel": "https://iseppodor.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isep_podor_p_le_agriculture_irrigu_e_et_",
-      "isep_podor_p_le__levage_et_productions_a",
-      "isep_podor_p_le_agroalimentaire_et_gesti"
+    "habilitation_institutionnelle": "Oui",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Production Agricole et Riziculture",
+      "DSP Systèmes d'Irrigation et Hydraulique",
+      "DSP Élevage et Pastoralisme",
+      "DSP Transformation Agroalimentaire"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par campagne.",
-    "source": "ISEP Podor + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne ISEP Podor + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Agriculture Irriguée et Maîtrise de l'Eau",
+      "Pôle Élevage et Productions Animales",
+      "Pôle Agroalimentaire et Gestion d'Exploitations"
+    ],
+    "filieres_proposees": [
+      "Production Agricole & Riziculture Irriguée",
+      "Systèmes d'Irrigation & Gestion des Réseaux Hydrauliques",
+      "Élevage, Santé Animale & Pastoralisme",
+      "Transformation Agroalimentaire & Conservation",
+      "Gestion et Conduite des Exploitations Agricoles"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection sur dossier lors de la session.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par campagne.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec formation au cœur des aménagements hydro-agricoles de Podor.",
+    "coordonnees": "Podor, Région de Saint-Louis — Sénégal",
+    "site_web": "https://iseppodor.sn",
+    "debouches_principaux": [
+      "Technicien agricole & Riziculteur spécialisé",
+      "Technicien en irrigation et gestion des motopompes",
+      "Technicien élevage & Spécialiste pastoral",
+      "Responsable d'exploitation agricole",
+      "Technicien agroalimentaire & Entrepreneur"
+    ],
+    "sources": "ISEP Podor + MESRI"
   },
   {
     "id": "isep_kaffrine",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Kaffrine",
     "sigle": "ISEP-Kaffrine",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Kaffrine",
     "region": "Kaffrine",
-    "site_officiel": "https://isepkaffrine.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isep_kaffrine_p_le_agriculture_et_c_r_al",
-      "isep_kaffrine_p_le__levage_et_sant__anim",
-      "isep_kaffrine_p_le_transformation__gesti"
+    "habilitation_institutionnelle": "Oui",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Production Agricole du Bassin Arachidier",
+      "DSP Élevage et Pastoralisme",
+      "DSP Transformation Agroalimentaire",
+      "DSP Gestion et Entrepreneuriat"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par campagne.",
-    "source": "ISEP Kaffrine + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne ISEP Kaffrine + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Agriculture et Céréales du Ndoucoumane",
+      "Pôle Élevage et Santé Animale",
+      "Pôle Transformation, Gestion et Entrepreneuriat"
+    ],
+    "filieres_proposees": [
+      "Production Agricole (Arachide, Céréales, Légumineuses, Maraîchage)",
+      "Élevage, Pastoralisme & Conduite de troupeaux",
+      "Transformation et Conditionnement des Produits du Bassin Arachidier",
+      "Gestion des Coopératives, Comptabilité & Entrepreneuriat",
+      "Développement Rural & Suivi de Projets Agricoles"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection sur dossier.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par campagne.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec immersion pratique.",
+    "coordonnees": "Kaffrine — Sénégal",
+    "site_web": "https://isepkaffrine.sn",
+    "debouches_principaux": [
+      "Technicien agricole & Responsable de semences",
+      "Technicien élevage & Spécialiste santé animale",
+      "Gestionnaire de coopérative agricole",
+      "Agent de développement local",
+      "Entrepreneur en agrobusiness",
+      "Responsable d'unité de production"
+    ],
+    "sources": "ISEP Kaffrine + MESRI"
   },
   {
     "id": "isep_saint_louis",
     "nom": "Institut Supérieur d'Enseignement Professionnel de Saint-Louis",
     "sigle": "ISEP-Saint-Louis",
-    "type_etablissement": "Public",
-    "statut": "Établissement Public d'Enseignement Professionnel Supérieur",
     "ville": "Saint-Louis",
     "region": "Saint-Louis",
-    "site_officiel": "https://isepsaintlouis.sn",
+    "type": "Établissement public professionnel",
+    "statut_etablissement": "Établissement Public d'Enseignement Professionnel Supérieur",
     "agrement_mesri": "Oui (Réseau National Public des ISEP)",
-    "habilitation_institutionnelle": "Habilité par ANAQ-Sup",
-    "composantes_ids": [
-      "isep_saint_louis_p_le_halieutique__aquac",
-      "isep_saint_louis_p_le_agriculture_littor",
-      "isep_saint_louis_p_le_tourisme__patrimoi"
+    "habilitation_institutionnelle": "Oui",
+    "diplome": "Diplôme Supérieur Professionnel (DSP - Bac+2)",
+    "formations_accreditees": [
+      "DSP Pêche et Aquaculture",
+      "DSP Agriculture Littorale et Maraîchage",
+      "DSP Transformation des Produits Halieutiques",
+      "DSP Tourisme et Écotourisme",
+      "DSP Services Numériques et Technologies Appliquées"
     ],
-    "frais_scolarite_indicatifs": "Établissement public : droits d'inscription fixés par campagne.",
-    "source": "ISEP Saint-Louis + MESRI",
-    "date_verification": "2026-2027",
-    "statut_verification": "officiel"
+    "annee_accreditation": "ANAQ-Sup / MESRI",
+    "source_verification": "Campagne ISEP Saint-Louis + MESRI",
+    "annee_frais": "2026-2027",
+    "facultes_ou_ufr": [
+      "Pôle Halieutique, Aquaculture et Transformation",
+      "Pôle Agriculture Littorale et Maraîchage",
+      "Pôle Tourisme, Patrimoine et Numérique"
+    ],
+    "filieres_proposees": [
+      "Pêche Maritime, Fluviale & Gestion des Engins",
+      "Aquaculture & Conchyliculture en milieu estuarien",
+      "Agriculture Littorale des Niayes & Maraîchage",
+      "Transformation, Fumage et Conditionnement des Produits de la Mer",
+      "Tourisme, Patrimoine Historique & Hôtellerie de Saint-Louis",
+      "Services Numériques, Gestion & Technologies Appliquées"
+    ],
+    "conditions_admission": "Baccalauréat toutes séries ou diplôme équivalent. Sélection selon les spécialités ouvertes lors de la session.",
+    "frais_scolarite": "Établissement public : droits d'inscription fixés par campagne.",
+    "duree_formations": "2 ans (DSP - Bac+2) avec stages et travaux pratiques sur les sites côtiers et estuariens.",
+    "coordonnees": "Saint-Louis — Sénégal",
+    "site_web": "https://isepsaintlouis.sn",
+    "debouches_principaux": [
+      "Technicien aquacole & Spécialiste halieutique",
+      "Technicien de pêche & Maître d'équipage",
+      "Technicien agricole en cultures littorales",
+      "Technicien en transformation et sécurité sanitaire des poissons",
+      "Professionnel du tourisme et guide du patrimoine",
+      "Entrepreneur professionnel en économie bleue"
+    ],
+    "sources": "ISEP Saint-Louis + MESRI"
   }
 ]

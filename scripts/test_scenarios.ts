@@ -149,8 +149,47 @@ async function runTests() {
   assert(emptyRag.length === 0, "Aucun passage retenu par le RAG sous le seuil pour une requête hors sujet");
   console.log(`  Nombre de passages retenus: ${emptyRag.length} (aucun faux positif)`);
 
+  // --- SCÉNARIO 11 : Avant-Bac - Collège / 3e (BFEM) vers lycée ---
+  console.log("\n--- Scénario 11 : Avant-Bac - Élève en classe de 3e préparant le BFEM ---");
+  const prof11 = heuristicUpdateProfile(
+    "Bonjour, je m'appelle Awa, je suis en classe de 3e au collège, je prépare le BFEM et j'adore les SVT et soigner",
+    INITIAL_PROFILE
+  );
+  assert(prof11.statut_parcours === "avant_bac", "Statut avant-bac détecté pour collégienne de 3e");
+  assert(prof11.niveau === "Collège (3e / BFEM)", "Niveau Collège 3e bien identifié");
+  const nextQ11 = getNextOrientationQuestion(prof11);
+  assert(nextQ11.intent_id !== "intent_contraintes_duree_ville", "Ne force pas la question des études courtes post-bac (BTS/DUT) à un collégien");
+  console.log(`  Prochaine intention pour l'élève de 3e: ${nextQ11.intent_id} ("${nextQ11.question}")`);
+
+  // --- SCÉNARIO 12 : Avant-Bac - Lycéen en Seconde cherchant sa série de Bac ---
+  console.log("\n--- Scénario 12 : Avant-Bac - Élève en Seconde au lycée ---");
+  const prof12 = heuristicUpdateProfile(
+    "Je m'appelle Cheikh, je suis en Seconde au lycée et j'hésite pour ma future série de Bac, j'aime les maths et la physique",
+    INITIAL_PROFILE
+  );
+  assert(prof12.statut_parcours === "avant_bac", "Statut avant-bac détecté pour élève de Seconde");
+  assert(prof12.niveau === "Lycée (Seconde / Première)", "Niveau Lycée Seconde bien identifié");
+  assert(prof12.points_forts.some((p) => p.toLowerCase().includes("math")) || prof12.matieres_aimees.some((m) => m.toLowerCase().includes("math")), "Mathématiques détectées");
+
+  // --- SCÉNARIO 13 : Post-Bac - Poursuite d'études / Passerelle après BTS/DUT ---
+  console.log("\n--- Scénario 13 : Post-Bac - Passerelle de poursuite d'études après BTS/DUT ---");
+  const prof13 = heuristicUpdateProfile(
+    "Bonjour, j'ai terminé mon BTS en informatique et je cherche une passerelle pour poursuivre en Licence professionnelle ou Master",
+    INITIAL_PROFILE
+  );
+  assert(prof13.statut_parcours === "post_bac", "Statut post-bac détecté pour titulaire de BTS");
+  assert(prof13.type_post_bac === "passerelle_poursuite", "Type passerelle / poursuite d'études bien détecté");
+  const nextQ13 = getNextOrientationQuestion(prof13);
+  assert(
+    nextQ13.intent_id === "intent_post_bac_objectifs" ||
+      nextQ13.intent_id === "intent_approfondir_domaine" ||
+      nextQ13.intent_id === "intent_decouvrir_interets",
+    "Intention post-bac adaptée"
+  );
+  console.log(`  Question pour poursuite post-BTS: "${nextQ13.question}"`);
+
   console.log("\n=================================================");
-  console.log("RÉSULTAT GLOBAL DES TESTS : TOUS LES SCÉNARIOS SONT CONFORMES !");
+  console.log("RÉSULTAT GLOBAL DES TESTS : LES 13 SCÉNARIOS SONT CONFORMES !");
   console.log("=================================================");
 }
 

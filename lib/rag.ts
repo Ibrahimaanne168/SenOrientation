@@ -295,15 +295,16 @@ for (const doc of CORE_DOCUMENTS) {
 
 // Ingestion des établissements
 if (Array.isArray(etablissementsData)) {
-  for (const et of etablissementsData) {
-    const isPublic = (et.statut || et.type_etablissement || "").toLowerCase().includes("public");
+  for (const rawEt of etablissementsData) {
+    const et = rawEt as Record<string, any>;
+    const isPublic = (et.statut || et.statut_etablissement || et.type_etablissement || et.type || "").toLowerCase().includes("public");
     const content = `[ÉTABLISSEMENT ${isPublic ? "PUBLIC" : "PRIVÉ"}] ${et.nom} (${et.sigle || et.id}) à ${et.ville} :
-- Statut officiel : ${et.statut}
-- Région : ${et.region}
+- Statut officiel : ${et.statut || et.statut_etablissement || et.type || "Officiel"}
+- Région : ${et.region || "Sénégal"}
 - Site officiel : ${et.site_officiel || "Non renseigné"}
 - Composantes rattachées : ${(et.composantes_ids || []).length} facultés/écoles
 - Frais indicatifs : ${et.frais_scolarite_indicatifs || "25 000 FCFA/an"}
-- Habilitation institutionnelle : ${et.habilitation_institutionnelle}
+- Habilitation institutionnelle : ${et.habilitation_institutionnelle || "Reconnu"}
 - Date de vérification : ${et.date_verification || "2026-2027"}`;
 
     KNOWLEDGE_CORPUS.push({

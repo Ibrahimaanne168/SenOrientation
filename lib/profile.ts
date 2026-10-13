@@ -19,6 +19,8 @@ export type IntentId =
   | "intent_demander_prenom"
   | "intent_demander_situation_scolaire"
   | "intent_reorientation"
+  | "intent_post_bac_objectifs"
+  | "intent_avant_bac_series"
   | "intent_clarifier_comprendre"
   | "intent_clarifier_reflechir"
   | "intent_clarifier_chiffres"
@@ -38,11 +40,99 @@ export interface PreferenceGenerale {
   statut: "en_clarification" | "clarifiee";
 }
 
+export interface SerieInfo {
+  code: string;
+  nom: string;
+  description: string;
+  matieres_cles: string[];
+  domaines: string[];
+  metiers_cibles: string[];
+}
+
+export const SERIES_SENEGAL: SerieInfo[] = [
+  {
+    code: "S1",
+    nom: "Série S1 (Sciences exactes & Mathématiques)",
+    description: "Filière d'excellence axée sur les mathématiques approfondies et la physique-chimie de haut niveau.",
+    matieres_cles: ["Mathématiques", "Sciences Physiques"],
+    domaines: ["Informatique & Technologies", "Ingénierie & BTP", "Recherche & Sciences"],
+    metiers_cibles: ["Ingénieur en informatique / IA", "Ingénieur polytechnicien", "Data scientist", "Chercheur en sciences", "Actuaire"]
+  },
+  {
+    code: "S2",
+    nom: "Série S2 (Sciences expérimentales)",
+    description: "Filière scientifique équilibrée entre SVT, sciences physiques et mathématiques.",
+    matieres_cles: ["SVT (Biologie/Géologie)", "Sciences Physiques", "Mathématiques"],
+    domaines: ["Médecine & Santé", "Agriculture & Environnement", "Sciences & Technologies"],
+    metiers_cibles: ["Médecin", "Pharmacien", "Chirurgien-dentiste", "Ingénieur agronome", "Biologiste", "Vétérinaire"]
+  },
+  {
+    code: "S3",
+    nom: "Série S3 (Sciences et Techniques Industrielles)",
+    description: "Filière technique et scientifique centrée sur la construction mécanique et l'ingénierie appliquée.",
+    matieres_cles: ["Mathématiques", "Sciences Physiques", "Construction mécanique"],
+    domaines: ["Ingénierie & BTP", "Industrie & Électromécanique"],
+    metiers_cibles: ["Ingénieur en génie mécanique", "Ingénieur travaux publics", "Ingénieur mécatronique"]
+  },
+  {
+    code: "L1",
+    nom: "Série L1 (Lettres Classiques & Langues)",
+    description: "Filière littéraire privilégiant les langues, la littérature et l'expression écrite et orale.",
+    matieres_cles: ["Français", "Philosophie", "Langues vivantes (Anglais, Espagnol, Arabe)"],
+    domaines: ["Communication & Médias", "Enseignement & Recherche", "Diplomatie"],
+    metiers_cibles: ["Journaliste", "Diplomate", "Traducteur / Interprète", "Professeur de lettres ou langues"]
+  },
+  {
+    code: "L2",
+    nom: "Série L2 (Sciences Humaines & Sociales)",
+    description: "Filière littéraire orientée vers l'histoire-géo, la philosophie et le raisonnement critique.",
+    matieres_cles: ["Histoire-Géographie", "Philosophie", "Français"],
+    domaines: ["Droit & Sciences Politiques", "Sciences Sociales", "Gestion des RH"],
+    metiers_cibles: ["Avocat / Magistrat", "Juriste d'entreprise", "Administrateur civil", "Chargé de communication"]
+  },
+  {
+    code: "L'",
+    nom: "Série L' (Lettres & Arts)",
+    description: "Filière littéraire créative accordant une large place aux arts plastiques et à la culture.",
+    matieres_cles: ["Arts plastiques", "Littérature", "Philosophie"],
+    domaines: ["Arts & Design", "Culture & Patrimoine", "Communication visuelle"],
+    metiers_cibles: ["Designer", "Architecte d'intérieur", "Directeur artistique", "Médiateur culturel"]
+  },
+  {
+    code: "G",
+    nom: "Série G / STEG (Gestion, Comptabilité & Commerce)",
+    description: "Filière technique tertiaire dédiée à la gestion, la comptabilité et l'économie d'entreprise.",
+    matieres_cles: ["Comptabilité & Gestion", "Mathématiques financières", "Économie & Droit"],
+    domaines: ["Commerce & Gestion", "Finance & Comptabilité"],
+    metiers_cibles: ["Expert-comptable", "Contrôleur de gestion", "Banquier", "Auditeur financier", "Responsable commercial"]
+  },
+  {
+    code: "T1",
+    nom: "Série T1 (Technique Industrielle / Fabrication Mécanique)",
+    description: "Filière technique industrielle axée sur l'usinage, les machines et la production.",
+    matieres_cles: ["Fabrication mécanique", "Technologie", "Mathématiques"],
+    domaines: ["Ingénierie & BTP", "Maintenance & Industrie"],
+    metiers_cibles: ["Technicien supérieur / Ingénieur de maintenance", "Responsable de production industrielle"]
+  },
+  {
+    code: "T2",
+    nom: "Série T2 (Électrotechnique & Énergie)",
+    description: "Filière technique orientée vers les installations électriques, l'énergie et l'automatisme.",
+    matieres_cles: ["Électrotechnique", "Automatisme", "Physique appliquée"],
+    domaines: ["Énergie & Électrotechnique", "Télécoms & Réseaux"],
+    metiers_cibles: ["Ingénieur électrotechnicien", "Technicien réseaux électriques", "Spécialiste énergies renouvelables"]
+  }
+];
+
 export interface ConversationProfile {
   conversation_id?: string;
   prenom?: string | null;
   niveau?: string | null; // Collège, Lycée, Terminale, Bachelier, Université, Réorientation
   serie: string | null;   // S1, S2, S3, L1, L2, L', G, T1, T2
+  statut_parcours?: "avant_bac" | "bac" | "post_bac" | null; // Niveaux adaptatifs
+  type_post_bac?: "reorientation" | "passerelle_poursuite" | "insertion" | null;
+  series_recommandees?: string[];
+  metiers_recommandes?: string[];
   interets_principaux: string[];
   interets_secondaires: string[];
   matieres_aimees: string[];
@@ -89,6 +179,10 @@ export const INITIAL_PROFILE: ConversationProfile = {
   prenom: null,
   niveau: null,
   serie: null,
+  statut_parcours: null,
+  type_post_bac: null,
+  series_recommandees: [],
+  metiers_recommandes: [],
   interets_principaux: [],
   interets_secondaires: [],
   matieres_aimees: [],
@@ -136,8 +230,8 @@ export const INITIAL_PROFILE: ConversationProfile = {
 export function calculateCompleteness(p: ConversationProfile): number {
   let score = 0;
   if (p.prenom && p.prenom !== "l'ami") score += 10;
-  if (p.niveau) score += 15;
-  if (p.serie) score += 20;
+  if (p.niveau || p.statut_parcours) score += 15;
+  if (p.serie || p.statut_parcours === "avant_bac") score += 20;
   if (p.confirmed_interests.length > 0 || p.interets_principaux.length > 0) score += 25;
   if (p.matieres_aimees.length > 0 || p.points_forts.length > 0) score += 15;
   if (p.preferences_etudes || p.duree_souhaitee) score += 10;
@@ -208,6 +302,14 @@ export function mergeProfileUpdate(
     prenom: update.prenom || current.prenom,
     niveau: update.niveau || current.niveau,
     serie: update.serie || current.serie,
+    statut_parcours: update.statut_parcours || current.statut_parcours,
+    type_post_bac: update.type_post_bac || current.type_post_bac,
+    series_recommandees: Array.from(
+      new Set([...(current.series_recommandees || []), ...(update.series_recommandees || [])])
+    ).filter(Boolean),
+    metiers_recommandes: Array.from(
+      new Set([...(current.metiers_recommandes || []), ...(update.metiers_recommandes || [])])
+    ).filter(Boolean),
     projet: update.projet || current.projet,
     ville: update.ville || current.ville,
     budget: update.budget || current.budget,
@@ -426,27 +528,88 @@ export function heuristicUpdateProfile(
     }
   }
 
-  // 4. Détection du niveau scolaire
-  if (!profile.niveau) {
-    if (text.includes("réorient") || text.includes("changer de filière") || text.includes("changement de parcours")) {
+  // 4. Détection du statut de parcours et niveau scolaire
+  if (!profile.statut_parcours || !profile.niveau) {
+    if (
+      text.includes("réorient") ||
+      text.includes("changer de filière") ||
+      text.includes("changement de parcours") ||
+      text.includes("erreur campusen") ||
+      text.includes("l1 difficile")
+    ) {
       profile.niveau = "Réorientation / Étudiant";
+      profile.statut_parcours = "post_bac";
+      profile.type_post_bac = "reorientation";
       profile.questions_answered["intent_demander_situation_scolaire"] = "Réorientation";
+    } else if (
+      text.includes("collège") ||
+      text.includes("college") ||
+      text.includes("bfem") ||
+      text.includes("classe de 3e") ||
+      text.includes("classe de 3ème") ||
+      text.includes("en 3e") ||
+      text.includes("en 3ème") ||
+      text.includes("troisième") ||
+      text.includes("troisieme")
+    ) {
+      profile.niveau = "Collège (3e / BFEM)";
+      profile.statut_parcours = "avant_bac";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Collège (3e / BFEM)";
+    } else if (
+      (text.includes("seconde") ||
+        text.includes("2nde") ||
+        text.includes("classe de première") ||
+        text.includes("classe de premiere") ||
+        (text.includes("première") && !text.includes("première année")) ||
+        (text.includes("premiere") && !text.includes("premiere annee")) ||
+        text.includes("1ère s") ||
+        text.includes("1ère l") ||
+        text.includes("1ere s") ||
+        text.includes("1ere l") ||
+        (text.includes("lycée") && !text.includes("terminale") && !text.includes("bac"))) &&
+      !text.includes("première année") &&
+      !text.includes("premiere annee")
+    ) {
+      profile.niveau = "Lycée (Seconde / Première)";
+      profile.statut_parcours = "avant_bac";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Lycée (Seconde / Première)";
+    } else if (
+      text.includes("passerelle") ||
+      text.includes("après dut") ||
+      text.includes("après bts") ||
+      text.includes("après ma licence") ||
+      text.includes("poursuite") ||
+      text.includes("faire un master")
+    ) {
+      profile.niveau = "Université / Poursuite d'études";
+      profile.statut_parcours = "post_bac";
+      profile.type_post_bac = "passerelle_poursuite";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Poursuite d'études";
+    } else if (
+      text.includes("l1") ||
+      text.includes("l2") ||
+      text.includes("l3") ||
+      text.includes("licence") ||
+      text.includes("étudiant") ||
+      text.includes("etudiant") ||
+      text.includes("université") ||
+      text.includes("fac")
+    ) {
+      profile.niveau = "Université / Post-bac";
+      profile.statut_parcours = "post_bac";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Université";
     } else if (text.includes("terminale") || text.includes("tle")) {
       profile.niveau = "Terminale";
+      profile.statut_parcours = "bac";
       profile.questions_answered["intent_demander_situation_scolaire"] = "Terminale";
-    } else if (text.includes("nouveau bachelier") || text.includes("bachelier")) {
+    } else if (text.includes("nouveau bachelier") || text.includes("bachelier") || text.includes("ai eu mon bac")) {
       profile.niveau = "Nouveau Bachelier";
+      profile.statut_parcours = "bac";
       profile.questions_answered["intent_demander_situation_scolaire"] = "Nouveau Bachelier";
-    } else if (text.includes("lycée") || text.includes("première") || text.includes("seconde")) {
-      profile.niveau = "Lycée";
-    } else if (text.includes("collège")) {
-      profile.niveau = "Collège";
-    } else if (text.includes("université") || text.includes("licence") || text.includes("étudiant")) {
-      profile.niveau = "Université";
     }
   }
 
-  // 5. Détection de la série
+  // 5. Détection de la série (si au lycée, terminale ou post-bac)
   if (!profile.serie) {
     if (/\b(s1)\b/i.test(text)) profile.serie = "S1";
     else if (/\b(s2)\b/i.test(text)) profile.serie = "S2";
@@ -460,6 +623,9 @@ export function heuristicUpdateProfile(
 
     if (profile.serie) {
       profile.questions_answered["intent_demander_situation_scolaire"] = `${profile.niveau || "Bac"} ${profile.serie}`;
+      if (!profile.statut_parcours) {
+        profile.statut_parcours = "bac";
+      }
     }
   }
 
@@ -845,33 +1011,33 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
-  if (!profile.serie && !profile.niveau && lastAskedIntent !== "intent_demander_situation_scolaire") {
+  if (!profile.serie && !profile.niveau && !profile.statut_parcours && lastAskedIntent !== "intent_demander_situation_scolaire") {
     return {
       type: "question",
       intent_id: "intent_demander_situation_scolaire",
-      question: `Ravi de faire ta connaissance${namePart ? " " + namePart : ""} ! Où en es-tu actuellement dans tes études (lycée, classe de Terminale, nouveau bachelier, ou réorientation) et quelle est ta série ?`,
+      question: `Ravi de faire ta connaissance${namePart ? " " + namePart : ""} ! Où en es-tu actuellement dans tes études (collège, lycée en seconde/première, classe de Terminale, nouveau bachelier, ou déjà étudiant) ?`,
       suggestions: [
-        "Terminale S1 ou S2",
-        "Terminale L1 ou L2",
-        "Nouveau bachelier",
-        "Autre série ou réorientation",
+        "Collège (3e / BFEM)",
+        "Lycée (Seconde ou 1ère)",
+        "Terminale ou Nouveau bachelier",
+        "Étudiant ou Réorientation",
       ],
-      vise: "Identifier le niveau scolaire et la série de Bac",
+      vise: "Identifier le niveau scolaire (avant-bac, bac ou post-bac) et la situation",
       phase: 1,
       etape: 1,
     };
   }
 
-  if (profile.niveau === "Réorientation / Étudiant" && !isAsked("intent_reorientation") && lastAskedIntent !== "intent_reorientation") {
+  if (profile.type_post_bac === "reorientation" && !isAsked("intent_reorientation") && lastAskedIntent !== "intent_reorientation") {
     return {
       type: "question",
       intent_id: "intent_reorientation",
-      question: `${nameGreet}qu'est-ce qui ne t'a pas convenu dans ton parcours précédent, et vers quel type de domaine aimerais-tu te diriger cette fois-ci ?`,
+      question: `${nameGreet}qu'est-ce qui a été difficile ou ne t'a pas convenu dans ton parcours initial (trop de théorie, mauvaise attribution Campusen, manque d'intérêt), et quel nouveau cap aimerais-tu prendre ?`,
       suggestions: [
-        "Vers l'informatique et les technologies",
-        "Vers le commerce et la gestion",
-        "Vers la santé ou l'action sociale",
-        "Je ne sais pas encore",
+        "Filière courte et pratique (BTS / Licence pro)",
+        "Changer vers l'informatique et le numérique",
+        "Changer vers la gestion et le commerce",
+        "Changer vers la santé ou le social",
       ],
       vise: "Comprendre les motifs de réorientation et le nouveau cap",
       phase: 1,
@@ -879,12 +1045,34 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
+  if (profile.type_post_bac === "passerelle_poursuite" && !isAsked("intent_post_bac_objectifs") && lastAskedIntent !== "intent_post_bac_objectifs") {
+    return {
+      type: "question",
+      intent_id: "intent_post_bac_objectifs",
+      question: `${nameGreet}pour ta poursuite d'études après ton diplôme actuel (BTS, DUT ou Licence), vises-tu une Licence professionnelle, un Master universitaire classique (Bac+5), ou un concours d'école ?`,
+      suggestions: [
+        "Licence professionnelle spécialisée",
+        "Master universitaire (Bac+5)",
+        "Concours d'école d'ingénieur ou gestion",
+        "Je ne sais pas encore",
+      ],
+      vise: "Préciser la passerelle de poursuite d'études post-bac",
+      phase: 6,
+      etape: 4,
+    };
+  }
+
   // ── PHASE 2 : DÉCOUVERTE DES CENTRES D'INTÉRÊT (Partie 5) ────────────────
   if (profile.confirmed_interests.length === 0 && profile.interets_principaux.length === 0 && !isAsked("intent_decouvrir_interets") && lastAskedIntent !== "intent_decouvrir_interets") {
+    const contextPrefix = profile.serie
+      ? `Intéressant avec ta série ${profile.serie}. `
+      : profile.niveau
+      ? `Parfait pour ton niveau (${profile.niveau}). `
+      : "";
     return {
       type: "question",
       intent_id: "intent_decouvrir_interets",
-      question: `Intéressant avec ta série ${profile.serie || "actuelle"}. Pour cibler les formations qui te correspondent vraiment, quels sont les domaines qui t'attirent le plus au quotidien ?`,
+      question: `${contextPrefix}Pour cibler ce qui te correspond vraiment, quels sont les domaines qui t'attirent le plus au quotidien ?`,
       suggestions: [
         "Sciences, maths & informatique",
         "Médecine, santé & biologie",
@@ -916,8 +1104,25 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
-  // ── PHASE 6 : CONTRAINTES DE DURÉE ET LOCALISATION (Partie 5) ─────────────
-  if (!profile.preferences_etudes && !profile.duree_souhaitee && !isAsked("intent_contraintes_duree_ville") && lastAskedIntent !== "intent_contraintes_duree_ville") {
+  // ── PHASE 6 : CONTRAINTES DE DURÉE ET LOCALISATION / SÉRIES AVANT-BAC (Partie 5) ──
+  if (profile.statut_parcours === "avant_bac" && !profile.serie && !isAsked("intent_avant_bac_series") && lastAskedIntent !== "intent_avant_bac_series") {
+    return {
+      type: "question",
+      intent_id: "intent_avant_bac_series",
+      question: `${nameGreet}au lycée, vers quel type de série penches-tu le plus : les séries scientifiques (S1, S2), les séries littéraires (L1, L2), la gestion et le commerce (série G / STEG), ou la technique industrielle (T1, T2) ?`,
+      suggestions: [
+        "Séries scientifiques (S1 ou S2)",
+        "Séries littéraires (L1 ou L2)",
+        "Série gestion & commerce (G / STEG)",
+        "Séries techniques (T1 ou T2)",
+      ],
+      vise: "Guider l'élève avant-bac vers le choix de sa série de lycée",
+      phase: 6,
+      etape: 4,
+    };
+  }
+
+  if (!profile.preferences_etudes && !profile.duree_souhaitee && !isAsked("intent_contraintes_duree_ville") && lastAskedIntent !== "intent_contraintes_duree_ville" && profile.statut_parcours !== "avant_bac") {
     return {
       type: "question",
       intent_id: "intent_contraintes_duree_ville",
@@ -935,6 +1140,40 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
   }
 
   // ── PHASE 8 : BILAN FINAL STRUCTURÉ (Partie 5 & Partie 9) ─────────────────
+  if (profile.statut_parcours === "avant_bac") {
+    return {
+      type: "bilan",
+      intent_id: "intent_presenter_bilan",
+      question: "Parmi ces séries de Bac et ces métiers d'avenir, quelle option te motive le plus pour ton parcours au lycée ?",
+      suggestions: [
+        "Approfondir la série recommandée",
+        "En savoir plus sur les métiers cibles",
+        "Conseils pour réussir mes matières clés",
+        "Je souhaite ajuster mon profil",
+      ],
+      vise: "Présenter le bilan d'orientation avant-bac (séries de lycée et métiers d'avenir)",
+      phase: 8,
+      etape: 5,
+    };
+  }
+
+  if (profile.statut_parcours === "post_bac") {
+    return {
+      type: "bilan",
+      intent_id: "intent_presenter_bilan",
+      question: "Parmi ces pistes de réorientation et passerelles, quelle opportunité souhaites-tu détailler en priorité ?",
+      suggestions: [
+        "Approfondir la filière recommandée",
+        "Conditions de transfert et passerelles",
+        "Comparer les débouchés professionnels",
+        "Je souhaite ajuster mon profil",
+      ],
+      vise: "Présenter le bilan post-bac (réorientation, passerelles et diplômes professionnels)",
+      phase: 8,
+      etape: 5,
+    };
+  }
+
   return {
     type: "bilan",
     intent_id: "intent_presenter_bilan",
