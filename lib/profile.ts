@@ -568,7 +568,23 @@ export function calculateCompleteness(p: ConversationProfile): number {
 // DÉTECTION DES PRÉFÉRENCES GÉNÉRALES (Niveau 1 — Partie 3.1 & 3.2)
 // ─────────────────────────────────────────────────────────────────────────────
 function detectGeneralPreference(text: string): PreferenceGenerale | null {
-  const t = text.toLowerCase();
+  const t = text.toLowerCase().trim();
+  // Ne jamais déclencher de préférence générale vague si l'utilisateur choisit une option technique concrète
+  if (
+    t.includes("logiciel") ||
+    t.includes("application") ||
+    t.includes("intelligence artificielle") ||
+    t.includes("cybersécurité") ||
+    t.includes("réseau") ||
+    t.includes("entreprise") ||
+    t.includes("finance") ||
+    t.includes("droit") ||
+    t.includes("santé") ||
+    t.includes("médic")
+  ) {
+    return null;
+  }
+
   if (
     t.includes("comprendre les choses") ||
     t.includes("comprendre comment") ||
@@ -579,17 +595,18 @@ function detectGeneralPreference(text: string): PreferenceGenerale | null {
     return { type: "comprendre", texte: "comprendre le fonctionnement des choses", statut: "en_clarification" };
   }
   if (
-    t.includes("réfléchir") ||
-    t.includes("reflechir") ||
-    t.includes("penser") ||
-    t.includes("cogiter")
+    t.includes("réfléchir et analyser") ||
+    t.includes("j'aime réfléchir") ||
+    t.includes("jaime reflechir") ||
+    t === "réfléchir" ||
+    t === "reflechir"
   ) {
     return { type: "reflechir", texte: "réfléchir et analyser", statut: "en_clarification" };
   }
   if (
-    t.includes("chiffres") ||
-    t.includes("les nombres") ||
-    (t.includes("calcul") && !t.includes("cours de math"))
+    t.includes("les chiffres") ||
+    t.includes("avec les chiffres") ||
+    t === "chiffres"
   ) {
     return { type: "chiffres", texte: "travailler avec les chiffres", statut: "en_clarification" };
   }
@@ -602,10 +619,13 @@ function detectGeneralPreference(text: string): PreferenceGenerale | null {
     return { type: "aider", texte: "aider et accompagner les personnes", statut: "en_clarification" };
   }
   if (
-    t.includes("créer") ||
-    t.includes("creer") ||
-    t.includes("inventer") ||
-    t.includes("concevoir des choses")
+    t.includes("j'aime créer") ||
+    t.includes("jaime creer") ||
+    t.includes("créer et concevoir") ||
+    t.includes("inventer des choses") ||
+    t.includes("concevoir des choses") ||
+    t === "créer" ||
+    t === "creer"
   ) {
     return { type: "creer", texte: "créer et concevoir", statut: "en_clarification" };
   }
@@ -822,7 +842,7 @@ export function heuristicUpdateProfile(
       profile.questions_answered["intent_demander_prenom"] = "anonyme";
     } else {
       const explicitMatch = latestMessage.match(
-        /(?:je m['’]appelle|moi c['’]est|mon pr[ée]nom est|mon nom est|c['’]est)\s+([A-Za-zÀ-ÿ\-]+(?:\s+[A-Za-zÀ-ÿ\-]+)?)/i
+        /(?:(?:moi\s+)?je\s+suis|(?:moi\s+)?c['’]est|je\s+m['’]appelle|on\s+m['’]appelle|mon\s+pr[ée]nom\s+est|mon\s+nom\s+est|moi\s+c['’]est)\s+([A-Za-zÀ-ÿ\-]+(?:\s+[A-Za-zÀ-ÿ\-]+)?)/i
       );
       if (explicitMatch && explicitMatch[1]) {
         let candidate = explicitMatch[1].trim();
@@ -833,26 +853,48 @@ export function heuristicUpdateProfile(
           !candLower.includes("bac") &&
           !candLower.includes("terminale") &&
           !candLower.includes("perdu") &&
-          !candLower.includes("élève")
+          !candLower.includes("élève") &&
+          !candLower.includes("étudiant") &&
+          !candLower.includes("lycéen") &&
+          !candLower.includes("collégien")
         ) {
-          profile.prenom = candidate.charAt(0).toUpperCase() + candidate.slice(1);
+          const parts = candidate.split(/\s+/).filter(Boolean);
+          profile.prenom = parts.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
           profile.questions_answered["intent_demander_prenom"] = profile.prenom;
         }
       } else if (
         history.length <= 2 &&
-        !latestLower.includes("bonjour") &&
-        !latestLower.includes("salut") &&
         !latestLower.includes("s1") &&
         !latestLower.includes("s2") &&
         !latestLower.includes("l1") &&
         !latestLower.includes("l2") &&
         !latestLower.includes("bac") &&
-        !latestLower.includes("terminale")
+        !latestLower.includes("terminale") &&
+        !latestLower.includes("seconde") &&
+        !latestLower.includes("collège")
       ) {
-        const cleanName = latestMessage.replace(/[.!?,]/g, "").trim();
-        const words = cleanName.split(/\s+/);
-        if (words.length >= 1 && words.length <= 3 && words.every((w) => /^[A-Za-zÀ-ÿ\-]+$/.test(w))) {
-          profile.prenom = words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+        // En cas de réponse sans formule explicite (ex: "Ibrahima" ou "Salut, je suis Ibrahima")
+        let cleanName = latestMessage
+          .replace(/^(?:(?:bonjour|salut|coucou|bonsoir|hello|hi)\s*[,!.]*\s*)+/i, "")
+          .replace(/^(?:(?:moi\s+)?(?:je\s+suis|c['’]est|moi\s+c['’]est)\s*)+/i, "")
+          .replace(/[.!?,]/g, "")
+          .trim();
+
+        const words = cleanName.split(/\s+/).filter(Boolean);
+        const forbiddenWords = new Set([
+          "bonjour", "salut", "coucou", "bonsoir", "hello", "hi",
+          "moi", "je", "suis", "c'est", "cest", "mon", "nom", "prenom", "est",
+          "bac", "terminale", "lycee", "lycée", "college", "collège", "etudiant", "étudiant"
+        ]);
+
+        const filteredWords = words.filter((w) => !forbiddenWords.has(w.toLowerCase()));
+
+        if (
+          filteredWords.length >= 1 &&
+          filteredWords.length <= 2 &&
+          filteredWords.every((w) => /^[A-Za-zÀ-ÿ\-]+$/.test(w))
+        ) {
+          profile.prenom = filteredWords.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
           profile.questions_answered["intent_demander_prenom"] = profile.prenom;
         }
       }
@@ -1178,6 +1220,49 @@ export function heuristicUpdateProfile(
         profile.confirmed_interests.push(domain);
       }
       profile.questions_answered["intent_decouvrir_interets"] = domain;
+    }
+  }
+
+  // 7.b Approfondissement du sous-domaine / projet professionnel (Phase 5)
+  const isAnsweringApprofondir =
+    profile.current_question_id === "intent_approfondir_domaine" ||
+    profile.questions_asked[profile.questions_asked.length - 1] === "intent_approfondir_domaine" ||
+    latestLower.includes("créer des applications") ||
+    latestLower.includes("logiciels") ||
+    latestLower.includes("intelligence artificielle") ||
+    latestLower.includes("cybersécurité") ||
+    latestLower.includes("réseaux") ||
+    latestLower.includes("traduction & interprétation") ||
+    latestLower.includes("journalisme") ||
+    latestLower.includes("carrières judiciaires") ||
+    latestLower.includes("ressources humaines en entreprise") ||
+    latestLower.includes("comptabilité & finance") ||
+    latestLower.includes("agronomie & production");
+
+  if (isAnsweringApprofondir) {
+    if (!profile.questions_asked.includes("intent_approfondir_domaine")) {
+      profile.questions_asked.push("intent_approfondir_domaine");
+    }
+
+    if (
+      latestLower === "je ne sais pas" ||
+      latestLower === "jsp" ||
+      latestLower.includes("pas encore")
+    ) {
+      profile.questions_answered["intent_approfondir_domaine"] = "indécis";
+    } else {
+      profile.questions_answered["intent_approfondir_domaine"] = latestMessage;
+      if (!profile.projet) {
+        if (latestLower.includes("application") || latestLower.includes("logiciel")) {
+          profile.projet = "Développement d'applications et génie logiciel";
+        } else if (latestLower.includes("intelligence artificielle") || latestLower.includes("ia") || latestLower.includes("data")) {
+          profile.projet = "Intelligence Artificielle & Data Science";
+        } else if (latestLower.includes("cyber") || latestLower.includes("réseau") || latestLower.includes("securis")) {
+          profile.projet = "Cybersécurité & Réseaux";
+        } else {
+          profile.projet = latestMessage;
+        }
+      }
     }
   }
 
@@ -1643,9 +1728,12 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
   }
 
   // ── PHASE 5 : APPROFONDISSEMENT D'UN DOMAINE CONFIRMÉ (Partie 9 — Test 7) ──
-  // UNIQUEMENT après que l'élève a clairement exprimé son intérêt pour ce domaine !
   const topDomain = profile.confirmed_interests[0] || profile.interets_principaux[0];
-  if (topDomain && !profile.projet && !isAsked("intent_approfondir_domaine") && lastAskedIntent !== "intent_approfondir_domaine") {
+  const isApprofondirDone =
+    Boolean(profile.questions_answered["intent_approfondir_domaine"]) ||
+    profile.questions_asked.includes("intent_approfondir_domaine") ||
+    Boolean(profile.projet);
+  if (topDomain && !isApprofondirDone && lastAskedIntent !== "intent_approfondir_domaine") {
     if (topDomain.includes("Langues") || topDomain.includes("Traduction") || topDomain.includes("Lettres") || topDomain.includes("Édition")) {
       return {
         type: "question",

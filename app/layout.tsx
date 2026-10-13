@@ -1,17 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Source_Serif_4, Inter } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 
-const sourceSerif = Source_Serif_4({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-serif",
-  weight: ["400", "600", "700", "800", "900"],
+  variable: "--font-app",
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-sans-alt",
   weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
@@ -42,7 +42,7 @@ export default function RootLayout({
     <html
       lang="fr"
       suppressHydrationWarning
-      className={`h-full dark ${inter.variable} ${sourceSerif.variable}`}
+      className={`h-full dark ${plusJakarta.variable} ${inter.variable}`}
     >
       <head>
         <script

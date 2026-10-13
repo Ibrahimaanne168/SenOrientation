@@ -167,17 +167,17 @@ function BotMessageMarkdown({ content }: { content: string }) {
         remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ children }) => (
-            <h1 className="font-serif font-bold text-xl text-[var(--text-main)] mt-4 mb-2">
+            <h1 className="font-sans font-bold text-xl text-[var(--text-main)] mt-4 mb-2 tracking-tight">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="font-serif font-bold text-lg text-[var(--text-main)] mt-3.5 mb-1.5">
+            <h2 className="font-sans font-bold text-lg text-[var(--text-main)] mt-3.5 mb-1.5 tracking-tight">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="font-serif font-semibold text-base text-[var(--text-main)] mt-3 mb-1">
+            <h3 className="font-sans font-semibold text-base text-[var(--text-main)] mt-3 mb-1 tracking-tight">
               {children}
             </h3>
           ),
@@ -514,7 +514,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-serif font-bold text-[18px] tracking-tight leading-tight">
+              <span className="font-sans font-bold text-[18px] tracking-tight leading-tight">
                 <span className="text-[var(--text-main)]">Sen</span>
                 <span className="text-[var(--gold-primary)]">Orientation</span>
               </span>
@@ -700,7 +700,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
             </button>
 
             <div className="flex flex-col min-w-0">
-              <h1 className="font-serif font-bold text-[18px] sm:text-[20px] text-[var(--text-main)] tracking-tight truncate leading-tight">
+              <h1 className="font-sans font-bold text-[18px] sm:text-[20px] text-[var(--text-main)] tracking-tight truncate leading-tight">
                 {headerTitle}
               </h1>
               <p className="text-[12px] font-medium text-[var(--text-muted)] hidden sm:block truncate mt-0.5">
@@ -760,7 +760,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <GraduationCap className="w-5 h-5 text-[var(--gold-primary)]" />
-                    <h2 className="font-serif font-bold text-[17px] text-[var(--text-main)]">
+                    <h2 className="font-sans font-bold text-[17px] text-[var(--text-main)] tracking-tight">
                       Fiche de Synthèse d&apos;Orientation (Étape 5/5)
                     </h2>
                   </div>
@@ -881,9 +881,9 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                                 key={sIdx}
                                 onClick={() => handleSuggestionClick(sug)}
                                 disabled={isLoading}
-                                className={`text-left text-[14px] font-semibold px-4 py-2.5 rounded-xl border flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
+                                className={`text-left text-[13.5px] sm:text-[14px] font-medium px-4 py-2.5 rounded-xl border flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
                                   isSelected
-                                    ? "bg-[var(--gold-primary)] text-[#0B0F19] border-[var(--gold-primary)] shadow-sm font-bold"
+                                    ? "bg-[var(--gold-primary)] text-[#0B0F19] border-[var(--gold-primary)] shadow-sm font-semibold"
                                     : "bg-[var(--bg-chip)] text-[var(--text-main)] border-[var(--border-main)] hover:bg-[var(--bg-chip-hover)] hover:border-[var(--gold-primary)] hover:text-[var(--gold-primary)]"
                                 } disabled:opacity-60 disabled:cursor-not-allowed`}
                               >
@@ -939,7 +939,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               /* ─── Message Utilisateur ─── */
               return (
                 <div key={msg.id} className="flex flex-col items-end pt-1 animate-fadeIn">
-                  <div className="max-w-[85%] sm:max-w-[75%] bg-[var(--user-bubble-bg)] text-[var(--user-bubble-text)] border border-[var(--border-main)] rounded-2xl rounded-tr-xs px-4 sm:px-5 py-3 text-[15px] font-semibold leading-relaxed shadow-xs">
+                  <div className="max-w-[85%] sm:max-w-[75%] bg-[var(--user-bubble-bg)] text-[var(--user-bubble-text)] border border-[var(--border-main)] rounded-2xl rounded-tr-xs px-4 sm:px-5 py-3 text-[14.5px] font-medium leading-relaxed shadow-xs">
                     {msg.content}
                   </div>
                   <div className="flex items-center gap-1 text-[11px] font-medium text-[var(--user-bubble-meta)] mt-1 mr-1">

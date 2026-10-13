@@ -327,8 +327,51 @@ async function runTests() {
     "Suggestions adaptées à la série S1"
   );
 
+  // --- SCÉNARIO 18 : NLP - Formule 'je suis ibrahima' ---
+  console.log("\n--- Scénario 18 : NLP - Formule 'je suis ibrahima' ---");
+  const prof18 = heuristicUpdateProfile("je suis ibrahima", INITIAL_PROFILE);
+  assert(prof18.prenom === "Ibrahima", "Prénom extrait doit être strictement 'Ibrahima' et non 'Je Suis Ibrahima'");
+  assert(prof18.prenom !== "Je Suis Ibrahima", "Aucun résidu de verbe ou pronom dans le prénom");
+
+  // --- SCÉNARIO 19 : Enchaînement fluide après approfondissement informatique ---
+  console.log("\n--- Scénario 19 : Non-bouclage lors de l'approfondissement informatique ---");
+  let prof19 = heuristicUpdateProfile("je suis ibrahima", INITIAL_PROFILE);
+  prof19 = heuristicUpdateProfile("Sciences, maths & informatique", [{ role: "user", content: "je suis ibrahima" }], prof19);
+  prof19.serie = "S2";
+  prof19.niveau = "Terminale";
+  prof19.questions_asked.push("intent_demander_prenom", "intent_demander_situation_scolaire", "intent_decouvrir_interets");
+
+  const q19_1 = getNextOrientationQuestion(prof19);
+  assert(q19_1.intent_id === "intent_approfondir_domaine", "Pose la question d'approfondissement informatique");
+  prof19.questions_asked.push(q19_1.intent_id);
+  prof19.current_question_id = q19_1.intent_id;
+
+  // L'élève choisit 'Créer des applications et logiciels'
+  prof19 = heuristicUpdateProfile(
+    "Créer des applications et logiciels",
+    [
+      { role: "user", content: "je suis ibrahima" },
+      { role: "user", content: "Sciences, maths & informatique" },
+      { role: "assistant", content: q19_1.question },
+    ],
+    prof19
+  );
+  assert(prof19.projet !== null && prof19.projet !== undefined, "Projet informatique enregistré");
+  assert(Boolean(prof19.questions_answered["intent_approfondir_domaine"]), "Réponse à intent_approfondir_domaine enregistrée");
+
+  const q19_2 = getNextOrientationQuestion(prof19);
+  assert(
+    q19_2.intent_id !== "intent_approfondir_domaine",
+    "Ne boucle PAS sur intent_approfondir_domaine !"
+  );
+  assert(
+    q19_2.intent_id === "intent_contraintes_duree_ville" || q19_2.intent_id === "intent_presenter_bilan",
+    "Progresse logiquement vers les contraintes d'études ou le bilan"
+  );
+  console.log(`  Prochaine intention après choix logiciel: ${q19_2.intent_id} ("${q19_2.question.slice(0, 60)}...")`);
+
   console.log("\n=================================================");
-  console.log("RÉSULTAT GLOBAL DES TESTS : LES 17 SCÉNARIOS SONT CONFORMES !");
+  console.log("RÉSULTAT GLOBAL DES TESTS : LES 19 SCÉNARIOS SONT CONFORMES !");
   console.log("=================================================");
 }
 

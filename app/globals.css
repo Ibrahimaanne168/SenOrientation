@@ -19,8 +19,9 @@
 ════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --font-serif: var(--font-serif), "Source Serif 4", Georgia, serif;
-  --font-sans: var(--font-sans), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Police moderne haute lisibilité (Plus Jakarta Sans / Inter / System Sans-Serif) */
+  --font-sans: var(--font-app, var(--font-sans-alt, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif));
+  --font-serif: var(--font-sans);
 
   /* MODE CLAIR (Couleurs inverses) */
   --bg-app: #FFFFFF;
@@ -99,7 +100,8 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg-app);
   color: var(--text-main);
-  font-weight: 500;
+  font-weight: 450;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -107,7 +109,7 @@ body {
 }
 
 .font-serif {
-  font-family: var(--font-serif) !important;
+  font-family: var(--font-sans) !important;
 }
 
 .font-sans {
@@ -124,16 +126,18 @@ select {
 /* ─── Rendu Markdown pour les réponses du chatbot ─────────── */
 .bot-response-content {
   font-family: var(--font-sans);
-  font-size: 15.5px;
-  line-height: 1.65;
+  font-size: 15px;
+  line-height: 1.68;
   color: var(--text-body);
-  font-weight: 550;
+  font-weight: 450;
+  letter-spacing: -0.01em;
 }
 
 .bot-response-content p {
   margin: 0 0 0.85rem 0;
   color: var(--text-body);
-  font-weight: 550;
+  font-weight: 450;
+  line-height: 1.68;
 }
 .bot-response-content p:last-child {
   margin-bottom: 0;
@@ -142,10 +146,10 @@ select {
 .bot-response-content h1,
 .bot-response-content h2,
 .bot-response-content h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   color: var(--text-main);
   font-weight: 700;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
 .bot-response-content h1 {

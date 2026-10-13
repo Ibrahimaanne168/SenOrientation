@@ -154,6 +154,13 @@ export async function POST(req: NextRequest) {
       sanitized.cleanText
     );
 
+    // Sécurité NLP : S'assurer que le prénom ne contient jamais de préfixe de salutation ou de verbe
+    if (updatedProfile.prenom && updatedProfile.prenom !== "l'ami") {
+      updatedProfile.prenom = updatedProfile.prenom
+        .replace(/^(?:(?:moi\s+)?je\s+suis|moi\s+c['’]est|c['’]est)\s+/i, "")
+        .trim();
+    }
+
     // LOG OBLIGATOIRE : Dossier mis à jour
     // eslint-disable-next-line no-console
     console.log("[RAG Pipeline] Dossier de l'enquêteur :\n", JSON.stringify(updatedProfile, null, 2));
