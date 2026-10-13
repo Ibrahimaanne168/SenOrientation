@@ -37,6 +37,7 @@ import {
   History,
   CheckCheck,
   Sun,
+  Languages,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -83,14 +84,26 @@ const ETAPE_LABELS: Record<number, string> = {
  */
 function getSuggestionIcon(text: string) {
   const lower = text.toLowerCase();
-  if (lower.includes("compta") || lower.includes("finance")) return Calculator;
-  if (lower.includes("marketing") || lower.includes("vente") || lower.includes("communication"))
+  if (lower.includes("autre domaine") || lower.includes("autre univers")) return Sparkles;
+  if (
+    lower.includes("langue") ||
+    lower.includes("traduction") ||
+    lower.includes("interprétation") ||
+    lower.includes("arabe")
+  )
+    return Languages;
+  if (lower.includes("compta") || lower.includes("finance") || lower.includes("banque") || lower.includes("assurance"))
+    return Calculator;
+  if (lower.includes("marketing") || lower.includes("vente") || lower.includes("communication") || lower.includes("journalisme") || lower.includes("médias"))
     return Megaphone;
   if (
     lower.includes("création") ||
     lower.includes("entreprise") ||
     lower.includes("management") ||
-    lower.includes("gestion")
+    lower.includes("gestion") ||
+    lower.includes("agroalimentaire") ||
+    lower.includes("mécanique") ||
+    lower.includes("usinage")
   )
     return Box;
   if (
@@ -98,7 +111,10 @@ function getSuggestionIcon(text: string) {
     lower.includes("bfem") ||
     lower.includes("lycée") ||
     lower.includes("seconde") ||
-    lower.includes("1ère")
+    lower.includes("1ère") ||
+    lower.includes("lettres") ||
+    lower.includes("enseignement") ||
+    lower.includes("école")
   )
     return GraduationCap;
   if (
@@ -110,7 +126,11 @@ function getSuggestionIcon(text: string) {
   if (
     lower.includes("étudiant") ||
     lower.includes("réorientation") ||
-    lower.includes("licence")
+    lower.includes("licence") ||
+    lower.includes("administration") ||
+    lower.includes("ressources humaines") ||
+    lower.includes("rh") ||
+    lower.includes("social")
   )
     return Users;
   if (
@@ -120,18 +140,23 @@ function getSuggestionIcon(text: string) {
     lower.includes("aide")
   )
     return HelpCircle;
-  if (lower.includes("santé") || lower.includes("médecine") || lower.includes("pharmacie"))
+  if (lower.includes("santé") || lower.includes("médecine") || lower.includes("pharmacie") || lower.includes("chimie"))
     return HeartPulse;
   if (
     lower.includes("informatique") ||
     lower.includes("tech") ||
     lower.includes("développement") ||
-    lower.includes("code")
+    lower.includes("code") ||
+    lower.includes("data") ||
+    lower.includes("ia") ||
+    lower.includes("électronique") ||
+    lower.includes("électrotechnique") ||
+    lower.includes("automatisme")
   )
     return Code;
-  if (lower.includes("droit") || lower.includes("juridique") || lower.includes("sciences po"))
+  if (lower.includes("droit") || lower.includes("juridique") || lower.includes("sciences po") || lower.includes("politique") || lower.includes("justice"))
     return Scale;
-  if (lower.includes("agro") || lower.includes("environnement") || lower.includes("nature"))
+  if (lower.includes("agro") || lower.includes("environnement") || lower.includes("nature") || lower.includes("végétal"))
     return Leaf;
   return Compass;
 }

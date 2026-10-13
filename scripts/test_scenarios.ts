@@ -227,8 +227,66 @@ async function runTests() {
   );
   console.log(`  Question logique pour Ibrahima: "${nextQ14.question}"`);
 
+  // --- SCÉNARIO 15 : Bachelier Série L1 - Domaines prioritaires littéraires CNOSP ---
+  console.log("\n--- Scénario 15 : Bachelier Série L1 - Domaines prioritaires littéraires CNOSP ---");
+  const history15 = [
+    ...history14,
+    { role: "user", content: "Nouveau bachelier" },
+    {
+      role: "assistant",
+      content: JSON.stringify({
+        reply: nextQ14.question,
+        suggestions: nextQ14.suggestions,
+      }),
+    },
+  ];
+  const prof15 = heuristicUpdateProfile("Je viens d'avoir mon Bac en série L1", history15, prof14);
+  assert(prof15.serie === "L1", "Série L1 bien enregistrée");
+  const nextQ15 = getNextOrientationQuestion(prof15);
+  assert(nextQ15.intent_id === "intent_decouvrir_interets", "Prochaine intention: découvrir les univers d'intérêts");
+  assert(
+    nextQ15.suggestions.some((s) => s.includes("Langues") || s.includes("traduction")),
+    "Propose les langues / traduction pour un élève de L1"
+  );
+  assert(
+    nextQ15.suggestions.some((s) => s.includes("Journalisme") || s.includes("communication")),
+    "Propose journalisme / communication pour un élève de L1"
+  );
+  assert(
+    nextQ15.suggestions.some((s) => s.includes("Autre domaine") || s.includes("autre domaine")),
+    "Propose l'option d'ouverture 'Un autre domaine m'intéresse' pour ne pas enfermer l'élève"
+  );
+  assert(
+    !nextQ15.suggestions.includes("Sciences, maths & informatique"),
+    "Ne propose PAS 'Sciences, maths & informatique' par défaut à un élève de série littéraire L1"
+  );
+  console.log(`  Suggestions L1 adaptées: ${JSON.stringify(nextQ15.suggestions)}`);
+
+  // --- SCÉNARIO 16 : Élève de L1 choisissant 'Un autre domaine m'intéresse' ---
+  console.log("\n--- Scénario 16 : Élève de L1 choisissant 'Un autre domaine m'intéresse' ---");
+  const history16 = [
+    ...history15,
+    { role: "user", content: "Je viens d'avoir mon Bac en série L1" },
+    {
+      role: "assistant",
+      content: JSON.stringify({
+        reply: nextQ15.question,
+        suggestions: nextQ15.suggestions,
+      }),
+    },
+  ];
+  const prof16 = heuristicUpdateProfile("Un autre domaine m'intéresse", history16, prof15);
+  assert(prof16.recherche_autre_domaine === true, "Indicateur de recherche d'un autre domaine activé");
+  const nextQ16 = getNextOrientationQuestion(prof16);
+  assert(nextQ16.intent_id === "intent_autre_domaine", "Question adaptative sur l'autre univers souhaité");
+  assert(
+    nextQ16.suggestions.some((s) => s.includes("numérique") || s.includes("gestion")),
+    "Propose des passerelles comme le numérique ou la gestion pour explorer un autre univers"
+  );
+  console.log(`  Question d'ouverture passerelle: "${nextQ16.question}"`);
+
   console.log("\n=================================================");
-  console.log("RÉSULTAT GLOBAL DES TESTS : LES 14 SCÉNARIOS SONT CONFORMES !");
+  console.log("RÉSULTAT GLOBAL DES TESTS : LES 16 SCÉNARIOS SONT CONFORMES !");
   console.log("=================================================");
 }
 
