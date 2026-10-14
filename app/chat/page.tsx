@@ -1056,12 +1056,12 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           aria-hidden="true"
         >
           <img
-            src="/jangora-symbol-gold.png"
+            src="/emblem-dark-trans.png"
             alt=""
             className="w-full h-full object-contain hidden dark:block"
           />
           <img
-            src="/jangora-symbol-green.png"
+            src="/emblem-light-trans.png"
             alt=""
             className="w-full h-full object-contain block dark:hidden"
           />

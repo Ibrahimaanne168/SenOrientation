@@ -30,9 +30,9 @@ export function BrandLogo({
       className={`relative shrink-0 rounded-xl overflow-hidden flex items-center justify-center transition-colors shadow-2xs ${containerBg} ${className}`}
       aria-label="Logo JANGORA"
     >
-      {/* Symbole Or / Sable pour le mode nuit */}
+      {/* Emblème Mode Nuit (Arbre or & feuillage sauge sur vert nuit) */}
       <img
-        src="/jangora-symbol-gold.png"
+        src={variant === "raw" ? "/emblem-dark-trans.png" : "/emblem-dark-square.png"}
         alt="Jangora"
         className={`${
           variant === "day"
@@ -40,11 +40,11 @@ export function BrandLogo({
             : variant === "night"
             ? "block"
             : "hidden dark:block"
-        } w-[80%] h-[80%] object-contain select-none`}
+        } w-full h-full object-cover select-none`}
       />
-      {/* Symbole Vert Baobab pour le mode jour */}
+      {/* Emblème Mode Jour (Arbre vert baobab & arche dorée sur ivoire) */}
       <img
-        src="/jangora-tree-hd.png"
+        src={variant === "raw" ? "/emblem-light-trans.png" : "/emblem-light-square.png"}
         alt="Jangora"
         className={`${
           variant === "night"
@@ -52,7 +52,7 @@ export function BrandLogo({
             : variant === "day"
             ? "block"
             : "block dark:hidden"
-        } w-[84%] h-[84%] object-contain select-none`}
+        } w-full h-full object-cover select-none`}
       />
     </div>
   );

@@ -1,11 +1,13 @@
 // Service Worker pour Jangora PWA
-const CACHE_NAME = "jangora-v2";
+const CACHE_NAME = "jangora-v3";
 const STATIC_ASSETS = [
   "/",
   "/chat",
   "/favicon.ico",
-  "/logo.svg",
-  "/logo.png",
+  "/emblem-light-square.png",
+  "/emblem-dark-square.png",
+  "/emblem-light-trans.png",
+  "/emblem-dark-trans.png",
   "/icon.png",
   "/icon-192.png",
   "/apple-icon.png",
