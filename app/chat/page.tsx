@@ -377,12 +377,37 @@ export default function ChatPage() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isAppInstalled, setIsAppInstalled] = useState(false);
   const [showIosInstallModal, setShowIosInstallModal] = useState(false);
+  const [showEphemeralPwaBanner, setShowEphemeralPwaBanner] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   // Profil d'orientation progressif
   const [profile, setProfile] = useState<ConversationProfile>(INITIAL_PROFILE);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const chatScrollContainerRef = useRef<HTMLDivElement>(null);
+  const isAtBottomRef = useRef(true);
+
+  const PWA_DISMISSED_KEY = "jangora_pwa_dismissed_until";
+  const isPwaDismissed = () => {
+    try {
+      const until = localStorage.getItem(PWA_DISMISSED_KEY);
+      if (!until) return false;
+      return Date.now() < Number(until);
+    } catch {
+      return false;
+    }
+  };
+
+  const dismissPwaBanner = () => {
+    setShowEphemeralPwaBanner(false);
+    try {
+      localStorage.setItem(
+        PWA_DISMISSED_KEY,
+        (Date.now() + 14 * 24 * 60 * 60 * 1000).toString()
+      );
+    } catch {}
+  };
 
   /* ─── Synchronisation du thème Sombre / Clair ─────────────────────── */
   useEffect(() => {
@@ -413,15 +438,19 @@ export default function ChatPage() {
     }
   };
 
-  /* ─── PWA Install Listener ────────────────────────────────────────── */
+  /* ─── PWA Install Listener éphémère et discret ─────────────────────── */
   useEffect(() => {
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      if (!isPwaDismissed()) {
+        setShowEphemeralPwaBanner(true);
+      }
     };
     const handleAppInstalled = () => {
       setIsAppInstalled(true);
       setDeferredPrompt(null);
+      setShowEphemeralPwaBanner(false);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstall);
@@ -432,6 +461,7 @@ export default function ChatPage() {
       (window.navigator as any).standalone
     ) {
       setIsAppInstalled(true);
+      setShowEphemeralPwaBanner(false);
     }
 
     return () => {
@@ -448,6 +478,7 @@ export default function ChatPage() {
         if (outcome === "accepted") {
           setDeferredPrompt(null);
           setIsAppInstalled(true);
+          setShowEphemeralPwaBanner(false);
         }
       } catch {}
       return;
@@ -610,21 +641,47 @@ export default function ChatPage() {
     }
   }, [messages]);
 
-  /* ─── Session utilisateur Supabase ───────────────────────────────── */
+  /* ─── Session utilisateur (Jangora Auth & Supabase) ─────────────── */
   useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.authenticated && data.user) {
+          setCurrentUser(data.user);
+          setUserEmail(data.user.email);
+          if (data.user.fullName && !profile.prenom) {
+            setProfile((prev) => ({
+              ...prev,
+              prenom: data.user.fullName.split(" ")[0],
+            }));
+          }
+        }
+      })
+      .catch(() => {});
+
     try {
       const supabase = createClient();
       supabase.auth.getUser().then(({ data: { user } }) => {
-        if (user?.email) setUserEmail(user.email);
+        if (user?.email && !userEmail) setUserEmail(user.email);
       });
     } catch {
       /* non bloquant */
     }
   }, []);
 
-  /* ─── Auto-scroll vers le bas ───────────────────────────────────── */
+  const handleChatScroll = () => {
+    const el = chatScrollContainerRef.current;
+    if (!el) return;
+    const threshold = 120;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= threshold;
+    isAtBottomRef.current = atBottom;
+  };
+
+  /* ─── Auto-scroll conditionnel (Préserve la lecture d'anciens messages) ─── */
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (isAtBottomRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages, isLoading]);
 
   /* ─── Redimensionnement automatique du textarea ─────────────────── */
@@ -641,10 +698,14 @@ export default function ChatPage() {
   /* ─── Clic sur un choix interactif ───────────────────────────────── */
   const handleSuggestionClick = (suggestionText: string) => {
     setSelectedSuggestion(suggestionText);
+    isAtBottomRef.current = true;
     append({
       role: "user",
       content: suggestionText,
     });
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
   };
 
   /* ─── Changement de discussion (Persistance active) ───────────────── */
@@ -911,14 +972,14 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               <strong className="text-[var(--text-main)] truncate">
                 {profile.prenom && profile.prenom !== "l'ami"
                   ? profile.prenom
-                  : "Ibrahima"}
+                  : currentUser?.fullName || "Élève"}
               </strong>
             </div>
           </div>
         </div>
 
-        {/* 4. Historique des discussions */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-1">
+        {/* 4. Historique des discussions (Défilement indépendant avec min-h-0) */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 space-y-1">
           <div className="flex items-center gap-2 px-2.5 py-1.5 text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
             <History className="w-3.5 h-3.5 text-[var(--gold-primary)]" />
             <span>Historique</span>
@@ -964,30 +1025,16 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           })}
         </div>
 
-        {/* 5. Pied de sidebar : Installer l'app, Paramètres, Mode sombre switch, Connexion */}
-        <div className="p-3 border-t border-[var(--border-main)] bg-[var(--bg-sidebar)] space-y-2">
-          {/* Bouton Installer PWA */}
-          <button
-            type="button"
-            onClick={promptInstallPwa}
-            className="w-full flex items-center justify-between px-3 py-2.5 text-[13px] font-bold text-[#1B5E57] dark:text-[#E9D5A1] bg-[var(--gold-light)] hover:brightness-105 border border-[var(--gold-border)] rounded-xl transition-all cursor-pointer shadow-2xs"
-            title="Installer l'application progressive sur votre smartphone"
-          >
-            <div className="flex items-center gap-2.5">
-              <Smartphone className="w-4.5 h-4.5 text-[#1B5E57] dark:text-[#E9D5A1] stroke-[2]" />
-              <span>{isAppInstalled ? "Application installée" : "Installer l'app mobile"}</span>
-            </div>
-            {!isAppInstalled && <Download className="w-4 h-4 text-[#1B5E57] dark:text-[#E9D5A1] stroke-[2]" />}
-          </button>
-
-          {/* Bouton Paramètres */}
-          <button
-            onClick={() => {}}
+        {/* 5. Pied de sidebar (Paramètres, Mode sombre switch, Connexion/Profil) */}
+        <div className="p-3 border-t border-[var(--border-main)] bg-[var(--bg-sidebar)] space-y-2 shrink-0">
+          {/* Bouton Paramètres / Mon Profil */}
+          <Link
+            href="/profile"
             className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[var(--text-muted)] hover:text-[#1B5E57] dark:hover:text-[#E9D5A1] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer"
           >
             <Settings className="w-4 h-4 stroke-[2]" />
-            <span>Paramètres</span>
-          </button>
+            <span>Mon profil & Paramètres</span>
+          </Link>
 
           {/* Interrupteur « Mode sombre » avec role="switch" */}
           <div
@@ -1018,18 +1065,25 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
             </div>
           </div>
 
-          {/* Connexion / Déconnexion */}
-          {userEmail ? (
+          {/* Connexion / Déconnexion & Lien Profil */}
+          {currentUser || userEmail ? (
             <div className="flex items-center justify-between px-3 py-2 text-[13px] text-[var(--text-main)] rounded-lg bg-[var(--bg-card)] border border-[var(--border-main)]">
-              <span className="truncate max-w-[190px]">{userEmail}</span>
+              <Link href="/profile" className="flex items-center gap-2 min-w-0 flex-1 hover:underline truncate" title="Gérer mon profil">
+                <User className="w-3.5 h-3.5 text-[var(--gold-primary)] shrink-0" />
+                <span className="truncate">{currentUser?.fullName || userEmail}</span>
+              </Link>
               <button
                 onClick={async () => {
-                  const supabase = createClient();
-                  await supabase.auth.signOut();
+                  try {
+                    await fetch("/api/auth/logout", { method: "POST" });
+                    const supabase = createClient();
+                    await supabase.auth.signOut();
+                  } catch {}
                   setUserEmail(null);
+                  setCurrentUser(null);
                 }}
                 title="Se déconnecter"
-                className="text-[var(--text-muted)] hover:text-red-500 p-1.5 rounded-md transition-colors"
+                className="text-[var(--text-muted)] hover:text-red-500 p-1 rounded-md transition-colors shrink-0"
               >
                 <LogOut className="w-4 h-4 stroke-[2]" />
               </button>
@@ -1064,7 +1118,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
 
         {/* 1. Barre supérieure (Topbar strictement FIXE en haut) */}
         <header className="shrink-0 h-14 md:h-16 border-b border-[var(--border-main)] px-3 sm:px-6 flex items-center justify-between bg-[var(--bg-app)]/98 backdrop-blur-md z-20 sticky top-0">
-          {/* 1. Bouton Menu gauche (44×44px sur mobile, 14px rounded) */}
+          {/* 1. Bouton Menu gauche */}
           <button
             onClick={() => setSidebarOpen(true)}
             aria-label="Ouvrir le menu"
@@ -1073,22 +1127,26 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
             <PanelLeftOpen className="w-5 h-5 stroke-[2]" />
           </button>
 
-          {/* 2. Titre + Sous-titre au centre sur mobile, aligné à gauche sur desktop */}
-          <div className="flex flex-col items-center md:items-start min-w-0 flex-1 px-1 sm:px-2 md:px-3 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-1.5 sm:gap-2 w-full max-w-[280px] md:max-w-none">
+          {/* 2. Titre + Sous-titre propre, responsive sans chevauchement */}
+          <div className="flex flex-col items-center md:items-start min-w-0 flex-1 px-2 md:px-3 text-center md:text-left overflow-hidden">
+            <div className="flex items-center justify-center md:justify-start gap-1.5 sm:gap-2 w-full max-w-[280px] sm:max-w-none">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" title="Conseiller en ligne" />
-              <h1 className="font-serif font-bold text-[16px] sm:text-[18px] md:text-[20px] text-[#112624] dark:text-[#F7F5EF] tracking-tight truncate leading-tight">
+              <h1 className="font-serif font-bold text-[15px] sm:text-[17px] md:text-[19px] text-[#112624] dark:text-[#F7F5EF] tracking-tight truncate leading-tight">
                 {headerTitle}
               </h1>
             </div>
-            <p className="text-[11.5px] sm:text-[12.5px] font-medium text-[#3D5752] dark:text-[#C8D7D0] truncate max-w-[220px] sm:max-w-none mt-0.5">
+            <p className="text-[11.5px] sm:text-[12px] font-medium text-[#3D5752] dark:text-[#C8D7D0] truncate max-w-full mt-0.5">
               <span className="md:hidden">Conseiller d&apos;orientation officiel</span>
-              <span className="hidden md:inline">Des conseils personnalisés pour construire ton avenir</span>
+              <span className="hidden md:inline">
+                {profile.prenom && profile.prenom !== "l'ami"
+                  ? `Élève : ${profile.prenom} · Des conseils personnalisés pour ton avenir`
+                  : "Des conseils personnalisés pour construire ton avenir"}
+              </span>
             </p>
           </div>
 
-          {/* 3. Côté droit : sur mobile (≤480px), SEULEMENT le bouton "+" 44×44px ! */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          {/* 3. Côté droit : sur mobile (≤768px), bouton "+" 44×44px ; sur desktop, actions harmonisées */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Bouton "+" mobile 44×44px */}
             <button
               onClick={handleNewChat}
@@ -1099,38 +1157,34 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               <Plus className="w-5 h-5 stroke-[2]" />
             </button>
 
-            {/* Éléments conservés pour Desktop (md:flex) */}
-            <button
-              type="button"
-              onClick={promptInstallPwa}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-bold text-[var(--gold-primary)] bg-[var(--gold-light)] hover:brightness-105 active:scale-95 border border-[var(--gold-border)] rounded-xl shadow-2xs transition-all cursor-pointer"
-              title="Installer Jangora sur votre ordinateur ou téléphone"
-            >
-              <Smartphone className="w-4 h-4 text-[var(--gold-primary)]" />
-              <span>{isAppInstalled ? "App installée" : "Installer l'app"}</span>
-            </button>
-
-            <div className="hidden md:inline-flex items-center gap-2 text-[12px] text-[var(--gold-primary)] bg-[var(--gold-light)] px-3 py-1 rounded-full border border-[var(--gold-border)] font-bold">
-              <span className="w-2 h-2 rounded-full bg-[var(--gold-primary)] animate-pulse" />
-              <span>
+            {/* Étape de progression réactive */}
+            <div className="hidden md:inline-flex items-center gap-1.5 sm:gap-2 text-[11.5px] sm:text-[12px] text-[var(--gold-primary)] bg-[var(--gold-light)] px-2.5 sm:px-3 py-1 rounded-full border border-[var(--gold-border)] font-bold shrink-0">
+              <span className="w-2 h-2 rounded-full bg-[var(--gold-primary)] animate-pulse shrink-0" />
+              <span className="hidden xl:inline">
                 Étape {profile.etape}/5 : {ETAPE_LABELS[profile.etape]}
+              </span>
+              <span className="xl:hidden">
+                Étape {profile.etape}/5
               </span>
             </div>
 
+            {/* Bouton Nouvelle discussion desktop */}
             <button
               onClick={handleNewChat}
-              className="hidden md:flex items-center gap-1 px-3 py-1.5 text-[12.5px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 active:scale-95 rounded-xl shadow-xs transition-colors cursor-pointer"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 active:scale-95 rounded-xl shadow-xs transition-colors cursor-pointer shrink-0"
               title="Nouvelle discussion"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Nouveau</span>
+              <span className="hidden lg:inline">Nouvelle discussion</span>
+              <span className="lg:hidden">Nouveau</span>
             </button>
 
+            {/* Bouton thème */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="hidden md:flex p-2 text-[var(--text-muted)] hover:text-[var(--brand-green)] dark:hover:text-[var(--brand-sand)] hover:bg-[var(--bg-hover)] rounded-xl border border-[var(--border-main)] transition-colors cursor-pointer"
-              title={theme === "dark" ? "Passer en mode jour (lumineux)" : "Passer en mode nuit (profond)"}
+              className="hidden md:flex p-2 text-[var(--text-muted)] hover:text-[var(--brand-green)] dark:hover:text-[var(--brand-sand)] hover:bg-[var(--bg-hover)] rounded-xl border border-[var(--border-main)] transition-colors cursor-pointer shrink-0"
+              title={theme === "dark" ? "Passer en mode jour" : "Passer en mode nuit"}
               aria-label="Changer le mode de couleur"
             >
               {theme === "dark" ? (
@@ -1140,9 +1194,18 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               )}
             </button>
 
-            <div className="w-8 h-8 rounded-full bg-[var(--gold-light)] border border-[var(--gold-border)] hidden md:flex items-center justify-center text-[var(--gold-primary)] font-bold text-[12px]">
-              <User className="w-4 h-4" />
-            </div>
+            {/* Avatar / Lien vers Mon Profil */}
+            <Link
+              href={currentUser || userEmail ? "/profile" : "/login"}
+              className="w-8 h-8 rounded-full bg-[var(--gold-light)] border border-[var(--gold-border)] hidden md:flex items-center justify-center text-[var(--gold-primary)] font-bold text-[12px] hover:brightness-105 transition-all shrink-0 cursor-pointer"
+              title={currentUser?.fullName ? `Profil de ${currentUser.fullName}` : "Connexion / Mon profil"}
+            >
+              {currentUser?.fullName ? (
+                <span>{currentUser.fullName.charAt(0).toUpperCase()}</span>
+              ) : (
+                <User className="w-4 h-4" />
+              )}
+            </Link>
           </div>
         </header>
 
@@ -1167,7 +1230,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                     className={`h-[5px] flex-1 rounded-full transition-all duration-300 ${
                       isPassed
                         ? "bg-[#155E59] dark:bg-[#E9D5A1]"
-                        : "bg-[#C5D9D3] dark:bg-[#2B514B]"
+                        : "bg-[#C5D9D3] dark:border-[#2B514B]"
                     }`}
                   />
                 );
@@ -1176,9 +1239,14 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           </div>
         </div>
 
-        {/* 2. Zone de discussion défilante (SEULE zone qui défile) */}
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 sm:px-8 py-3 md:py-6 bg-[var(--bg-app)] z-10">
-          <div className="max-w-[780px] mx-auto space-y-4 sm:space-y-6">
+        {/* 2. Zone de discussion défilante (SEULE zone qui défile, indépendante de la barre latérale) */}
+        <div
+          ref={chatScrollContainerRef}
+          onScroll={handleChatScroll}
+          tabIndex={0}
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 sm:px-8 py-3 md:py-5 bg-[var(--bg-app)] z-10 outline-none"
+        >
+          <div className="max-w-[780px] mx-auto space-y-3 sm:space-y-3.5">
 
             {/* Fiche Bilan Finale si Étape 5 */}
             {profile.etape === 5 && (
@@ -1285,7 +1353,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
 
                     <div className="flex-1 min-w-0">
                       {/* Carte du message assistant : bulle contrastée lisible jour et nuit */}
-                      <div className="bg-[var(--bot-card-bg)] text-[var(--text-main)] text-[15px] sm:text-[16px] leading-[1.55] border border-[var(--bot-card-border)] rounded-[20px] rounded-tl-[6px] p-4 sm:p-5 shadow-[var(--bot-card-shadow)]">
+                      <div className="bg-[var(--bot-card-bg)] text-[var(--text-main)] text-[15px] sm:text-[16px] leading-[1.55] border border-[var(--bot-card-border)] rounded-[20px] rounded-tl-[6px] p-3.5 sm:p-4.5 shadow-[var(--bot-card-shadow)]">
                         <BotMessageMarkdown content={parsed.reply || msg.content} />
                       </div>
 
@@ -1366,8 +1434,8 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
 
               /* ─── Message Utilisateur ─── */
               return (
-                <div key={msg.id} className="flex flex-col items-end pt-1 animate-fadeIn">
-                  <div className="max-w-[85%] sm:max-w-[75%] bg-[var(--user-bubble-bg)] text-[var(--user-bubble-text)] border border-[var(--border-main)] rounded-2xl rounded-tr-xs px-4 sm:px-5 py-3 text-[14.5px] font-medium leading-relaxed shadow-xs">
+                <div key={msg.id} className="flex flex-col items-end pt-0.5 animate-fadeIn">
+                  <div className="max-w-[85%] sm:max-w-[75%] bg-[var(--user-bubble-bg)] text-[var(--user-bubble-text)] border border-[var(--border-main)] rounded-2xl rounded-tr-xs px-4 sm:px-4.5 py-2.5 text-[14px] sm:text-[14.5px] font-medium leading-relaxed shadow-xs">
                     {msg.content}
                   </div>
                   <div className="flex items-center gap-1 text-[11px] font-medium text-[var(--user-bubble-meta)] mt-1 mr-1">
@@ -1411,7 +1479,11 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
             <form
               onSubmit={(e) => {
                 setSelectedSuggestion(null);
+                isAtBottomRef.current = true;
                 handleSubmit(e);
+                setTimeout(() => {
+                  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+                }, 60);
               }}
               className="flex items-center gap-1.5 sm:gap-2 bg-[var(--bg-card)] border-[1.5px] border-[var(--border-main)] rounded-[28px] h-13 min-h-[52px] sm:h-14 sm:min-h-[56px] px-2 shadow-xs focus-within:border-[#155E59] dark:focus-within:border-[#E9D5A1] transition-all"
             >
@@ -1466,6 +1538,54 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
             </p>
           </div>
         </div>
+
+        {/* Invitation discrète et éphémère d'installation PWA */}
+        {showEphemeralPwaBanner && !isAppInstalled && (
+          <div className="fixed bottom-20 right-4 sm:right-6 z-40 max-w-[340px] bg-[var(--bg-card)] border border-[var(--gold-border)] rounded-2xl p-4 shadow-xl animate-fadeIn">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-2.5">
+                <div className="p-2 rounded-xl bg-[var(--gold-light)] text-[var(--gold-primary)] shrink-0">
+                  <Smartphone className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[13px] text-[var(--text-main)]">
+                    Installer Jangora
+                  </h4>
+                  <p className="text-[11.5px] text-[var(--text-muted)] mt-0.5 leading-snug">
+                    Accédez rapidement à vos conseils d&apos;orientation, même hors-ligne.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={dismissPwaBanner}
+                className="text-[var(--text-muted)] hover:text-[var(--text-main)] p-1 rounded-md transition-colors"
+                title="Ignorer pendant 14 jours"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="mt-3 flex items-center justify-end gap-2 pt-2 border-t border-[var(--border-main)]">
+              <button
+                type="button"
+                onClick={dismissPwaBanner}
+                className="px-3 py-1.5 text-[12px] font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer"
+              >
+                Plus tard
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  promptInstallPwa();
+                  dismissPwaBanner();
+                }}
+                className="px-3.5 py-1.5 text-[12px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] rounded-xl shadow-xs hover:brightness-105 cursor-pointer"
+              >
+                Installer l&apos;app
+              </button>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* ════════════════════════════════════════════

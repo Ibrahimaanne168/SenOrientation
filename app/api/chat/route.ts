@@ -5,6 +5,8 @@ import { sanitizeUserInput } from "@/lib/security/sanitize";
 import { checkRateLimit } from "@/lib/security/rate-limit";
 import {
   detectIntent,
+  detectQueryMode,
+  AssistantMode,
   reformulateQuery,
   searchKnowledge,
   formatKnowledgeForPrompt,
@@ -205,11 +207,13 @@ export async function POST(req: NextRequest) {
     // 3. ROUTAGE DES INTENTIONS SANS RECHERCHE DOCUMENTAIRE
     // ─────────────────────────────────────────────────────────────────────────
     const intent = detectIntent(sanitized.cleanText);
+    const queryMode = detectQueryMode(sanitized.cleanText);
 
-    // Détection si l'utilisateur vient de donner son nom / prénom
+    // Détection si l'utilisateur vient de donner son nom / prénom (uniquement en mode orientation)
     const justGaveName =
-      (!incomingProfile.prenom && Boolean(updatedProfile.prenom) && !updatedProfile.serie && !updatedProfile.niveau) ||
-      (incomingProfile.prenom && !incomingProfile.serie && !updatedProfile.serie && !updatedProfile.niveau && intent !== "emotion" && intent !== "dont_know");
+      queryMode === "orientation" &&
+      ((!incomingProfile.prenom && Boolean(updatedProfile.prenom) && !updatedProfile.serie && !updatedProfile.niveau) ||
+      (incomingProfile.prenom && !incomingProfile.serie && !updatedProfile.serie && !updatedProfile.niveau && intent !== "emotion" && intent !== "dont_know" && intent !== "greeting"));
 
     if (justGaveName) {
       const displayName = updatedProfile.prenom && updatedProfile.prenom !== "l'ami" ? ` ${updatedProfile.prenom}` : "";
@@ -502,22 +506,30 @@ function generateLocalOrientationPayload(
 ): TechnicalOutput {
   const lowerQuery = query.toLowerCase().trim();
 
-  // 1. CAS D'UNE DEMANDE DIRECTE FACTUELLE (Partie 5 & Test 12)
+  // 1. CAS D'UNE DEMANDE DIRECTE FACTUELLE (Établissement, Formation, Concours, Métier, Comparaison)
+  const qMode = detectQueryMode(query);
   const isDirectRequest =
+    qMode !== "orientation" ||
     lowerQuery.includes("quelles universités") ||
     lowerQuery.includes("quelles sont les universités") ||
     lowerQuery.includes("quelles écoles") ||
     lowerQuery.includes("où peut-on étudier") ||
     lowerQuery.includes("conditions du concours") ||
     lowerQuery.includes("conditions d'accès") ||
+    lowerQuery.includes("conditions dacces") ||
     lowerQuery.includes("concours ept") ||
     lowerQuery.includes("concours esp") ||
     lowerQuery.includes("frais de scolarité") ||
-    lowerQuery.includes("comment devenir");
+    lowerQuery.includes("frais de scolarite") ||
+    lowerQuery.includes("comment devenir") ||
+    lowerQuery.includes("parle-moi de") ||
+    lowerQuery.includes("formations propose") ||
+    lowerQuery.includes("difference entre") ||
+    lowerQuery.includes("différence entre");
 
   if (isDirectRequest) {
     if (!knowledge || knowledge.length === 0) {
-      // Test 8 : Information inexistante dans les données officielles
+      // Information inexistante dans les données officielles
       return {
         reply: "Je ne dispose pas d'informations officielles documentées à ce sujet dans mes bases actuelles. Les formations et parcours accrédités au Sénégal sont recensés sur la plateforme officielle Campusen (campusen.sec.gouv.sn). Souhaites-tu explorer les filières disponibles dans un autre domaine ?",
         suggestions: [
@@ -532,28 +544,44 @@ function generateLocalOrientationPayload(
         prochaine_question_vise: "Signaler l'absence de donnée et proposer une alternative",
         pistes: [],
         etablissements: [],
-        etape: profile.etape,
+        etape: profile.etape || 1,
       };
     }
 
-    const topDoc = knowledge[0];
-    const reply = `Voici les informations officielles documentées dans mes bases :\n\n${topDoc.content}\n\nSouhaites-tu vérifier si ce parcours correspond à ton profil et à ta série de Bac ?`;
+    // Synthèse documentée à partir des sources officielles
+    const docsSummary = knowledge
+      .slice(0, 3)
+      .map((k) => k.content.trim())
+      .join("\n\n---\n\n");
+
+    let intro = "Voici les informations officielles documentées dans mes bases :";
+    if (qMode === "info_etablissement") {
+      intro = "Voici les informations officielles répertoriées sur cet établissement et son offre de formation :";
+    } else if (qMode === "concours") {
+      intro = "Voici les modalités et conditions documentées pour ce concours officiel au Sénégal :";
+    } else if (qMode === "metier") {
+      intro = "Voici les missions, compétences et parcours de formation documentés pour ce métier :";
+    } else if (qMode === "comparaison") {
+      intro = "Voici les éléments comparatifs documentés entre ces deux filières / parcours :";
+    }
+
+    const reply = `${intro}\n\n${docsSummary}\n\n*Note : Pour les concours et les dates limites de session, pense à vérifier les avis officiels du Ministère et de l'organisateur pour l'année en cours.*\n\nSouhaites-tu vérifier si ce parcours correspond à ton profil et à ta série de Bac ?`;
 
     return {
       reply,
       suggestions: [
         "Vérifier mon profil pour ce parcours",
-        "Voir les autres établissements",
-        "Conditions de bourse DGES",
+        "Conditions d'admission détaillées",
+        "Voir d'autres filières similaires",
         "Je ne sais pas",
       ],
       dossier: profile,
-      indices: [{ texte: `Recherche : ${query.slice(0, 50)}`, statut: "certain" }],
+      indices: [{ texte: `Recherche factuelle : ${query.slice(0, 50)}`, statut: "certain" }],
       hypotheses: [],
       prochaine_question_vise: "Répondre directement à la question factuelle puis proposer la suite",
       pistes: [],
       etablissements: [],
-      etape: profile.etape,
+      etape: profile.etape || 1,
     };
   }
 
@@ -579,9 +607,13 @@ function generateLocalOrientationPayload(
     };
   }
 
-  // 3. Si prêt pour le Bilan Final (Étape 5 / Phase 8)
-  const matched = findMatchingFormations(profile);
+  // 3. Si prêt pour le Bilan Final (Étape 5 / Phase E ou Recherche Alternative Phase F)
+  const isPhaseFRecherche = profile.phase_actuelle === "F" || decision.intent_id === "intent_phase_f_nouvelle_recherche";
+  const matched = findMatchingFormations(profile, 5);
   const displayName = profile.prenom && profile.prenom !== "l'ami" ? `${profile.prenom}` : "Élève";
+
+  // Enregistrer les formations recommandées dans le profil pour éviter de les répéter plus tard
+  profile.formations_recommandees = matched.map((m) => m.nom);
 
   const domainesRec = profile.confirmed_interests.length > 0
     ? profile.confirmed_interests.slice(0, 3)
@@ -602,7 +634,8 @@ function generateLocalOrientationPayload(
 
     reply = `**A. Résumé de ton profil**
 - Élève : ${displayName}
-- Niveau actuel : ${profile.niveau || "Collège / Lycée"}
+- Établissement : ${profile.etablissement_actuel || "Collège / Lycée"}
+- Classe actuelle : ${profile.classe_actuelle || profile.niveau || "Enseignement secondaire"}
 - Centres d'intérêt confirmés : ${domainesRec.join(", ")}
 - Points forts & aptitudes : ${profile.points_forts.join(", ") || profile.matieres_aimees.join(", ") || "Calcul, réflexion et esprit pratique"}
 
@@ -625,7 +658,7 @@ ${decision.question}`;
       suggestions: decision.suggestions,
       dossier: profile,
       indices: [
-        { texte: `Niveau : ${profile.niveau || "Avant-bac"}`, statut: "certain" },
+        { texte: `Niveau : ${profile.classe_actuelle || profile.niveau || "Avant-bac"}`, statut: "certain" },
         { texte: `Séries cibles : ${seriesRetenues.map((s) => s.code).join(", ")}`, statut: "certain" },
       ],
       hypotheses: seriesRetenues.map((s) => ({ domaine: s.nom, confiance: "forte" as const })),
@@ -640,93 +673,46 @@ ${decision.question}`;
       etablissements: ["Lycées d'enseignement général et technique du Sénégal"],
       etape: 5,
     };
-  } else if (profile.statut_parcours === "post_bac") {
-    // BILAN SPÉCIFIQUE POST-BAC (Réorientation après L1 difficile ou passerelles professionnelles)
-    const isReorientation = profile.type_post_bac === "reorientation";
-    const formationsListMarkdown = matched.slice(0, 3).map((m) => {
-      return `- **${m.nom}, ${m.etablissement}**
-  - Diplôme & Format : ${m.diplome} (${m.duree})
-  - Modalités d'admission : ${m.conditions}
-  - Atout pour ton projet : ${m.pourquoi}
-  - Débouchés : ${m.debouches.slice(0, 3).join(", ")}`;
-    }).join("\n\n");
-
-    reply = `**A. Résumé de ta situation universitaire**
-- Étudiant : ${displayName}
-- Statut actuel : ${profile.niveau || "Université"} (${isReorientation ? "Projet de réorientation" : "Poursuite d'études / passerelle"})
-- Nouveaux domaines prioritaires : ${domainesRec.join(", ")}
-- Aptitudes valorisées : ${profile.points_forts.join(", ") || profile.matieres_aimees.join(", ") || "Compétences appliquées"}
-
-**B. Diagnostic et nouveau cap**
-${isReorientation
-  ? "- Une réorientation après une première année universitaire est une opportunité constructive pour se diriger vers un parcours plus professionnalisant ou aligné avec tes talents."
-  : "- Une poursuite d'études ciblée permet de capitaliser sur ton premier diplôme en visant une spécialisation à forte valeur ajoutée sur le marché du travail sénégalais."}
-
-**C. Formations, filières et passerelles adaptées (Sénégal)**
-${formationsListMarkdown}
-
-**D. Modalités de réorientation et démarches administratives**
-- Dossier de réorientation / transfert interne ou externe auprès de la scolarité de l'UFR / université.
-- Validation d'acquis ou équivalence des crédits (ECTS) déjà validés.
-- Possibilité de candidater aux filières courtes professionnalisantes (Licence pro, BTS/DUT) pour une insertion accélérée.
-
-**E. Question de suivi**
-${decision.question}`;
-
-    return {
-      reply,
-      suggestions: decision.suggestions,
-      dossier: profile,
-      indices: [
-        { texte: `Statut universitaire : ${profile.niveau || "Post-bac"}`, statut: "certain" },
-        { texte: `Domaines cibles : ${domainesRec.join(", ")}`, statut: "certain" },
-      ],
-      hypotheses: domainesRec.map((dom) => ({ domaine: dom, confiance: "forte" as const })),
-      prochaine_question_vise: "Guider la réorientation universitaire ou la passerelle",
-      pistes: matched.slice(0, 3).map((m) => ({
-        nom: m.nom,
-        etablissements: m.etablissements,
-        duree: m.duree,
-        debouches: m.debouches.join(", "),
-        indice_retenu: m.pourquoi,
-      })),
-      etablissements: matched.map((m) => m.etablissement),
-      etape: 5,
-    };
   }
 
-  // BILAN STANDARD POUR BACCALAURÉAT (Terminale / Nouveaux bacheliers)
-  const formationsListMarkdown = matched.map((m) => {
-    return `- **${m.nom}, ${m.etablissement}**
-  - Diplôme & Durée : ${m.diplome} (${m.duree})
-  - Conditions d'accès : ${m.conditions}
-  - Pourquoi pour toi : ${m.pourquoi}
-  - Source officielle : ${m.source}`;
+  // PRÉSENTATION DES JUSQU'À 5 MEILLEURES FORMATIONS (Phase E / Phase F)
+  const formationsListMarkdown = matched.map((m, idx) => {
+    return `### Choix ${idx + 1} : ${m.nom}
+- **Établissement** : ${m.etablissement} (${m.localisation})
+- **Niveau d'entrée & Durée** : ${m.niveau_entree} — ${m.duree} (${m.diplome})
+- **Pourquoi cette formation** : ${m.pourquoi}
+- **Conditions d'admission connues** : ${m.conditions}
+- **Informations à vérifier** : ${m.a_verifier}
+- **Débouchés documentés** : ${m.debouches.slice(0, 4).join(", ")}
+- **Source officielle** : ${m.source}`;
   }).join("\n\n");
 
-  reply = `**A. Résumé de ton profil**
-- Élève : ${displayName}
-- Série / Niveau : ${profile.serie ? `Bac ${profile.serie}` : (profile.niveau || "Enseignement secondaire")}
+  const explainNotice = matched.length < 5
+    ? `\n\n> [!NOTE]\n> Seules ${matched.length} formations répondent strictement à l'ensemble de tes critères validés dans notre référentiel officiel. Conformément à nos règles de fiabilité, nous préférons te restituer ces choix confirmés plutôt que d'extrapoler des cursus non vérifiés.`
+    : "";
+
+  const headerBilan = isPhaseFRecherche
+    ? `**Nouvelle sélection alternative de formations (Actualisée suite à tes remarques)**\n\nNous avons pris en compte tes critères actualisés (${profile.motifs_insatisfaction?.join(", ") || "nouveau cap souhaité"}) et exclu les parcours précédemment proposés.\n\n`
+    : `**Bilan d'orientation — Les cinq meilleurs choix pour ton projet**\n\n`;
+
+  reply = `${headerBilan}**A. Résumé de ton profil**
+- Élève / Étudiant : ${displayName}
+- Établissement actuel : ${profile.etablissement_actuel || "Non précisé"}
+- Classe & Série : ${profile.classe_actuelle || ""} ${profile.serie ? `(Série ${profile.serie})` : (profile.niveau || "")}
 - Domaines d'intérêt confirmés : ${domainesRec.join(", ")}
-- Points forts déclarés : ${profile.points_forts.join(", ") || profile.matieres_competentes.join(", ") || profile.matieres_aimees.join(", ") || "Aptitudes scientifiques et analytiques"}
-- Format souhaité : ${profile.preferences_etudes || "Études supérieures au Sénégal"}
+- Style de travail : ${profile.style_travail?.pratique_vs_theorie === "pratique" ? "Pratique et professionnalisant" : "Généraliste et universitaire"}
+- Format & Ville souhaités : ${profile.preferences_etudes || "Études supérieures"} à ${profile.ville || "Dakar / Sénégal"}
+${profile.professions_rejetees && profile.professions_rejetees.length > 0 ? `- Métiers écartés : ${profile.professions_rejetees.map((p) => p.metier).join(", ")}\n` : ""}
+**B. Formations recommandées (Données officielles vérifiées)**
 
-**B. Domaines recommandés**
-${domainesRec.map((d) => `- **${d}** : en adéquation avec tes centres d'intérêt confirmés et tes compétences déclarées.`).join("\n")}
+${formationsListMarkdown}${explainNotice}
 
-**C. Formations adaptées (données officielles du Sénégal)**
-${formationsListMarkdown}
+**C. Démarches et plan d'action officiel au Sénégal**
+- **Campusen (campusen.sec.gouv.sn)** : Inscription nationale obligatoire pour les universités publiques dès les résultats officiels du Bac (droits d'inscription fixés à 25 000 FCFA/an).
+- **Bourses DGES** : Dépôt du dossier de bourse nationale (demi-bourse de 20 000 FCFA/mois ou bourse entière de 40 000 FCFA/mois).
+- **Concours d'excellence** : Les dépôts de dossiers (EPT, ESP, CESTI, EMS) s'effectuent généralement entre mai et juillet.
 
-**D. Comparaison & Alternatives**
-- Les cursus universitaires à l'UCAD, l'UGB ou l'UIDT mènent aux diplômes longs (Licence, Master, Ingénieur).
-- Si tu préfères une insertion rapide sur le marché de l'emploi, les cycles courts (DUT à l'ESP, BTS ou Licence professionnelle) offrent d'excellentes opportunités professionnalisantes.
-
-**E. Démarches et plan d'action officiel**
-- Orientation Campusen : inscription obligatoire sur campusen.sec.gouv.sn dès les résultats du Bac (droits d'inscription fixés à 25 000 FCFA/an).
-- Bourses nationales DGES : dépôt de demande (demi-bourse de 20 000 FCFA/mois ou bourse entière de 40 000 FCFA/mois).
-- Écoles d'excellence sur concours (ESP, EPT, CESTI, EMS) : dépôts de dossiers entre mai et juillet.
-
-**F. Question de suivi**
+**D. Question de suivi**
 ${decision.question}`;
 
   return {
@@ -738,7 +724,7 @@ ${decision.question}`;
       { texte: domainesRec.join(", ") || "Intérêts confirmés", statut: "certain" },
     ],
     hypotheses: domainesRec.map((dom) => ({ domaine: dom, confiance: "forte" as const })),
-    prochaine_question_vise: "Présenter le bilan final et orienter vers les démarches officielles",
+    prochaine_question_vise: isPhaseFRecherche ? "Présenter les choix alternatifs renouvelés (Phase F)" : "Présenter les 5 meilleurs choix officiels (Phase E)",
     pistes: matched.map((m) => ({
       nom: m.nom,
       etablissements: m.etablissements,

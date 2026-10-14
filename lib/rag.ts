@@ -139,6 +139,149 @@ export function detectIntent(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 1b. DÉTECTION DU MODE MULTI-USAGES DE JANGORA (Section 10)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type AssistantMode =
+  | "orientation"
+  | "info_etablissement"
+  | "info_formation"
+  | "concours"
+  | "metier"
+  | "comparaison"
+  | "question_generale";
+
+export function detectQueryMode(message: string): AssistantMode {
+  const clean = message
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+
+  // 1. Mode Comparaison
+  if (
+    clean.includes("difference entre") ||
+    clean.includes("comparer") ||
+    clean.includes("comparatif") ||
+    clean.includes("comparaison") ||
+    clean.includes(" vs ") ||
+    clean.includes(" versus ") ||
+    clean.includes("lequel choisir entre") ||
+    clean.includes("laquelle choisir entre") ||
+    clean.includes("quelle est la difference") ||
+    clean.includes("quest ce qui differe") ||
+    clean.includes("opposer") ||
+    (clean.includes(" ou ") && clean.includes("choisir"))
+  ) {
+    return "comparaison";
+  }
+
+  // 2. Concours et admissions
+  if (
+    clean.includes("concours") ||
+    clean.includes("conditions du concours") ||
+    clean.includes("epreuve") ||
+    clean.includes("admissibilite") ||
+    clean.includes("dossier a fournir") ||
+    clean.includes("pieces a fournir") ||
+    clean.includes("frais de dossier") ||
+    clean.includes("droits d'inscription au concours") ||
+    clean.includes("date limite de depot") ||
+    clean.includes("session du concours") ||
+    clean.includes("conditions d'acces") ||
+    clean.includes("conditions dacces") ||
+    clean.includes("modalites dadmission") ||
+    clean.includes("modalites d'admission")
+  ) {
+    return "concours";
+  }
+
+  // 3. Découverte d'un métier
+  if (
+    clean.includes("que fait ") ||
+    clean.includes("metier de ") ||
+    clean.includes("metier d") ||
+    clean.includes("devenir ") ||
+    clean.includes("pour etre ") ||
+    clean.includes("missions d") ||
+    clean.includes("missions du ") ||
+    clean.includes("competences pour ") ||
+    clean.includes("statisticien") ||
+    clean.includes("ingenieur en ") ||
+    clean.includes("ingenieur civil") ||
+    clean.includes("data scientist") ||
+    clean.includes("debouches de ") ||
+    clean.includes("secteur dactivite") ||
+    clean.includes("secteur d'activite")
+  ) {
+    return "metier";
+  }
+
+  // 4. Établissement
+  const etablissementsKeywords = [
+    "ucad", "ugb", "gaston berger", "cheikh anta diop", "ept", "esp",
+    "ensae", "esmt", "uidt", "uadb", "uam", "ussein", "uasz", "unchk", "un-chk",
+    "fastef", "cesti", "enam", "isep", "polytechnique de thies", "fann"
+  ];
+  const hasEtablissement = etablissementsKeywords.some((k) => clean.includes(k));
+  if (
+    hasEtablissement &&
+    (clean.includes("formation") ||
+      clean.includes("parle") ||
+      clean.includes("presente") ||
+      clean.includes("universite") ||
+      clean.includes("ecole") ||
+      clean.includes("institut") ||
+      clean.includes("propose") ||
+      clean.includes("integrer") ||
+      clean.includes("admission") ||
+      clean.includes("composante") ||
+      clean.includes("faculte") ||
+      clean.includes("ufr") ||
+      clean.includes("departement") ||
+      clean.includes("filiere") ||
+      clean.includes("etudier a"))
+  ) {
+    return "info_etablissement";
+  }
+
+  // 5. Information sur une formation
+  if (
+    clean.includes("licence en ") ||
+    clean.includes("licence ") ||
+    clean.includes("master en ") ||
+    clean.includes("bts ") ||
+    clean.includes("dut ") ||
+    clean.includes("formation en ") ||
+    clean.includes("etudes pour ") ||
+    clean.includes("conditions d'admission de cette formation") ||
+    clean.includes("prerequis") ||
+    clean.includes("duree de la formation") ||
+    clean.includes("programme de")
+  ) {
+    return "info_formation";
+  }
+
+  // 6. Question générale (Campusen, bourses DGES, démarches)
+  if (
+    clean.includes("campusen") ||
+    clean.includes("bourse") ||
+    clean.includes("dges") ||
+    clean.includes("frais de scolarite") ||
+    clean.includes("forclusion") ||
+    clean.includes("orientation nationale") ||
+    clean.includes("demarche") ||
+    clean.includes("comment s'inscrire") ||
+    clean.includes("comment sinscrire") ||
+    clean.includes("inscription universitaire")
+  ) {
+    return "question_generale";
+  }
+
+  return "orientation";
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 2. REFORMULATION DE REQUÊTE AVEC L'HISTORIQUE
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -242,15 +385,30 @@ const STOP_WORDS = new Set([
   "où", "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses", "faire",
   "être", "avoir", "quel", "quelle", "quelles", "quels", "plus", "très",
   "comment", "pourquoi", "quand", "combien", "tout", "tous", "toute", "toutes",
-  "leur", "leurs", "auxquels", "auxquelles", "lesquels", "lesquelles", "vers", "sans"
+  "leur", "leurs", "auxquels", "auxquelles", "lesquels", "lesquelles", "vers", "sans",
+  "proposent", "propose", "offrent", "offre", "trouver", "chercher", "veut", "voudrais",
+  "peut", "peux", "peuvent", "suivre", "donner"
 ]);
 
-function tokenize(text: string): string[] {
+export function normalizeToken(word: string): string {
+  return word
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/(?:es|s|x)$/i, "");
+}
+
+export function tokenize(text: string): string[] {
   return text
     .toLowerCase()
-    .replace(/[.,/#!$%^&*;:{}=\-_`~()'"«»]/g, " ")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.,/#!$%^&*;:{}=\-_`~()'"«»?]/g, " ")
     .split(/\s+/)
-    .filter((w) => w.length > 2 && !STOP_WORDS.has(w));
+    .map((w) => w.trim())
+    .filter((w) => w.length > 2 && !STOP_WORDS.has(w))
+    .map((w) => normalizeToken(w))
+    .filter((w) => w.length > 1 && !STOP_WORDS.has(w));
 }
 
 const KNOWLEDGE_CORPUS: RawDocument[] = [];
@@ -486,7 +644,7 @@ function computeVector(tokens: string[]): Map<string, number> {
 export async function searchKnowledge(
   query: string,
   maxResults = 5,
-  similarityThreshold = 0.28,
+  similarityThreshold = 0.20,
   options?: SearchKnowledgeOptions
 ): Promise<KnowledgeMatch[]> {
   const queryTokens = tokenize(query);
@@ -504,9 +662,13 @@ export async function searchKnowledge(
       continue;
     }
 
-    // Filtrage par couverture : si la requête comporte 4 mots clés ou plus et que le doc n'en a pas au moins 2, ignorer
     const matchingTerms = [...queryVec.keys()].filter((term) => doc.tokens.includes(term));
-    if (queryVec.size >= 4 && matchingTerms.length < 2) {
+    if (matchingTerms.length === 0) {
+      continue;
+    }
+
+    // Protection anti faux-positif : si la requête comporte 3 mots ou plus, exiger au moins 2 termes ou une couverture >= 34%
+    if (queryVec.size >= 3 && matchingTerms.length < 2 && (matchingTerms.length / queryVec.size) < 0.34) {
       continue;
     }
 
@@ -520,7 +682,13 @@ export async function searchKnowledge(
     }
 
     const docNorm = Math.sqrt(doc.tokens.length) || 1;
-    let similarity = Math.min(1.0, dotProduct / (docNorm * 0.85));
+    let similarity = Math.min(1.0, dotProduct / (docNorm * 0.70));
+
+    // Boost par couverture de mots clés de la requête
+    const coverage = matchingTerms.length / queryVec.size;
+    if (coverage >= 0.5) {
+      similarity = Math.min(1.0, similarity * (1 + coverage * 0.5));
+    }
 
     // Boost par série de Bac si filtre spécifié
     if (options?.serieFilter && doc.metadata?.bac_series) {
@@ -531,7 +699,7 @@ export async function searchKnowledge(
     }
 
     // Boost majeur pour les concours officiels si la requête demande un concours
-    if (queryTokens.includes("concours")) {
+    if (queryTokens.includes("concour")) {
       if (doc.entity_type === "concours") {
         similarity = Math.min(1.0, similarity * 2.5);
       } else {
@@ -544,7 +712,7 @@ export async function searchKnowledge(
       (acr) => queryTokens.includes(acr) && doc.tokens.includes(acr)
     );
     if (acronymMatches.length > 0) {
-      similarity = Math.min(1.0, similarity * 1.5);
+      similarity = Math.min(1.0, similarity * 1.6);
     }
 
     if (similarity >= similarityThreshold) {
@@ -583,7 +751,7 @@ export function formatKnowledgeForPrompt(matches: KnowledgeMatch[]): string {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 7. MOTEUR DE MATCHING STRUCTURÉ DES FORMATIONS (Partie 7)
+// 7. MOTEUR DE MATCHING STRUCTURÉ DES FORMATIONS (5 MEILLEURS CHOIX & PHASE F)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface MatchedFormation {
@@ -593,10 +761,12 @@ export interface MatchedFormation {
   etablissements: string[];
   etablissement: string;
   localisation: string;
+  niveau_entree: string;
   diplome: string;
   duree: string;
   conditions: string;
   pourquoi: string;
+  a_verifier: string;
   score_correspondance: number;
   debouches: string[];
   source: string;
@@ -604,23 +774,28 @@ export interface MatchedFormation {
   isAlternative?: boolean;
 }
 
-export function findMatchingFormations(profile: Partial<ConversationProfile>): MatchedFormation[] {
+export function findMatchingFormations(
+  profile: Partial<ConversationProfile>,
+  maxChoices = 5
+): MatchedFormation[] {
   // Utiliser les filières de base et formations réelles
   const dataset = Array.isArray(formationsData) && formationsData.length > 0 ? formationsData : [];
 
   if (dataset.length === 0) {
     // Fallback sur filieresData
-    return (filieresData || []).slice(0, 4).map((f) => ({
+    return (filieresData || []).slice(0, maxChoices).map((f) => ({
       id: f.id,
       nom: f.title,
       domaine: f.domain,
       etablissements: f.universities || [],
       etablissement: (f.universities && f.universities[0]) || "Universités du Sénégal",
       localisation: (f.universities && f.universities.join(", ")) || "Sénégal",
+      niveau_entree: "Baccalauréat",
       diplome: f.level || "Licence (Bac+3)",
       duree: f.duration || "3 ans",
       conditions: f.admissionConditions || "Campusen",
       pourquoi: "En phase avec les formations nationales disponibles",
+      a_verifier: "Conditions précises sur Campusen",
       score_correspondance: 80,
       debouches: (f.careers || []).slice(0, 5),
       source: "Référentiel MESRI & Campusen",
@@ -640,9 +815,38 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
     .join(" ")
     .toLowerCase();
 
+  // Liste des formations explicitement rejetées ou déjà montrées à exclure (Phase F)
+  const rejectedIds = new Set<string>();
+  if (profile.formations_rejetees && Array.isArray(profile.formations_rejetees)) {
+    for (const fr of profile.formations_rejetees) {
+      const frVal: unknown = fr;
+      if (typeof frVal === "string") rejectedIds.add((frVal as string).toLowerCase());
+      else if (fr && fr.formation) rejectedIds.add(fr.formation.toLowerCase());
+    }
+  }
+  if (profile.formations_proposees_precedemment && Array.isArray(profile.formations_proposees_precedemment)) {
+    for (const id of profile.formations_proposees_precedemment) {
+      rejectedIds.add(id.toLowerCase());
+    }
+  }
+
+  // Métiers explicitement rejetés (ex: enseignant)
+  const rejectedJobs = (profile.professions_rejetees || []).map((r) => {
+    const rVal: unknown = r;
+    return (typeof rVal === "string" ? (rVal as string) : r.metier || "").toLowerCase();
+  });
+
   const scored: Array<{ f: typeof dataset[0]; score: number; reason: string }> = [];
 
   for (const f of dataset) {
+    const fIdLower = (f.id || "").toLowerCase();
+    const fNomLower = (f.nom_officiel || "").toLowerCase();
+
+    // EXCLUSION STRICTE : Ne jamais reproposer une formation rejetée (Phase F)
+    if (rejectedIds.has(fIdLower) || rejectedIds.has(fNomLower)) {
+      continue;
+    }
+
     let score = 0;
     const reasons: string[] = [];
 
@@ -657,13 +861,14 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
         score += 40;
         reasons.push(`compatible avec ta série ${userSerie}`);
       } else {
-        score -= 25; // Pénalité sans exclusion absolue
+        score -= 25; // Pénalité sans exclusion absolue si passerelle
       }
     }
 
     // 2. Thématiques et domaines
     const fDomain = (f.domaine_id || "").toLowerCase();
     const fTitle = (f.nom_officiel || "").toLowerCase();
+    const fDebouches = (f.debouches || []).join(" ").toLowerCase();
 
     if (interests.includes("math") || interests.includes("calcul") || interests.includes("logique")) {
       if (fDomain.includes("sciences") || fTitle.includes("math") || fTitle.includes("informatique") || fTitle.includes("génie")) {
@@ -672,7 +877,7 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
       }
     }
     if (interests.includes("info") || interests.includes("code") || interests.includes("technologie") || interests.includes("numérique")) {
-      if (fTitle.includes("informatique") || fDomain.includes("technologie") || fTitle.includes("logiciel") || fTitle.includes("télécom")) {
+      if (fTitle.includes("informatique") || fDomain.includes("technologie") || fTitle.includes("logiciel") || fTitle.includes("télécom") || fTitle.includes("réseau")) {
         score += 30;
         reasons.push("répond à ton intérêt pour les technologies et le numérique");
       }
@@ -695,8 +900,29 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
         reasons.push("correspond à ton intérêt pour la gestion et l'économie");
       }
     }
+    if (interests.includes("langue") || interests.includes("lettre") || interests.includes("traduction") || interests.includes("journalisme")) {
+      if (fDomain.includes("lettres") || fDomain.includes("langues") || fTitle.includes("lettres") || fTitle.includes("anglais") || fTitle.includes("communication")) {
+        score += 25;
+        reasons.push("met en valeur ton aisance littéraire et linguistique");
+      }
+    }
+    if (interests.includes("agronomie") || interests.includes("agriculture") || interests.includes("environnement")) {
+      if (fDomain.includes("agronomie") || fDomain.includes("environnement") || fTitle.includes("agro") || fTitle.includes("agronomie")) {
+        score += 30;
+        reasons.push("répond aux enjeux environnementaux et de développement rural");
+      }
+    }
 
-    // 3. Préférence géographique si précisée
+    // 3. Pénalité pour métiers rejetés (ex: enseignement)
+    if (rejectedJobs.length > 0) {
+      for (const rj of rejectedJobs) {
+        if (rj && (fTitle.includes(rj) || fDebouches.includes(rj) || (rj.includes("enseign") && (fTitle.includes("fastef") || fTitle.includes("éducation") || fDebouches.includes("professeur") || fDebouches.includes("enseignant"))))) {
+          score -= 40;
+        }
+      }
+    }
+
+    // 4. Préférence géographique si précisée
     if (profile.ville) {
       const userCity = profile.ville.toLowerCase();
       if ((f.etablissement_nom || "").toLowerCase().includes(userCity) || (f.source_officielle || "").toLowerCase().includes(userCity)) {
@@ -705,7 +931,7 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
       }
     }
 
-    // 4. Pénalité pour matières fuies
+    // 5. Pénalité pour matières fuies
     if (profile.matieres_fuies && profile.matieres_fuies.length > 0) {
       for (const mf of profile.matieres_fuies) {
         if (mf.toLowerCase().includes("math") && (fTitle.includes("math") || fTitle.includes("statistique"))) {
@@ -714,24 +940,68 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
       }
     }
 
-    // 5. Préférence de durée d'études (formations courtes DUT/BTS/Licence pro 2-3 ans vs Bac+5)
-    if (
+    // 6. Préférence de durée d'études & type de cursus (courte vs longue)
+    const isCourtePref =
       profile.preferences_etudes?.toLowerCase().includes("court") ||
       profile.duree_souhaitee?.includes("2") ||
-      profile.duree_souhaitee?.includes("3")
-    ) {
+      profile.duree_souhaitee?.includes("3");
+
+    const isLonguePref =
+      profile.preferences_etudes?.toLowerCase().includes("long") ||
+      profile.duree_souhaitee?.includes("5");
+
+    if (isCourtePref) {
+      const fDip = (f.diplome_prepare || "").toLowerCase();
+      const fDur = (f.duree || "").toLowerCase();
       if (
-        (f.diplome_prepare && (f.diplome_prepare.toLowerCase().includes("dut") || f.diplome_prepare.toLowerCase().includes("bts") || f.diplome_prepare.toLowerCase().includes("licence"))) ||
-        (f.duree && (f.duree.includes("2") || f.duree.includes("3")))
+        fDip.includes("dut") ||
+        fDip.includes("bts") ||
+        fDip.includes("licence") ||
+        fDur.includes("2") ||
+        fDur.includes("3 ans")
       ) {
         score += 35;
         reasons.push("cycle court universitaire et professionnalisant (Bac+2 / Bac+3)");
-      } else if (f.diplome_prepare && (f.diplome_prepare.includes("Ingénieur") || f.duree?.includes("5"))) {
+      }
+      if (
+        fDip.includes("ingénieur") ||
+        fDip.includes("doctorat") ||
+        fDip.includes("master") ||
+        fDur.includes("5") ||
+        fDur.includes("6") ||
+        fDur.includes("7") ||
+        fDur.includes("8")
+      ) {
+        score -= 50;
+      }
+    } else if (isLonguePref) {
+      const fDip = (f.diplome_prepare || "").toLowerCase();
+      const fDur = (f.duree || "").toLowerCase();
+      if (
+        fDip.includes("ingénieur") ||
+        fDip.includes("master") ||
+        fDip.includes("doctorat") ||
+        fDur.includes("5") ||
+        fDur.includes("6") ||
+        fDur.includes("7") ||
+        fDur.includes("8")
+      ) {
+        score += 30;
+        reasons.push("cycle long d'excellence (Bac+5)");
+      } else if (fDip.includes("dut") || fDip.includes("bts") || fDur.includes("2 ans")) {
         score -= 25;
       }
     }
 
-    if (score > 15) {
+    // 7. Préférence pratique vs théorie
+    if (profile.style_travail?.pratique_vs_theorie === "pratique") {
+      if (fTitle.includes("technologie") || fTitle.includes("appliquée") || fDiplome(f).includes("DUT") || fDiplome(f).includes("BTS") || fDiplome(f).includes("Pro")) {
+        score += 20;
+        reasons.push("formation pratique et concrète tournée vers le métier");
+      }
+    }
+
+    if (score > 10) {
       scored.push({
         f,
         score,
@@ -742,7 +1012,7 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Élimination des doublons de titre et retour top-4
+  // Élimination des doublons de titre et retour jusqu'à 5 formations
   const seenTitles = new Set<string>();
   const uniqueScored: typeof scored = [];
   for (const item of scored) {
@@ -751,7 +1021,7 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
       seenTitles.add(key);
       uniqueScored.push(item);
     }
-    if (uniqueScored.length >= 4) break;
+    if (uniqueScored.length >= maxChoices) break;
   }
 
   return uniqueScored.map(({ f, score, reason }, idx) => ({
@@ -761,14 +1031,22 @@ export function findMatchingFormations(profile: Partial<ConversationProfile>): M
     etablissements: [f.etablissement_nom],
     etablissement: f.etablissement_nom,
     localisation: f.etablissement_nom.includes("Dakar") ? "Dakar" : f.etablissement_nom.includes("Saint-Louis") ? "Saint-Louis" : "Sénégal",
+    niveau_entree: f.niveau_entree || "Baccalauréat",
     diplome: f.diplome_prepare,
     duree: f.duree,
     conditions: f.conditions_admission,
     pourquoi: reason,
+    a_verifier: f.conditions_admission.toLowerCase().includes("concours")
+      ? "Calendrier officiel du concours et date limite de dépôt des dossiers"
+      : "Calendrier de confirmation des vœux sur la plateforme Campusen",
     score_correspondance: Math.min(Math.round(score), 98),
     debouches: (f.debouches || []).slice(0, 5),
     source: `${f.source_officielle} (${f.date_verification})`,
     statut_verification: f.statut_verification || "officiel",
-    isAlternative: idx >= 2,
+    isAlternative: idx >= 3,
   }));
+}
+
+function fDiplome(f: any): string {
+  return f.diplome_prepare || "";
 }

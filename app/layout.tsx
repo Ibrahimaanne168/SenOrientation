@@ -17,6 +17,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://jangora.sn"),
   title: "Jangora — Guide d'orientation scolaire & universitaire au Sénégal",
   description:
     "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles avec Jangora.",
@@ -32,6 +33,36 @@ export const metadata: Metadata = {
     apple: [
       { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
     ],
+  },
+  openGraph: {
+    type: "website",
+    locale: "fr_SN",
+    url: "https://jangora.sn",
+    siteName: "Jangora",
+    title: "Jangora — Orientation scolaire & universitaire au Sénégal",
+    description:
+      "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles avec Jangora.",
+    images: [
+      {
+        url: "/icon.png",
+        width: 512,
+        height: 512,
+        alt: "Jangora — Emblème officiel Baobab & Orientation Sénégal",
+      },
+      {
+        url: "/emblem-rounded.png",
+        width: 512,
+        height: 512,
+        alt: "Jangora — Emblème arrondi",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Jangora — Orientation scolaire & universitaire au Sénégal",
+    description:
+      "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles avec Jangora.",
+    images: ["/icon.png"],
   },
   appleWebApp: {
     capable: true,
@@ -83,6 +114,23 @@ export default function RootLayout({
                 });
               }
             `,
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "EducationalOrganization",
+              name: "Jangora",
+              alternateName: "SenOrientation",
+              url: "https://jangora.sn",
+              logo: "https://jangora.sn/icon.png",
+              image: "https://jangora.sn/icon.png",
+              description:
+                "Plateforme intelligente d'orientation académique et universitaire pour les bacheliers et étudiants au Sénégal.",
+              sameAs: [],
+            }),
           }}
         />
       </head>

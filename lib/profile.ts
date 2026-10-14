@@ -36,7 +36,9 @@ export type IntentId =
   | "intent_matieres_preferees"
   | "intent_ambitions_pro"
   | "intent_contraintes_duree_ville"
-  | "intent_presenter_bilan";
+  | "intent_presenter_bilan"
+  | "intent_phase_f_insatisfaction"
+  | "intent_phase_f_nouvelle_recherche";
 
 export interface PreferenceGenerale {
   type: "comprendre" | "chiffres" | "aider" | "creer" | "reflechir" | "autre";
@@ -450,8 +452,12 @@ export function getSerieOrientationSuggestions(serieRaw: string | null): {
 export interface ConversationProfile {
   conversation_id?: string;
   prenom?: string | null;
+  etablissement_actuel?: string | null; // ex: Lycée de Rufisque
+  classe_actuelle?: string | null;       // ex: Terminale
+  filiere_actuelle?: string | null;      // ex: S2
   niveau?: string | null; // Collège, Lycée, Terminale, Bachelier, Université, Réorientation
   serie: string | null;   // S1, S2, S3, L1, L2, L', G, T1, T2
+  niveau_entree_vise?: string | null;    // ex: Licence 1, BTS, Master
   statut_parcours?: "avant_bac" | "bac" | "post_bac" | null; // Niveaux adaptatifs
   type_post_bac?: "reorientation" | "passerelle_poursuite" | "insertion" | null;
   series_recommandees?: string[];
@@ -466,6 +472,20 @@ export interface ConversationProfile {
   competences_declarees: string[];
   ambitions: string[];
   preferences_etudes?: string | null; // Courte (2-3 ans) vs Longue (Bac+5)
+  style_travail?: {
+    pratique_vs_theorie?: "pratique" | "theorie" | "mixte";
+    terrain_vs_bureau?: "terrain" | "bureau" | "mixte";
+    technique_vs_humain?: "technique" | "humain" | "mixte";
+  };
+  professions_rejetees?: Array<{ metier: string; motif?: string }>;
+  formations_rejetees?: Array<{ formation: string; motif?: string }>;
+  objections?: string[];
+  formations_proposees_precedemment?: string[];
+  motifs_insatisfaction?: string[];
+  phase_actuelle: "A" | "B" | "C" | "D" | "E" | "F";
+  derniers_criteres_recherche?: Record<string, any>;
+  dernier_etat_valide?: Partial<ConversationProfile>;
+  questions_semantiques_posees?: string[];
   environnement: string[];
   projet: string | null;
   ville: string | null;
@@ -501,8 +521,12 @@ export interface ConversationProfile {
 
 export const INITIAL_PROFILE: ConversationProfile = {
   prenom: null,
+  etablissement_actuel: null,
+  classe_actuelle: null,
+  filiere_actuelle: null,
   niveau: null,
   serie: null,
+  niveau_entree_vise: null,
   statut_parcours: null,
   type_post_bac: null,
   series_recommandees: [],
@@ -517,6 +541,16 @@ export const INITIAL_PROFILE: ConversationProfile = {
   competences_declarees: [],
   ambitions: [],
   preferences_etudes: null,
+  style_travail: {},
+  professions_rejetees: [],
+  formations_rejetees: [],
+  objections: [],
+  formations_proposees_precedemment: [],
+  motifs_insatisfaction: [],
+  phase_actuelle: "A",
+  derniers_criteres_recherche: {},
+  dernier_etat_valide: {},
+  questions_semantiques_posees: [],
   environnement: [],
   projet: null,
   ville: null,
@@ -590,7 +624,7 @@ function detectGeneralPreference(text: string): PreferenceGenerale | null {
     t.includes("comprendre comment") ||
     t.includes("comprendre le fonctionnement") ||
     t.includes("comprendre le monde") ||
-    (t.includes("comprendre") && !t.includes("informatique") && !t.includes("math"))
+    (t.includes("comprendre") && !t.includes("informatique") && !t.includes("programmation") && !t.includes("code"))
   ) {
     return { type: "comprendre", texte: "comprendre le fonctionnement des choses", statut: "en_clarification" };
   }
@@ -705,6 +739,18 @@ export function mergeProfileUpdate(
       ...(current.known_facts || {}),
       ...(update.known_facts || {}),
     },
+    etablissement_actuel: update.etablissement_actuel || current.etablissement_actuel,
+    classe_actuelle: update.classe_actuelle || current.classe_actuelle,
+    filiere_actuelle: update.filiere_actuelle || current.filiere_actuelle,
+    niveau_entree_vise: update.niveau_entree_vise || current.niveau_entree_vise,
+    phase_actuelle: update.phase_actuelle || current.phase_actuelle || "A",
+    style_travail: { ...(current.style_travail || {}), ...(update.style_travail || {}) },
+    professions_rejetees: update.professions_rejetees || current.professions_rejetees || [],
+    formations_rejetees: update.formations_rejetees || current.formations_rejetees || [],
+    objections: Array.from(new Set([...(current.objections || []), ...(update.objections || [])])).filter(Boolean),
+    motifs_insatisfaction: Array.from(new Set([...(current.motifs_insatisfaction || []), ...(update.motifs_insatisfaction || [])])).filter(Boolean),
+    formations_proposees_precedemment: Array.from(new Set([...(current.formations_proposees_precedemment || []), ...(update.formations_proposees_precedemment || [])])).filter(Boolean),
+    formations_recommandees: Array.from(new Set([...(current.formations_recommandees || []), ...(update.formations_recommandees || [])])).filter(Boolean),
     indices: update.indices || current.indices || [],
     hypotheses: update.hypotheses || current.hypotheses || [],
     preference_generale: update.preference_generale !== undefined ? update.preference_generale : current.preference_generale,
@@ -715,10 +761,24 @@ export function mergeProfileUpdate(
   };
 
   merged.profile_completeness = calculateCompleteness(merged);
-  merged.etape = Math.min(
-    5,
-    Math.max(current.etape || 1, suggestedEtape || update.etape || (merged.profile_completeness > 70 ? 5 : merged.profile_completeness > 45 ? 4 : merged.profile_completeness > 25 ? 3 : merged.profile_completeness > 10 ? 2 : 1))
-  );
+  if (suggestedEtape !== undefined) {
+    merged.etape = Math.min(5, Math.max(1, suggestedEtape));
+  } else if (update.etape !== undefined) {
+    merged.etape = Math.min(5, Math.max(1, update.etape));
+  } else {
+    // Calcul strictement synchronisé avec l'état réel du dossier
+    if (!merged.serie && !merged.niveau && !merged.statut_parcours) {
+      merged.etape = 1;
+    } else if (merged.formations_recommandees && merged.formations_recommandees.length >= 3 && merged.profile_completeness >= 70) {
+      merged.etape = 5;
+    } else if (merged.preferences_etudes || (merged.matieres_aimees && merged.matieres_aimees.length > 0 && merged.confirmed_interests.length > 0)) {
+      merged.etape = merged.profile_completeness >= 60 ? 4 : 3;
+    } else if (merged.confirmed_interests.length > 0 || (merged.interets_principaux && merged.interets_principaux.length > 0)) {
+      merged.etape = 2;
+    } else {
+      merged.etape = 1;
+    }
+  }
 
   return merged;
 }
@@ -783,6 +843,11 @@ export function heuristicUpdateProfile(
     hypotheses: [...(current.hypotheses || [])],
     rejected_or_corrected_hypotheses: [...(current.rejected_or_corrected_hypotheses || [])],
     recommendations_already_shown: [...(current.recommendations_already_shown || [])],
+    motifs_insatisfaction: [...(current.motifs_insatisfaction || [])],
+    formations_rejetees: [...(current.formations_rejetees || [])],
+    formations_proposees_precedemment: [...(current.formations_proposees_precedemment || [])],
+    professions_rejetees: [...(current.professions_rejetees || [])],
+    objections: [...(current.objections || [])],
   };
 
   const latestLower = latestMessage.toLowerCase().trim();
@@ -807,31 +872,211 @@ export function heuristicUpdateProfile(
     profile.nb_je_ne_sais_pas = (profile.nb_je_ne_sais_pas || 0) + 1;
   }
 
-  // 2. Gestion des changements d'avis (Partie 9 — Test 10)
-  if (
+  // 2. Gestion des changements d'avis et corrections de domaines (Partie 9 — Test 10 & Scénario 8)
+  const isDomainChange =
     latestLower.includes("ne veux plus") ||
     latestLower.includes("change d'avis") ||
     latestLower.includes("en fait je préfère") ||
     latestLower.includes("finalement") ||
-    latestLower.includes("plutôt que")
-  ) {
-    if (latestLower.includes("santé") || latestLower.includes("médecine")) {
+    latestLower.includes("plutôt que") ||
+    latestLower.includes("plus que") ||
+    latestLower.includes("déteste");
+
+  if (isDomainChange) {
+    // Cas 1 : Abandon de la santé / médecine
+    if (
+      (latestLower.includes("ne veux plus") || latestLower.includes("déteste") || latestLower.includes("abandonne")) &&
+      (latestLower.includes("santé") || latestLower.includes("médecine"))
+    ) {
       profile.interets_principaux = profile.interets_principaux.filter((i) => !i.includes("Santé") && !i.includes("Médecine"));
       profile.confirmed_interests = profile.confirmed_interests.filter((i) => !i.includes("Santé") && !i.includes("Médecine"));
       if (!profile.rejected_or_corrected_hypotheses.includes("Médecine & Santé")) {
         profile.rejected_or_corrected_hypotheses.push("Médecine & Santé");
       }
     }
-    if (latestLower.includes("informatique") || latestLower.includes("numérique")) {
+
+    // Cas 2 : Abandon de l'informatique / numérique
+    if (
+      (latestLower.includes("ne veux plus") || latestLower.includes("déteste") || latestLower.includes("abandonne") || latestLower.includes("plus que l'informatique") || latestLower.includes("plutôt que l'informatique")) &&
+      (latestLower.includes("informatique") || latestLower.includes("numérique"))
+    ) {
       profile.interets_principaux = profile.interets_principaux.filter((i) => !i.includes("Informatique"));
       profile.confirmed_interests = profile.confirmed_interests.filter((i) => !i.includes("Informatique"));
       if (!profile.rejected_or_corrected_hypotheses.includes("Informatique & Technologies")) {
         profile.rejected_or_corrected_hypotheses.push("Informatique & Technologies");
       }
     }
+
+    // Cas 3 : Abandon de la gestion / comptabilité / chiffres (Scénario 15)
+    if (
+      (latestLower.includes("ne veux plus") || latestLower.includes("déteste") || latestLower.includes("abandonne")) &&
+      (latestLower.includes("gestion") || latestLower.includes("comptabilité") || latestLower.includes("compta") || latestLower.includes("chiffre"))
+    ) {
+      profile.interets_principaux = profile.interets_principaux.filter((i) => !i.includes("Commerce") && !i.includes("Gestion") && !i.includes("Chiffres"));
+      profile.confirmed_interests = profile.confirmed_interests.filter((i) => !i.includes("Commerce") && !i.includes("Gestion") && !i.includes("Chiffres"));
+      profile.matieres_aimees = profile.matieres_aimees.filter((m) => m !== "Gestion" && m !== "Comptabilité");
+      if (!profile.rejected_or_corrected_hypotheses.includes("Commerce & Gestion")) {
+        profile.rejected_or_corrected_hypotheses.push("Commerce & Gestion");
+      }
+    }
+
+    // Cas 4 : Adoption active d'un nouveau domaine (ex: "finalement la santé m'intéresse", "je préfère le droit")
+    const isRejectingSante =
+      latestLower.includes("ne veux plus de santé") ||
+      latestLower.includes("ne veux plus faire de santé") ||
+      latestLower.includes("ne veux plus faire de medecine") ||
+      latestLower.includes("ne veux plus faire de médecine") ||
+      latestLower.includes("pas de santé") ||
+      latestLower.includes("abandonne la santé");
+
+    if (
+      (latestLower.includes("santé") || latestLower.includes("médecine")) &&
+      !isRejectingSante &&
+      (latestLower.includes("m'intéresse") || latestLower.includes("préfère la santé") || latestLower.includes("plutôt la santé") || latestLower.includes("vers la santé") || (latestLower.includes("finalement") && latestLower.includes("santé")))
+    ) {
+      if (!profile.confirmed_interests.includes("Médecine & Santé")) {
+        profile.confirmed_interests.push("Médecine & Santé");
+      }
+      if (!profile.interets_principaux.includes("Médecine & Santé")) {
+        profile.interets_principaux.push("Médecine & Santé");
+      }
+      profile.rejected_or_corrected_hypotheses = profile.rejected_or_corrected_hypotheses.filter((h) => h !== "Médecine & Santé");
+    }
+
+    const isRejectingDroit =
+      latestLower.includes("ne veux plus de droit") ||
+      latestLower.includes("ne veux plus faire de droit") ||
+      latestLower.includes("pas de droit");
+
+    if (
+      (latestLower.includes("droit") || latestLower.includes("sciences politiques")) &&
+      !isRejectingDroit &&
+      (latestLower.includes("m'intéresse") || latestLower.includes("préfère") || latestLower.includes("plutôt le droit") || latestLower.includes("vers le droit"))
+    ) {
+      if (!profile.confirmed_interests.includes("Droit & Sciences Politiques")) {
+        profile.confirmed_interests.push("Droit & Sciences Politiques");
+      }
+      if (!profile.interets_principaux.includes("Droit & Sciences Politiques")) {
+        profile.interets_principaux.push("Droit & Sciences Politiques");
+      }
+      profile.rejected_or_corrected_hypotheses = profile.rejected_or_corrected_hypotheses.filter((h) => h !== "Droit & Sciences Politiques");
+    }
   }
 
-  // 3. Extraction du prénom
+  // 2.b Détection des corrections explicites d'informations (Règles 3 & 4)
+  if (
+    latestLower.includes("en fait je suis en s1") ||
+    latestLower.includes("en s1 pas en s2") ||
+    latestLower.includes("suis en s1 et non") ||
+    latestLower.includes("trompé je suis en s1")
+  ) {
+    profile.serie = "S1";
+    profile.filiere_actuelle = "S1";
+    profile.questions_answered["intent_clarifier_s1_s2"] = "S1";
+    if (!profile.rejected_or_corrected_hypotheses.includes("S2")) {
+      profile.rejected_or_corrected_hypotheses.push("S2");
+    }
+  } else if (
+    latestLower.includes("en fait je suis en s2") ||
+    latestLower.includes("en s2 pas en s1") ||
+    latestLower.includes("suis en s2 et non") ||
+    latestLower.includes("trompé je suis en s2")
+  ) {
+    profile.serie = "S2";
+    profile.filiere_actuelle = "S2";
+    profile.questions_answered["intent_clarifier_s1_s2"] = "S2";
+    if (!profile.rejected_or_corrected_hypotheses.includes("S1")) {
+      profile.rejected_or_corrected_hypotheses.push("S1");
+    }
+  }
+
+  // 2.c Détection d'insatisfaction ou de rejet après propositions (Phase F)
+  const isInsatisfactionF =
+    latestLower.includes("aucune ne me plaît") ||
+    latestLower.includes("aucune ne me plait") ||
+    latestLower.includes("aucun ne me plaît") ||
+    latestLower.includes("aucun ne me plait") ||
+    latestLower.includes("ne me convient") ||
+    latestLower.includes("ne me plaisent") ||
+    latestLower.includes("ne me plaît pas") ||
+    latestLower.includes("ne me plait pas") ||
+    latestLower.includes("je n'aime pas") ||
+    latestLower.includes("je refuse ces") ||
+    latestLower.includes("refuse ces choix") ||
+    latestLower.includes("pas ces choix") ||
+    latestLower.includes("trop théorique") ||
+    latestLower.includes("trop théoriques") ||
+    latestLower.includes("trop theorique") ||
+    latestLower.includes("trop theoriques") ||
+    latestLower.includes("ces choix sont trop") ||
+    (latestLower.includes("aucune") && latestLower.length <= 30);
+
+  if (isInsatisfactionF) {
+    profile.phase_actuelle = "F";
+    // Mettre les formations recommandées précédemment en rejetées pour renouveler le catalogue
+    if (profile.formations_recommandees && profile.formations_recommandees.length > 0) {
+      for (const formName of profile.formations_recommandees) {
+        if (!profile.formations_rejetees?.some((fr) => fr.formation === formName)) {
+          if (!profile.formations_rejetees) profile.formations_rejetees = [];
+          profile.formations_rejetees.push({ formation: formName, motif: "Refusé par l'étudiant" });
+        }
+      }
+    }
+    if (
+      latestLower.includes("trop théorique") ||
+      latestLower.includes("trop théoriques") ||
+      latestLower.includes("trop theorique") ||
+      latestLower.includes("trop theoriques")
+    ) {
+      if (!profile.motifs_insatisfaction?.includes("trop théorique")) {
+        if (!profile.motifs_insatisfaction) profile.motifs_insatisfaction = [];
+        profile.motifs_insatisfaction.push("trop théorique");
+      }
+      profile.style_travail = profile.style_travail || {};
+      profile.style_travail.pratique_vs_theorie = "pratique";
+      profile.preferences_etudes = "Courte (2-3 ans : BTS, DUT, Licence pro)";
+    }
+  }
+
+  // 3.a Extraction de l'établissement scolaire actuel (Phase A)
+  if (!profile.etablissement_actuel) {
+    const etMatch = latestMessage.match(
+      /(?:au\s+|à\s+l['’]|dans\s+le\s+|dans\s+l['’]|au\s+sein\s+du\s+)?(lyc[ée]e(?:\s+(?:d[ée]\s+)?[A-Za-zÀ-ÿ0-9\-]+)+|coll[èe]ge(?:\s+[A-Za-zÀ-ÿ0-9\-]+)+|institution(?:\s+[A-Za-zÀ-ÿ0-9\-]+)+|cours\s+[A-Za-zÀ-ÿ0-9\-]+(?:\s+[A-Za-zÀ-ÿ0-9\-]+)*)/i
+    );
+    if (etMatch && etMatch[1]) {
+      const rawEt = etMatch[1].split(/,|\ben\b|\bclasse\b|\bavec\b/i)[0].trim();
+      if (rawEt.length >= 6) {
+        profile.etablissement_actuel = rawEt.charAt(0).toUpperCase() + rawEt.slice(1);
+      }
+    }
+  }
+
+  // 3.b Extraction de la classe actuelle (Phase A)
+  if (!profile.classe_actuelle) {
+    if (/\bterminale\b|\btle\b/i.test(latestMessage)) {
+      profile.classe_actuelle = "Terminale";
+      profile.niveau = "Terminale";
+      profile.statut_parcours = "bac";
+    } else if (/\bpremi[èe]re\b|\b1[èe]re\b/i.test(latestMessage) && !/\bpremi[èe]re\s+ann[ée]e\b/i.test(latestMessage)) {
+      profile.classe_actuelle = "Première";
+      profile.niveau = "Lycée (Première)";
+      profile.statut_parcours = "avant_bac";
+    } else if (/\bseconde\b|\b2nde\b/i.test(latestMessage)) {
+      profile.classe_actuelle = "Seconde";
+      profile.niveau = "Lycée (Seconde)";
+      profile.statut_parcours = "avant_bac";
+    } else if (/\b3[èe]me\b|\b3e\b|\btroisi[èe]me\b|\bbfem\b/i.test(latestMessage)) {
+      profile.classe_actuelle = "Troisième (3e / BFEM)";
+      profile.niveau = "Collège (3e / BFEM)";
+      profile.statut_parcours = "avant_bac";
+    } else if (/\blicence\s*1\b|\bl1\b/i.test(latestMessage) && !/\bs[ée]rie\s+l1\b/i.test(latestMessage) && !/\bbac\s+l1\b/i.test(latestMessage)) {
+      profile.classe_actuelle = "Licence 1";
+      profile.niveau = "Université";
+      profile.statut_parcours = "post_bac";
+    }
+  }
+
+  // 3.c Extraction du prénom (avec exclusion stricte des prépositions et noms d'établissements)
   if (!profile.prenom) {
     if (
       latestLower.includes("préfère ne pas le dire") ||
@@ -849,15 +1094,12 @@ export function heuristicUpdateProfile(
         // Éliminer les mots de liaison comme "Amadou et", "Fatou je"
         candidate = candidate.replace(/\s+(?:et|je|j'|de|du|qui|moi|suis|dans)$/i, "").trim();
         const candLower = candidate.toLowerCase();
-        if (
-          !candLower.includes("bac") &&
-          !candLower.includes("terminale") &&
-          !candLower.includes("perdu") &&
-          !candLower.includes("élève") &&
-          !candLower.includes("étudiant") &&
-          !candLower.includes("lycéen") &&
-          !candLower.includes("collégien")
-        ) {
+        const forbiddenCandidates = new Set([
+          "au", "a", "à", "dans", "du", "de", "en", "sur", "avec", "pour", "un", "une", "le", "la", "les",
+          "lycee", "lycée", "college", "collège", "rufisque", "dakar", "thies", "thiès", "saint-louis",
+          "bac", "terminale", "seconde", "premiere", "première", "eleve", "élève", "etudiant", "étudiant"
+        ]);
+        if (!forbiddenCandidates.has(candLower)) {
           const parts = candidate.split(/\s+/).filter(Boolean);
           profile.prenom = parts.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
           profile.questions_answered["intent_demander_prenom"] = profile.prenom;
@@ -871,7 +1113,8 @@ export function heuristicUpdateProfile(
         !latestLower.includes("bac") &&
         !latestLower.includes("terminale") &&
         !latestLower.includes("seconde") &&
-        !latestLower.includes("collège")
+        !latestLower.includes("collège") &&
+        !latestLower.includes("lycée")
       ) {
         // En cas de réponse sans formule explicite (ex: "Ibrahima" ou "Salut, je suis Ibrahima")
         let cleanName = latestMessage
@@ -884,7 +1127,8 @@ export function heuristicUpdateProfile(
         const forbiddenWords = new Set([
           "bonjour", "salut", "coucou", "bonsoir", "hello", "hi",
           "moi", "je", "suis", "c'est", "cest", "mon", "nom", "prenom", "est",
-          "bac", "terminale", "lycee", "lycée", "college", "collège", "etudiant", "étudiant"
+          "bac", "terminale", "lycee", "lycée", "college", "collège", "etudiant", "étudiant",
+          "au", "a", "à", "dans", "en"
         ]);
 
         const filteredWords = words.filter((w) => !forbiddenWords.has(w.toLowerCase()));
@@ -1209,6 +1453,12 @@ export function heuristicUpdateProfile(
     agronomie: "Agriculture & Environnement",
     agriculture: "Agriculture & Environnement",
     agroécologie: "Agriculture & Environnement",
+    "agro-écologie": "Agriculture & Environnement",
+    agroecologie: "Agriculture & Environnement",
+    irrigation: "Agriculture & Environnement",
+    environnement: "Agriculture & Environnement",
+    "énergies renouvelables": "Sciences & Technologies",
+    "energies renouvelables": "Sciences & Technologies",
     agroalimentaire: "Agroalimentaire & Qualité",
     "génie mécanique": "Génie Mécanique & Fabrication",
     mécanique: "Génie Mécanique & Fabrication",
@@ -1232,7 +1482,9 @@ export function heuristicUpdateProfile(
       latestLower.includes(`ne veux plus de ${key}`) ||
       latestLower.includes(`ne veux plus faire de ${key}`) ||
       latestLower.includes(`pas de ${key}`) ||
-      latestLower.includes(`abandonne ${key}`)
+      latestLower.includes(`abandonne ${key}`) ||
+      latestLower.includes(`déteste ${key}`) ||
+      latestLower.includes(`deteste ${key}`)
     ) {
       continue;
     }
@@ -1305,8 +1557,24 @@ export function heuristicUpdateProfile(
   };
 
   for (const [key, label] of Object.entries(MATIERES_MAP)) {
-    if (text.includes(`fuis ${key}`) || text.includes(`déteste ${key}`) || text.includes(`nul en ${key}`)) {
+    const isSubjectDisliked =
+      text.includes(`fuis ${key}`) ||
+      text.includes(`déteste ${key}`) ||
+      text.includes(`deteste ${key}`) ||
+      text.includes(`nul en ${key}`) ||
+      text.includes(`ne veux plus de ${key}`) ||
+      text.includes(`ne veux plus faire de ${key}`) ||
+      text.includes(`ne veux plus faire d'${key}`) ||
+      text.includes(`abandonne ${key}`) ||
+      text.includes(`pas ${key}`) ||
+      profile.matieres_fuies.includes(label) ||
+      profile.rejected_or_corrected_hypotheses.includes(label) ||
+      (label === "Gestion" && (text.includes("gestion") || text.includes("comptabilité") || text.includes("chiffre")) && (text.includes("déteste") || text.includes("ne veux plus")));
+
+    if (isSubjectDisliked) {
       if (!profile.matieres_fuies.includes(label)) profile.matieres_fuies.push(label);
+      profile.matieres_aimees = profile.matieres_aimees.filter((m) => m !== label);
+      profile.matieres_competentes = profile.matieres_competentes.filter((m) => m !== label);
     } else if (text.includes(`à l'aise en ${key}`) || text.includes(`bon en ${key}`) || text.includes(`fort en ${key}`)) {
       if (!profile.matieres_competentes.includes(label)) profile.matieres_competentes.push(label);
       if (!profile.matieres_aimees.includes(label)) profile.matieres_aimees.push(label);
@@ -1314,6 +1582,61 @@ export function heuristicUpdateProfile(
     } else if (text.includes(key) && !profile.matieres_aimees.includes(label) && !profile.matieres_fuies.includes(label)) {
       profile.matieres_aimees.push(label);
       profile.questions_answered["intent_matieres_preferees"] = label;
+    }
+  }
+
+  // 8.b Détection des refus explicites de métiers ou de carrières (Phase C)
+  const rejetJobMatch = latestMessage.match(
+    /(?:ne\s+veux\s+pas|refuse\s+d['’]?[eê]tre|pas\s+envie\s+d['’]?[eê]tre|ne\s+souhaite\s+pas|pas\s+question\s+d['’]?[eê]tre|aucun\s+m[ée]tier\s+dans|pas)\s+(?:devenir\s+|[eê]tre\s+)?([A-Za-zÀ-ÿ\-]+)/i
+  );
+  if (rejetJobMatch && rejetJobMatch[1]) {
+    const jobRaw = rejetJobMatch[1].toLowerCase();
+    if (jobRaw === "enseignant" || jobRaw === "professeur" || jobRaw === "prof") {
+      if (!profile.professions_rejetees?.some((p) => p.metier === "Enseignant")) {
+        if (!profile.professions_rejetees) profile.professions_rejetees = [];
+        profile.professions_rejetees.push({ metier: "Enseignant", motif: "Rejet explicite de l'étudiant" });
+      }
+    } else if (jobRaw === "medecin" || jobRaw === "médecin" || jobRaw === "docteur") {
+      if (!profile.professions_rejetees?.some((p) => p.metier === "Médecin")) {
+        if (!profile.professions_rejetees) profile.professions_rejetees = [];
+        profile.professions_rejetees.push({ metier: "Médecin", motif: "Rejet explicite de l'étudiant" });
+      }
+    } else if (jobRaw === "avocat" || jobRaw === "magistrat") {
+      if (!profile.professions_rejetees?.some((p) => p.metier === "Avocat")) {
+        if (!profile.professions_rejetees) profile.professions_rejetees = [];
+        profile.professions_rejetees.push({ metier: "Avocat", motif: "Rejet explicite de l'étudiant" });
+      }
+    }
+  }
+
+  // 8.c Détection du style de travail et activités appréciées (Phase C)
+  if (latestLower.includes("projet concret") || latestLower.includes("projets concrets") || latestLower.includes("concret") || latestLower.includes("pratique")) {
+    profile.style_travail = profile.style_travail || {};
+    profile.style_travail.pratique_vs_theorie = "pratique";
+    if (!profile.activites.includes("Projets concrets et pratiques")) {
+      profile.activites.push("Projets concrets et pratiques");
+    }
+  } else if (latestLower.includes("théorie") || latestLower.includes("theorie") || latestLower.includes("recherche fondamentale")) {
+    profile.style_travail = profile.style_travail || {};
+    profile.style_travail.pratique_vs_theorie = "theorie";
+  }
+
+  if (latestLower.includes("terrain") || latestLower.includes("en plein air") || latestLower.includes("atelier")) {
+    profile.style_travail = profile.style_travail || {};
+    profile.style_travail.terrain_vs_bureau = "terrain";
+  } else if (latestLower.includes("bureau") || latestLower.includes("sur ordinateur") || latestLower.includes("entreprise")) {
+    profile.style_travail = profile.style_travail || {};
+    profile.style_travail.terrain_vs_bureau = "bureau";
+  }
+
+  // 8.d Détection du niveau d'entrée visé (Phase D)
+  if (!profile.niveau_entree_vise) {
+    if (latestLower.includes("licence 1") || latestLower.includes("l1") || latestLower.includes("première année universitaire") || latestLower.includes("après le bac")) {
+      profile.niveau_entree_vise = "Licence 1";
+    } else if (latestLower.includes("bts") || latestLower.includes("dut") || latestLower.includes("formation pro")) {
+      profile.niveau_entree_vise = "BTS / DUT (Bac+2)";
+    } else if (latestLower.includes("master") || latestLower.includes("cycle supérieur")) {
+      profile.niveau_entree_vise = "Master (Bac+5)";
     }
   }
 
@@ -1353,10 +1676,22 @@ export function heuristicUpdateProfile(
     }
   }
 
+  // 11. Transition automatique Phase A -> Phase B si profil scolaire complet
+  if (profile.etablissement_actuel && profile.classe_actuelle && profile.serie) {
+    if (profile.phase_actuelle === "A") {
+      profile.phase_actuelle = "B";
+    }
+    profile.questions_answered["intent_demander_situation_scolaire"] = `${profile.etablissement_actuel}, ${profile.classe_actuelle} ${profile.serie}`;
+    profile.questions_answered["intent_demander_serie"] = profile.serie;
+  }
+
   profile.profile_completeness = calculateCompleteness(profile);
 
   // Synchronisation avec l'étape UI (1 à 5)
-  if (profile.profile_completeness >= 75) {
+  if (!profile.serie && !profile.niveau && !profile.statut_parcours) {
+    profile.etape = 1;
+    profile.current_phase = 1;
+  } else if (profile.profile_completeness >= 75) {
     profile.etape = 5;
     profile.current_phase = 8;
   } else if (profile.profile_completeness >= 50) {
@@ -1365,7 +1700,7 @@ export function heuristicUpdateProfile(
   } else if (profile.profile_completeness >= 30) {
     profile.etape = 3;
     profile.current_phase = 4;
-  } else if (profile.profile_completeness >= 15) {
+  } else if (profile.profile_completeness >= 15 || profile.phase_actuelle === "B") {
     profile.etape = 2;
     profile.current_phase = 2;
   } else {
@@ -1398,6 +1733,45 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
   const isAsked = (intent: IntentId) =>
     profile.questions_asked.includes(intent) && Boolean(profile.questions_answered[intent]);
 
+  // ── PRIORITÉ 0 : PHASE F (INSATISFACTION & RECHERCHE ALTERNATIVE) ──
+  if (profile.phase_actuelle === "F" && lastAskedIntent !== "intent_phase_f_insatisfaction") {
+    // Si l'étudiant a précisé un motif (ex: trop théorique) ou que la recherche alternative est prête
+    if (profile.motifs_insatisfaction && profile.motifs_insatisfaction.length > 0) {
+      return {
+        type: "bilan",
+        intent_id: "intent_phase_f_nouvelle_recherche",
+        question: "Parmi ces nouvelles formations plus pratiques et professionnalisantes, laquelle aimerais-tu explorer en premier ?",
+        suggestions: [
+          "Approfondir cette nouvelle option",
+          "Comparer les débouchés",
+          "Conditions d'admission Campusen",
+          "Ajuster encore mes critères",
+        ],
+        vise: "Présenter une nouvelle sélection de formations alternatives en excluant les choix rejetés",
+        phase: 7,
+        etape: 5,
+      };
+    }
+
+    // Si l'étudiant a simplement dit "aucune ne me plaît" sans donner de motif
+    if (!isAsked("intent_phase_f_insatisfaction")) {
+      return {
+        type: "question",
+        intent_id: "intent_phase_f_insatisfaction",
+        question: "Je comprends tout à fait. Qu'est-ce qui ne te convient pas dans ces choix : le domaine, la durée des études, le cadre de travail, les débouchés ou la ville ? Tu peux aussi me dire ce que tu souhaiterais changer pour qu'on explore d'autres voies.",
+        suggestions: [
+          "Le domaine ne me correspond pas",
+          "Je préfère des études plus courtes et pratiques",
+          "Je souhaite étudier dans une autre ville",
+          "Je veux d'autres types de débouchés",
+        ],
+        vise: "Comprendre les motifs du rejet des propositions et orienter la recherche alternative",
+        phase: 6,
+        etape: 4,
+      };
+    }
+  }
+
   // ── PRIORITÉ 1 ABSOLUE : CLARIFICATION DES PRÉFÉRENCES GÉNÉRALES (Parties 3.1 & 3.3) ──
   // Si l'utilisateur a exprimé une préférence générale de Niveau 1, lever l'ambiguïté avant toute orientation
   if (profile.preference_generale && profile.preference_generale.statut === "en_clarification") {
@@ -1409,14 +1783,14 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
         return {
           type: "question",
           intent_id: "intent_clarifier_comprendre",
-          question: "C'est intéressant. Quand tu dis que tu aimes comprendre les choses, tu parles plutôt de comprendre comment fonctionnent les objets et les machines, pourquoi certains phénomènes naturels ou biologiques se produisent, comment les gens pensent et la société fonctionne, ou comment résoudre des problèmes ?",
+          question: "Quand tu dis que tu aimes comprendre comment les choses fonctionnent, tu penses plutôt aux phénomènes physiques, aux machines, aux êtres vivants, à la société ou à la résolution de problèmes abstraits ? Tu peux aussi me répondre autrement.",
           suggestions: [
-            "Le fonctionnement des machines et objets",
+            "Les machines et mécanismes physiques",
             "Les phénomènes naturels et la biologie",
             "Le comportement humain et la société",
-            "Résoudre des problèmes logiques",
+            "La résolution de problèmes abstraits",
           ],
-          vise: "Clarifier la préférence générale 'comprendre' sans conclure prématurément",
+          vise: "Clarifier la préférence générale 'comprendre' sans conclure prématurément vers l'informatique",
           phase: 3,
           etape: 2,
         };
@@ -1492,17 +1866,17 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     }
   }
 
-  // ── DÉBLOCAGE SI "JE NE SAIS PAS" RÉPÉTÉ (Partie 4.3 — Règle anti-boucle) ──
-  if (profile.nb_je_ne_sais_pas >= 2 && !isAsked("intent_exploration_concrete") && lastAskedIntent !== "intent_exploration_concrete") {
+  // ── DÉBLOCAGE SI "JE NE SAIS PAS" (Partie 4.3 — Règle anti-boucle) ──
+  if (profile.nb_je_ne_sais_pas >= 1 && !isAsked("intent_exploration_concrete") && lastAskedIntent !== "intent_exploration_concrete") {
     return {
       type: "question",
       intent_id: "intent_exploration_concrete",
-      question: "C'est tout à fait normal d'hésiter à ce stade, pas d'inquiétude. Pour y voir plus clair, imagine une journée de travail idéale : dans quelle situation te verrais-tu le plus ?",
+      question: "C'est tout à fait normal d'hésiter à ce stade, pas d'inquiétude. Pour y voir plus clair sans pression, dans quelle situation de travail te verrais-tu le plus ?",
       suggestions: [
-        "Sur un ordinateur à concevoir des solutions",
-        "En contact direct avec des gens à les conseiller ou soigner",
+        "Sur un ordinateur à concevoir des solutions numériques",
+        "En contact direct avec des gens pour les soigner, écouter ou conseiller",
         "Sur le terrain ou en atelier à manipuler des équipements",
-        "À gérer des documents, organiser et négocier",
+        "À gérer des documents, organiser, planifier ou négocier",
       ],
       vise: "Débloquer l'indécision par des situations concrètes du quotidien professionnel",
       phase: 2,
