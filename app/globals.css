@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ═══════════════════════════════════════════════════════════════════════
    SENORIENTATION — Système Visuel & Palette Baobab
    Inspirée de la nature, de l'élégance et d'une identité africaine contemporaine.

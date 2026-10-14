@@ -1,5 +1,5 @@
 // Service Worker pour Jangora PWA
-const CACHE_NAME = "jangora-v3";
+const CACHE_NAME = "jangora-v4";
 const STATIC_ASSETS = [
   "/",
   "/chat",

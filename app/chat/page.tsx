@@ -1056,14 +1056,9 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           aria-hidden="true"
         >
           <img
-            src="/emblem-dark-trans.png"
+            src="/icon.png"
             alt=""
-            className="w-full h-full object-contain hidden dark:block"
-          />
-          <img
-            src="/emblem-light-trans.png"
-            alt=""
-            className="w-full h-full object-contain block dark:hidden"
+            className="w-full h-full object-contain"
           />
         </div>
 
@@ -1289,8 +1284,8 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      {/* Carte du message assistant : bulle blanche 16px / interligne 1.55, coin haut gauche peu arrondi 6px, autres 20px */}
-                      <div className="bg-white dark:bg-[#143735] text-[15px] sm:text-[16px] leading-[1.55] border border-[#DDE6DF] dark:border-[#2B514B] rounded-[20px] rounded-tl-[6px] p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
+                      {/* Carte du message assistant : bulle contrastée lisible jour et nuit */}
+                      <div className="bg-[var(--bot-card-bg)] text-[var(--text-main)] text-[15px] sm:text-[16px] leading-[1.55] border border-[var(--bot-card-border)] rounded-[20px] rounded-tl-[6px] p-4 sm:p-5 shadow-[var(--bot-card-shadow)]">
                         <BotMessageMarkdown content={parsed.reply || msg.content} />
                       </div>
 
@@ -1309,8 +1304,8 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                                   disabled={isLoading}
                                   className={`h-12 min-h-[48px] text-left text-[14px] font-medium px-4 rounded-[14px] border-[1.5px] flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
                                     isSelected
-                                      ? "bg-[#1B5E57] text-white border-[#1B5E57] dark:bg-[#E9D5A1] dark:text-[#0D2928] dark:border-[#E9D5A1] shadow-xs font-semibold"
-                                      : "bg-white dark:bg-[#143735] text-[var(--text-main)] border-[#C8DED5] dark:border-[#2B514B] hover:border-[#1B5E57] dark:hover:border-[#E9D5A1]"
+                                      ? "bg-[#155E59] text-white border-[#155E59] dark:bg-[#E9D5A1] dark:text-[#0D2928] dark:border-[#E9D5A1] shadow-xs font-semibold"
+                                      : "bg-[var(--bg-chip)] text-[var(--text-main)] border-[var(--border-main)] hover:border-[#155E59] dark:hover:border-[#E9D5A1]"
                                   } disabled:opacity-60 disabled:cursor-not-allowed`}
                                 >
                                   <SuggestionIcon
@@ -1418,13 +1413,13 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 setSelectedSuggestion(null);
                 handleSubmit(e);
               }}
-              className="flex items-center gap-1.5 sm:gap-2 bg-white dark:bg-[#143735] border-[1.5px] border-[#D9D5C8] dark:border-[#2B514B] rounded-[28px] h-13 min-h-[52px] sm:h-14 sm:min-h-[56px] px-2 shadow-xs focus-within:border-[#155E59] dark:focus-within:border-[#E9D5A1] transition-all"
+              className="flex items-center gap-1.5 sm:gap-2 bg-[var(--bg-card)] border-[1.5px] border-[var(--border-main)] rounded-[28px] h-13 min-h-[52px] sm:h-14 sm:min-h-[56px] px-2 shadow-xs focus-within:border-[#155E59] dark:focus-within:border-[#E9D5A1] transition-all"
             >
               {/* Bouton trombone / pièce jointe (40×40px mobile, 44×44px sm) */}
               <button
                 type="button"
                 aria-label="Joindre un document"
-                className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-[#3D5752] hover:text-[#155E59] dark:text-[#C8D7D0] dark:hover:text-[#E9D5A1] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer shrink-0"
+                className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-[var(--text-muted)] hover:text-[#155E59] dark:hover:text-[#E9D5A1] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer shrink-0"
                 title="Joindre un document"
               >
                 <Paperclip className="w-4.5 h-4.5 sm:w-5 sm:h-5 stroke-[2]" />
@@ -1439,7 +1434,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 onKeyDown={handleKeyDown}
                 placeholder={getPlaceholderForEtape(profile.etape, profile.prenom)}
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-0 text-[16px] font-medium text-[#112624] dark:text-[#F7F5EF] placeholder:text-[#54706A] dark:placeholder:text-[#8EAAA1] focus:outline-none resize-none leading-normal py-2 max-h-28"
+                className="flex-1 bg-transparent border-0 text-[16px] font-medium text-[var(--text-main)] placeholder:text-[var(--text-dim)] focus:outline-none resize-none leading-normal py-2 max-h-28"
               />
 
               {/* Bouton d'envoi rond en vert #155E59 (ou doré en nuit) */}
