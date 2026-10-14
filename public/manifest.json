@@ -1,0 +1,33 @@
+{
+  "name": "SenOrientation — Guide d'orientation post-Bac au Sénégal",
+  "short_name": "SenOrientation",
+  "description": "Plateforme nationale d'orientation académique et universitaire du Sénégal.",
+  "start_url": "/chat",
+  "display": "standalone",
+  "background_color": "#0D2928",
+  "theme_color": "#155E59",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

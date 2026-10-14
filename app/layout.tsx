@@ -1,18 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { Source_Serif_4, Inter } from "next/font/google";
 import "./globals.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
-  variable: "--font-app",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-serif",
+  weight: ["400", "600", "700", "800"],
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans-alt",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -20,10 +20,19 @@ export const metadata: Metadata = {
   title: "SenOrientation — Guide d'orientation post-Bac au Sénégal",
   description:
     "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles.",
+  manifest: "/manifest.json",
   icons: {
-    icon: "/icon.png",
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/icon.png" },
+    ],
     shortcut: "/favicon.ico",
     apple: "/apple-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "SenOrientation",
   },
 };
 
@@ -31,6 +40,9 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#0D2928",
 };
 
 export default function RootLayout({
@@ -42,9 +54,12 @@ export default function RootLayout({
     <html
       lang="fr"
       suppressHydrationWarning
-      className={`h-full dark ${plusJakarta.variable} ${inter.variable}`}
+      className={`h-full dark ${sourceSerif.variable} ${inter.variable}`}
     >
       <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -57,6 +72,11 @@ export default function RootLayout({
                 }
               } catch (e) {
                 document.documentElement.classList.add('dark');
+              }
+              if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js').catch(() => {});
+                });
               }
             `,
           }}

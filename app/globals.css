@@ -1,103 +1,140 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SENORIENTATION — Charte Graphique du Nouveau Logo (Boussole Stellaire Or)
-   Palette Sombre (Identique au Logo) :
-   - Fond Noir Obsidienne Mat : #0C0D12 / #11131A
-   - Surfaces & Cartes        : #171822 / #1B1D28
-   - Or Radiant & Métallique  : #F5C542 / #EAB308 / #D4AF37
-   - Bordures & Halos Or      : rgba(245, 197, 66, 0.25)
-   - Texte principal          : #F8FAFC
-   - Texte secondaire         : #94A3B8
+   SENORIENTATION — Système Visuel & Palette Baobab
+   Inspirée de la nature, de l'élégance et d'une identité africaine contemporaine.
 
-   Palette Claire (Couleurs Inverses) :
-   - Fond Blanc Pur / Ivoire  : #FFFFFF / #F8FAFC
-   - Surfaces & Cartes        : #FFFFFF
-   - Encre Obsidienne         : #0F172A / #1E293B
-   - Or Noble / Ambré         : #D97706 / #B45309 / #EAB308
-   - Bordures & Séparateurs   : #E2E8F0 / #CBD5E1
+   Palette officielle :
+   - Vert principal     : #155E59
+   - Vert nuit profond  : #0D2928
+   - Sable doré         : #E9D5A1
+   - Ivoire             : #F7F5EF
+   - Vert sauge         : #C8DED5
+
+   Mode Jour :
+   - Fond général       : #F7F5EF
+   - Cartes et panneaux : #FFFFFF
+   - Boutons primaires  : #155E59 (Texte #FFFFFF)
+   - Texte principal    : #183B38
+   - Texte secondaire   : #586C67
+   - Accent décoratif   : #E9D5A1
+   - Fonds secondaires  : #C8DED5 / #E7F0EB
+   - Bordures           : #DDE6DF
+   - Liens              : #155E59
+
+   Mode Nuit :
+   - Fond général       : #0D2928
+   - Cartes principales : #143735
+   - Panneaux second.   : #1B4440
+   - Boutons primaires  : #E9D5A1 (Texte #0D2928)
+   - Texte principal    : #F7F5EF
+   - Texte secondaire   : #C8D7D0
+   - Accent doré        : #E9D5A1
+   - Bordures           : #2B514B
+   - Liens              : #C8DED5
 ════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Police moderne haute lisibilité (Plus Jakarta Sans / Inter / System Sans-Serif) */
-  --font-sans: var(--font-app, var(--font-sans-alt, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif));
-  --font-serif: var(--font-sans);
+  /* Typographie */
+  --font-serif-family: var(--font-serif, "Source Serif 4", Georgia, serif);
+  --font-sans-family: var(--font-sans, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
 
-  /* MODE CLAIR (Couleurs inverses) */
-  --bg-app: #FFFFFF;
-  --bg-sidebar: #F8FAFC;
+  /* Couleurs Maîtresses Baobab */
+  --brand-green: #155E59;
+  --brand-night: #0D2928;
+  --brand-sand: #E9D5A1;
+  --brand-ivory: #F7F5EF;
+  --brand-sage: #C8DED5;
+
+  /* ─── MODE JOUR ─── */
+  --bg-app: #F7F5EF;
+  --bg-sidebar: #FFFFFF;
   --bg-card: #FFFFFF;
   --bg-input: #FFFFFF;
-  --bg-hover: #F1F5F9;
+  --bg-hover: #F0F5F2;
   --bg-chip: #FFFFFF;
-  --bg-chip-hover: #FFFBEB;
-  --border-main: #E2E8F0;
-  --border-subtle: #F1F5F9;
-  --border-focus: #D97706;
+  --bg-chip-hover: #EBF3EF;
 
-  --text-main: #0F172A;
-  --text-body: #1E293B;
-  --text-muted: #64748B;
-  --text-dim: #94A3B8;
+  --border-main: #DDE6DF;
+  --border-subtle: #E8EFEA;
+  --border-focus: #155E59;
 
-  --gold-primary: #D97706;
-  --gold-glow: #F59E0B;
-  --gold-light: #FEF3C7;
-  --gold-border: #FDE68A;
+  --text-main: #183B38;
+  --text-body: #244643;
+  --text-muted: #586C67;
+  --text-dim: #7E938E;
 
-  --btn-primary-bg: #0F172A;
+  /* Teintes dorées & signatures */
+  --gold-primary: #155E59;
+  --gold-accent: #E9D5A1;
+  --gold-light: #EBF3EF;
+  --gold-border: #C8DED5;
+
+  /* Boutons */
+  --btn-primary-bg: #155E59;
   --btn-primary-text: #FFFFFF;
-  --btn-primary-hover: #1E293B;
+  --btn-primary-hover: #0F4945;
 
-  --user-bubble-bg: #0F172A;
+  /* Bulles de discussion */
+  --user-bubble-bg: #155E59;
   --user-bubble-text: #FFFFFF;
-  --user-bubble-meta: #64748B;
+  --user-bubble-meta: #C8DED5;
 
   --bot-card-bg: #FFFFFF;
-  --bot-card-border: #E2E8F0;
-  --bot-card-shadow: 0 2px 14px rgba(15, 23, 42, 0.05);
+  --bot-card-border: #DDE6DF;
+  --bot-card-shadow: 0 2px 14px rgba(21, 94, 89, 0.05);
+
+  --logo-bg: #155E59;
+  --logo-symbol: #E9D5A1;
 }
 
 .dark {
-  /* MODE SOMBRE (Couleurs exactes du nouveau logo) */
-  --bg-app: #0C0D12;
-  --bg-sidebar: #11131A;
-  --bg-card: #161822;
-  --bg-input: #141620;
-  --bg-hover: #1D1F2B;
-  --bg-chip: #161822;
-  --bg-chip-hover: rgba(245, 197, 66, 0.12);
-  --border-main: #252836;
-  --border-subtle: #1A1C27;
-  --border-focus: #F5C542;
+  /* ─── MODE NUIT ─── */
+  --bg-app: #0D2928;
+  --bg-sidebar: #09201F;
+  --bg-card: #143735;
+  --bg-input: #102F2D;
+  --bg-hover: #194340;
+  --bg-chip: #143735;
+  --bg-chip-hover: #1B4440;
 
-  --text-main: #F8FAFC;
-  --text-body: #E2E8F0;
-  --text-muted: #94A3B8;
-  --text-dim: #64748B;
+  --border-main: #2B514B;
+  --border-subtle: #1C3E3A;
+  --border-focus: #E9D5A1;
 
-  --gold-primary: #F5C542;
-  --gold-glow: #FCD34D;
-  --gold-light: rgba(245, 197, 66, 0.15);
-  --gold-border: rgba(245, 197, 66, 0.35);
+  --text-main: #F7F5EF;
+  --text-body: #E1EBE6;
+  --text-muted: #C8D7D0;
+  --text-dim: #8EAAA1;
 
-  --btn-primary-bg: #F5C542;
-  --btn-primary-text: #0C0D12;
-  --btn-primary-hover: #FBBF24;
+  /* Teintes dorées & signatures */
+  --gold-primary: #E9D5A1;
+  --gold-accent: #E9D5A1;
+  --gold-light: rgba(233, 213, 161, 0.12);
+  --gold-border: rgba(233, 213, 161, 0.28);
 
-  --user-bubble-bg: #1B1E29;
-  --user-bubble-text: #F8FAFC;
-  --user-bubble-meta: #94A3B8;
+  /* Boutons (Mode nuit : Sable doré prestigieux, texte vert nuit contrasté) */
+  --btn-primary-bg: #E9D5A1;
+  --btn-primary-text: #0D2928;
+  --btn-primary-hover: #F2E3BC;
 
-  --bot-card-bg: #151720;
-  --bot-card-border: #252836;
-  --bot-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  /* Bulles de discussion */
+  --user-bubble-bg: #1B4440;
+  --user-bubble-text: #F7F5EF;
+  --user-bubble-meta: #C8D7D0;
+
+  --bot-card-bg: #143735;
+  --bot-card-border: #2B514B;
+  --bot-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+
+  --logo-bg: #1B4440;
+  --logo-symbol: #E9D5A1;
 }
 
 /* ─── Typographie globale ────────────────────────────────────────────── */
 html,
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans-family);
   background-color: var(--bg-app);
   color: var(--text-main);
   font-weight: 450;
@@ -105,27 +142,27 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
 .font-serif {
-  font-family: var(--font-sans) !important;
+  font-family: var(--font-serif-family) !important;
 }
 
 .font-sans {
-  font-family: var(--font-sans) !important;
+  font-family: var(--font-sans-family) !important;
 }
 
 button,
 input,
 textarea,
 select {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans-family);
 }
 
 /* ─── Rendu Markdown pour les réponses du chatbot ─────────── */
 .bot-response-content {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans-family);
   font-size: 15px;
   line-height: 1.68;
   color: var(--text-body);
@@ -146,27 +183,27 @@ select {
 .bot-response-content h1,
 .bot-response-content h2,
 .bot-response-content h3 {
-  font-family: var(--font-sans);
+  font-family: var(--font-serif-family);
   color: var(--text-main);
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .bot-response-content h1 {
-  font-size: 1.4rem;
-  margin-top: 1.3rem;
+  font-size: 1.35rem;
+  margin-top: 1.25rem;
   margin-bottom: 0.5rem;
 }
 
 .bot-response-content h2 {
-  font-size: 1.25rem;
-  margin-top: 1.2rem;
+  font-size: 1.2rem;
+  margin-top: 1.15rem;
   margin-bottom: 0.45rem;
 }
 
 .bot-response-content h3 {
-  font-size: 1.1rem;
-  margin-top: 1.05rem;
+  font-size: 1.05rem;
+  margin-top: 1rem;
   margin-bottom: 0.35rem;
 }
 
@@ -175,12 +212,12 @@ select {
   margin: 0 0 0.85rem 0;
   padding-left: 1.35rem;
   color: var(--text-body);
-  font-weight: 550;
+  font-weight: 500;
 }
 .bot-response-content li {
   margin-bottom: 0.35rem;
   color: var(--text-body);
-  font-weight: 550;
+  font-weight: 500;
 }
 .bot-response-content ul {
   list-style-type: disc;
@@ -192,25 +229,47 @@ select {
 .bot-response-content strong,
 .bot-response-content b {
   font-weight: 700;
-  color: var(--gold-primary);
+  color: var(--text-main);
+}
+
+.dark .bot-response-content strong,
+.dark .bot-response-content b {
+  color: #E9D5A1;
 }
 
 .bot-response-content a {
-  color: var(--gold-primary);
+  color: var(--brand-green);
   text-decoration: underline;
   text-underline-offset: 3px;
   font-weight: 600;
 }
+
+.dark .bot-response-content a {
+  color: #C8DED5;
+}
+
 .bot-response-content a:hover {
   filter: brightness(1.15);
+}
+
+.bot-response-content blockquote {
+  border-left: 3px solid var(--brand-sage);
+  padding-left: 0.85rem;
+  margin: 0.85rem 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.dark .bot-response-content blockquote {
+  border-left-color: var(--brand-sand);
 }
 
 .bot-response-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.875em;
   padding: 0.15em 0.35em;
-  background-color: var(--gold-light);
-  color: var(--gold-primary);
+  background-color: var(--bg-hover);
+  color: var(--text-main);
   border-radius: 4px;
   border: 1px solid var(--border-main);
 }
@@ -231,7 +290,7 @@ select {
   background: var(--text-muted);
 }
 
-/* ─── Animation douce pour les cartes et messages ────────────────────── */
+/* ─── Animations douces ──────────────────────────────────────────────── */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -245,4 +304,19 @@ select {
 
 .animate-fadeIn {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

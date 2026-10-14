@@ -929,23 +929,45 @@ export function heuristicUpdateProfile(
       profile.statut_parcours = "avant_bac";
       profile.questions_answered["intent_demander_situation_scolaire"] = "Collège (3e / BFEM)";
     } else if (
+      (text.includes("seconde") || text.includes("2nde")) &&
+      !text.includes("première") && !text.includes("premiere") && !text.includes("1ère")
+    ) {
+      profile.niveau = "Lycée (Seconde)";
+      profile.statut_parcours = "avant_bac";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Lycée (Seconde)";
+    } else if (
+      (text.includes("première") || text.includes("premiere") || text.includes("1ère") || text.includes("1ere")) &&
+      !text.includes("seconde") && !text.includes("2nde") &&
+      !text.includes("première année") && !text.includes("premiere annee")
+    ) {
+      profile.niveau = "Lycée (Première)";
+      profile.statut_parcours = "avant_bac";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Lycée (Première)";
+    } else if (
       (text.includes("seconde") ||
         text.includes("2nde") ||
         text.includes("classe de première") ||
         text.includes("classe de premiere") ||
-        (text.includes("première") && !text.includes("première année")) ||
-        (text.includes("premiere") && !text.includes("premiere annee")) ||
-        text.includes("1ère s") ||
-        text.includes("1ère l") ||
-        text.includes("1ere s") ||
-        text.includes("1ere l") ||
-        (text.includes("lycée") && !text.includes("terminale") && !text.includes("bac"))) &&
+        text.includes("lycée") ||
+        text.includes("lycee")) &&
+      !text.includes("terminale") &&
+      !text.includes("bac") &&
       !text.includes("première année") &&
       !text.includes("premiere annee")
     ) {
       profile.niveau = "Lycée (Seconde / Première)";
       profile.statut_parcours = "avant_bac";
       profile.questions_answered["intent_demander_situation_scolaire"] = "Lycée (Seconde / Première)";
+    } else if (
+      text.includes("réorientation") ||
+      text.includes("reorientation") ||
+      text.includes("changer d'orientation") ||
+      text.includes("changer de filière")
+    ) {
+      profile.niveau = "Réorientation";
+      profile.statut_parcours = "post_bac";
+      profile.type_post_bac = "reorientation";
+      profile.questions_answered["intent_demander_situation_scolaire"] = "Réorientation";
     } else if (
       text.includes("passerelle") ||
       text.includes("après dut") ||
@@ -1618,9 +1640,12 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
       question: `Ravi de faire ta connaissance${namePart ? " " + namePart : ""} ! Où en es-tu actuellement dans tes études (collège, lycée en seconde/première, classe de Terminale, nouveau bachelier, ou déjà étudiant) ?`,
       suggestions: [
         "Collège (3e / BFEM)",
-        "Lycée (Seconde ou 1ère)",
-        "Terminale ou Nouveau bachelier",
-        "Étudiant ou Réorientation",
+        "Lycée (Seconde)",
+        "Lycée (Première)",
+        "Terminale",
+        "Nouveau bachelier",
+        "Étudiant (Supérieur)",
+        "En réorientation",
       ],
       vise: "Identifier le niveau scolaire (avant-bac, bac ou post-bac) et la situation",
       phase: 1,
@@ -1640,10 +1665,12 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
       intent_id: "intent_demander_serie",
       question: `Félicitations pour ton parcours${namePart ? " " + namePart : ""} ! Quelle est ta série de Bac (ou celle que tu prépares cette année) ?`,
       suggestions: [
-        "Bac S1 ou S2",
-        "Bac L1 ou L2",
-        "Bac G ou STEG",
-        "Bac technique T1 ou T2",
+        "Bac S1",
+        "Bac S2",
+        "Bac L1",
+        "Bac L2",
+        "Bac G / STEG",
+        "Bac T1 / T2",
         "Autre série",
       ],
       vise: "Identifier la série de Baccalauréat avant d'explorer les formations",

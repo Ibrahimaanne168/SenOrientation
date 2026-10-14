@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useChat } from "ai/react";
 import ReactMarkdown from "react-markdown";
@@ -39,7 +38,12 @@ import {
   Sun,
   Moon,
   Languages,
+  Smartphone,
+  Trash2,
+  X,
+  Share2,
 } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 import { createClient } from "@/lib/supabase/client";
 import {
   ConversationProfile,
@@ -114,7 +118,7 @@ function formatText(text: string): string {
 }
 
 /**
- * Découpe et extrait le JSON technique si l'assistant renvoie une structure enrichie
+ * Découpe et extrait le contenu proprement même pendant le streaming (élimine les signes bizarres JSON)
  */
 function parseAssistantMessage(content: string): {
   reply: string;
@@ -122,9 +126,12 @@ function parseAssistantMessage(content: string): {
   profil_update?: Partial<ConversationProfile>;
   etape?: number;
 } {
-  try {
-    const trimmed = content.trim();
-    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+  if (!content) return { reply: "", suggestions: [] };
+  const trimmed = content.trim();
+
+  // 1. JSON complet strict
+  if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+    try {
       const parsed = JSON.parse(trimmed);
       return {
         reply: parsed.reply || "",
@@ -132,11 +139,12 @@ function parseAssistantMessage(content: string): {
         profil_update: parsed.dossier || parsed.profile || undefined,
         etape: parsed.etape || undefined,
       };
+    } catch {
+      /* fallback */
     }
-  } catch {
-    /* fallback texte brut */
   }
 
+  // 2. Bloc de code markdown ```json ... ```
   const jsonMatch = content.match(/```json\s*(\{[\s\S]*?\})\s*```/);
   if (jsonMatch && jsonMatch[1]) {
     try {
@@ -153,31 +161,102 @@ function parseAssistantMessage(content: string): {
     }
   }
 
+  // 3. Décodage progressif pendant le streaming JSON (évite les accolades, guillemets et préfixes "reply":)
+  if (trimmed.startsWith("{") || trimmed.includes('"reply"')) {
+    const replyIndex = trimmed.indexOf('"reply"');
+    if (replyIndex !== -1) {
+      const afterKey = trimmed.slice(replyIndex + 7);
+      const colonMatch = afterKey.match(/^\s*:\s*"/);
+      if (colonMatch) {
+        const textStart = colonMatch[0].length;
+        let extracted = "";
+        let escaped = false;
+
+        for (let i = textStart; i < afterKey.length; i++) {
+          const char = afterKey[i];
+          if (escaped) {
+            if (char === "n") extracted += "\n";
+            else if (char === "t") extracted += "\t";
+            else if (char === '"') extracted += '"';
+            else if (char === "\\") extracted += "\\";
+            else extracted += char;
+            escaped = false;
+          } else if (char === "\\") {
+            escaped = true;
+          } else if (char === '"') {
+            // Fin de la chaîne reply atteinte
+            break;
+          } else {
+            extracted += char;
+          }
+        }
+
+        // Tenter d'extraire les suggestions si déjà présentes dans le flux
+        let suggestions: string[] = [];
+        const sugMatch = trimmed.match(/"suggestions"\s*:\s*\[([\s\S]*?)\]/);
+        if (sugMatch && sugMatch[1]) {
+          try {
+            suggestions = JSON.parse(`[${sugMatch[1]}]`);
+          } catch {}
+        }
+
+        return {
+          reply: extracted,
+          suggestions,
+        };
+      }
+    }
+
+    // Le message commence par { mais la clé "reply" n'est pas encore arrivée : cacher les signes bizarres
+    return { reply: "", suggestions: [] };
+  }
+
+  // 4. Texte ordinaire
   return { reply: content, suggestions: [] };
+}
+
+/**
+ * Nettoie tout résidu technique avant affichage Markdown
+ */
+function sanitizeCleanReply(text: string): string {
+  if (!text) return "";
+  let clean = formatText(text);
+  // Retirer tout fragment résiduel de JSON accidentel
+  clean = clean.replace(/^{"reply":\s*"?/g, "").replace(/"(?:,\s*"suggestions":[\s\S]*)?$/g, "");
+  return clean;
 }
 
 /**
  * Composant de rendu Markdown avec typographie contrastée
  */
 function BotMessageMarkdown({ content }: { content: string }) {
-  const clean = formatText(content);
+  const clean = sanitizeCleanReply(content);
+  if (!clean.trim()) {
+    return (
+      <div className="flex items-center gap-1.5 py-1 text-[var(--gold-primary)] text-[13px] font-medium">
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--gold-primary)] animate-pulse" />
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--gold-primary)] animate-pulse [animation-delay:200ms]" />
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--gold-primary)] animate-pulse [animation-delay:400ms]" />
+      </div>
+    );
+  }
   return (
     <div className="bot-response-content select-text leading-relaxed">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ children }) => (
-            <h1 className="font-sans font-bold text-xl text-[var(--text-main)] mt-4 mb-2 tracking-tight">
+            <h1 className="font-serif font-bold text-xl text-[var(--text-main)] mt-4 mb-2 tracking-tight">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="font-sans font-bold text-lg text-[var(--text-main)] mt-3.5 mb-1.5 tracking-tight">
+            <h2 className="font-serif font-bold text-lg text-[var(--text-main)] mt-3.5 mb-1.5 tracking-tight">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="font-sans font-semibold text-base text-[var(--text-main)] mt-3 mb-1 tracking-tight">
+            <h3 className="font-serif font-semibold text-base text-[var(--text-main)] mt-3 mb-1 tracking-tight">
               {children}
             </h3>
           ),
@@ -223,6 +302,34 @@ function BotMessageMarkdown({ content }: { content: string }) {
   );
 }
 
+const STORAGE_CONVERSATIONS_KEY = "senorientation_chat_conversations_v4";
+const STORAGE_ACTIVE_ID_KEY = "senorientation_chat_active_id_v4";
+const getStorageConvKey = (id: string) => `senorientation_chat_conv_v4_${id}`;
+
+const INITIAL_WELCOME_PAYLOAD = {
+  reply:
+    "Bonjour ! Bienvenue sur SenOrientation, ta plateforme d'orientation académique et universitaire. Pour commencer et faire connaissance, comment puis-je t'appeler ?",
+  suggestions: [
+    "Je préfère ne pas le dire",
+  ],
+  etape: 1,
+};
+
+const NEW_CHAT_WELCOME_PAYLOAD = {
+  reply:
+    "Bonjour ! Je suis ton conseiller d'orientation SenOrientation. Où en es-tu actuellement dans tes études ?",
+  suggestions: [
+    "Collège (3e / BFEM)",
+    "Lycée (Seconde)",
+    "Lycée (Première)",
+    "Terminale",
+    "Nouveau bachelier",
+    "Étudiant (Supérieur)",
+    "En réorientation",
+  ],
+  etape: 1,
+};
+
 export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -234,6 +341,10 @@ export default function ChatPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedRecap, setCopiedRecap] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
+  const [showIosInstallModal, setShowIosInstallModal] = useState(false);
 
   // Profil d'orientation progressif
   const [profile, setProfile] = useState<ConversationProfile>(INITIAL_PROFILE);
@@ -270,6 +381,60 @@ export default function ChatPage() {
     }
   };
 
+  /* ─── PWA Install Listener ────────────────────────────────────────── */
+  useEffect(() => {
+    const handleBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    const handleAppInstalled = () => {
+      setIsAppInstalled(true);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+    window.addEventListener("appinstalled", handleAppInstalled);
+
+    if (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone
+    ) {
+      setIsAppInstalled(true);
+    }
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      window.removeEventListener("appinstalled", handleAppInstalled);
+    };
+  }, []);
+
+  const promptInstallPwa = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      try {
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === "accepted") {
+          setDeferredPrompt(null);
+          setIsAppInstalled(true);
+        }
+      } catch {}
+      return;
+    }
+
+    const isIos =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    if (isIos) {
+      setShowIosInstallModal(true);
+      return;
+    }
+
+    if (isAppInstalled) {
+      alert("SenOrientation est déjà installée sur cet appareil !");
+    } else {
+      setShowIosInstallModal(true);
+    }
+  };
+
   /* ─── useChat Vercel AI SDK ─────────────────────────────────────── */
   const {
     messages,
@@ -289,19 +454,106 @@ export default function ChatPage() {
     },
     initialMessages: [
       {
-        id: "welcome",
+        id: "welcome-1",
         role: "assistant",
-        content: JSON.stringify({
-          reply:
-            "Bonjour ! Bienvenue sur SenOrientation, ta plateforme d'orientation académique et universitaire. Pour commencer et faire connaissance, comment puis-je t'appeler ?",
-          suggestions: [
-            "Je préfère ne pas le dire",
-          ],
-          etape: 1,
-        }),
+        content: JSON.stringify(INITIAL_WELCOME_PAYLOAD),
       },
     ],
   });
+
+  /* ─── 1. Restauration locale au démarrage (Évite l'effacement à l'actualisation) ─── */
+  useEffect(() => {
+    try {
+      const storedConvs = localStorage.getItem(STORAGE_CONVERSATIONS_KEY);
+      const storedActiveId = localStorage.getItem(STORAGE_ACTIVE_ID_KEY);
+
+      if (storedConvs) {
+        const parsedConvs: ConversationItem[] = JSON.parse(storedConvs);
+        if (Array.isArray(parsedConvs) && parsedConvs.length > 0) {
+          setConversations(parsedConvs);
+          const activeId =
+            storedActiveId && parsedConvs.some((c) => c.id === storedActiveId)
+              ? storedActiveId
+              : parsedConvs[0].id;
+          setActiveConvId(activeId);
+
+          const storedData = localStorage.getItem(getStorageConvKey(activeId));
+          if (storedData) {
+            const { messages: savedMsgs, profile: savedProf } = JSON.parse(storedData);
+            if (Array.isArray(savedMsgs) && savedMsgs.length > 0) {
+              setMessages(savedMsgs);
+            }
+            if (savedProf) {
+              setProfile(savedProf);
+            }
+          }
+        }
+      } else {
+        const initConv: ConversationItem = {
+          id: "1",
+          title: "Orientation Bac Sénégal",
+          date: "Aujourd'hui",
+        };
+        localStorage.setItem(STORAGE_CONVERSATIONS_KEY, JSON.stringify([initConv]));
+        localStorage.setItem(STORAGE_ACTIVE_ID_KEY, "1");
+        localStorage.setItem(
+          getStorageConvKey("1"),
+          JSON.stringify({
+            messages: [
+              {
+                id: "welcome-1",
+                role: "assistant",
+                content: JSON.stringify(INITIAL_WELCOME_PAYLOAD),
+              },
+            ],
+            profile: INITIAL_PROFILE,
+          })
+        );
+      }
+    } catch {
+      /* ignore */
+    } finally {
+      setIsLoaded(true);
+    }
+  }, []);
+
+  /* ─── 2. Sauvegarde automatique persistante ───────────────────────── */
+  useEffect(() => {
+    if (!isLoaded || messages.length === 0) return;
+    try {
+      localStorage.setItem(
+        getStorageConvKey(activeConvId),
+        JSON.stringify({ messages, profile })
+      );
+      localStorage.setItem(STORAGE_ACTIVE_ID_KEY, activeConvId);
+    } catch {
+      /* ignore */
+    }
+  }, [messages, profile, activeConvId, isLoaded]);
+
+  /* ─── 3. Titre automatique selon la discussion ───────────────────── */
+  useEffect(() => {
+    if (!isLoaded) return;
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
+    if (!lastUserMsg) return;
+    setConversations((prev) => {
+      const updated = prev.map((c) =>
+        c.id === activeConvId &&
+        (c.title === "Nouvelle discussion" || c.title === "Orientation Bac Sénégal")
+          ? {
+              ...c,
+              title:
+                lastUserMsg.content.slice(0, 32) +
+                (lastUserMsg.content.length > 32 ? "…" : ""),
+            }
+          : c
+      );
+      try {
+        localStorage.setItem(STORAGE_CONVERSATIONS_KEY, JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  }, [messages, activeConvId, isLoaded]);
 
   /* ─── Synchronisation du profil depuis les annotations ou le JSON ─── */
   useEffect(() => {
@@ -309,7 +561,7 @@ export default function ChatPage() {
     const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant");
     if (!lastAssistantMsg) return;
 
-    // 1. Lecture depuis les annotations Vercel AI SDK (stream data)
+    // 1. Lecture depuis les annotations Vercel AI SDK
     const annotations = (lastAssistantMsg as any).annotations;
     if (Array.isArray(annotations) && annotations.length > 0) {
       const lastAnnot = annotations[annotations.length - 1];
@@ -354,24 +606,6 @@ export default function ChatPage() {
     }
   }, [input]);
 
-  /* ─── Titre automatique selon la discussion ──────────────────────── */
-  useEffect(() => {
-    const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
-    if (!lastUserMsg) return;
-    setConversations((prev) =>
-      prev.map((c) =>
-        c.id === activeConvId && c.title === "Nouvelle discussion"
-          ? {
-              ...c,
-              title:
-                lastUserMsg.content.slice(0, 30) +
-                (lastUserMsg.content.length > 30 ? "…" : ""),
-            }
-          : c
-      )
-    );
-  }, [messages, activeConvId]);
-
   /* ─── Clic sur un choix interactif ───────────────────────────────── */
   const handleSuggestionClick = (suggestionText: string) => {
     setSelectedSuggestion(suggestionText);
@@ -381,35 +615,101 @@ export default function ChatPage() {
     });
   };
 
-  /* ─── Nouvelle discussion ────────────────────────────────────────── */
+  /* ─── Changement de discussion (Persistance active) ───────────────── */
+  const handleSelectConversation = (convId: string) => {
+    if (convId === activeConvId) {
+      setSidebarOpen(false);
+      return;
+    }
+
+    // 1. Sauvegarder la conversation active courante
+    try {
+      localStorage.setItem(
+        getStorageConvKey(activeConvId),
+        JSON.stringify({ messages, profile })
+      );
+    } catch {}
+
+    // 2. Charger la conversation sélectionnée
+    try {
+      const stored = localStorage.getItem(getStorageConvKey(convId));
+      if (stored) {
+        const { messages: savedMsgs, profile: savedProf } = JSON.parse(stored);
+        setMessages(savedMsgs || []);
+        setProfile(savedProf || INITIAL_PROFILE);
+      } else {
+        const welcome = {
+          id: `welcome-${convId}`,
+          role: "assistant" as const,
+          content: JSON.stringify(NEW_CHAT_WELCOME_PAYLOAD),
+        };
+        setMessages([welcome]);
+        setProfile(INITIAL_PROFILE);
+      }
+      setActiveConvId(convId);
+      localStorage.setItem(STORAGE_ACTIVE_ID_KEY, convId);
+    } catch {}
+    setSidebarOpen(false);
+  };
+
+  /* ─── Nouvelle discussion (Non éphémère, immédiatement enregistrée) ─ */
   const handleNewChat = () => {
-    const newId = String(Date.now());
+    // 1. Sauvegarder d'abord la discussion active actuelle
+    try {
+      localStorage.setItem(
+        getStorageConvKey(activeConvId),
+        JSON.stringify({ messages, profile })
+      );
+    } catch {}
+
+    const newId = `conv_${Date.now()}`;
     const newConv: ConversationItem = {
       id: newId,
       title: "Nouvelle discussion",
       date: "Aujourd'hui",
     };
-    setConversations([newConv, ...conversations]);
+    const nextList = [newConv, ...conversations];
+    setConversations(nextList);
     setActiveConvId(newId);
     setProfile(INITIAL_PROFILE);
-    setMessages([
-      {
-        id: `welcome-${newId}`,
-        role: "assistant",
-        content: JSON.stringify({
-          reply:
-            "Bonjour ! Je suis ton conseiller d'orientation SenOrientation. Où en es-tu actuellement dans tes études ?",
-          suggestions: [
-            "Collège (3e / BFEM)",
-            "Lycée (Seconde ou 1ère)",
-            "Terminale ou Nouveau bachelier",
-            "Étudiant ou Réorientation",
-          ],
-          etape: 1,
-        }),
-      },
-    ]);
+
+    const welcomeMsg = {
+      id: `welcome-${newId}`,
+      role: "assistant" as const,
+      content: JSON.stringify(NEW_CHAT_WELCOME_PAYLOAD),
+    };
+    setMessages([welcomeMsg]);
+
+    // 2. Sauvegarde immédiate dans localStorage (NON ÉPHÉMÈRE !)
+    try {
+      localStorage.setItem(STORAGE_CONVERSATIONS_KEY, JSON.stringify(nextList));
+      localStorage.setItem(STORAGE_ACTIVE_ID_KEY, newId);
+      localStorage.setItem(
+        getStorageConvKey(newId),
+        JSON.stringify({ messages: [welcomeMsg], profile: INITIAL_PROFILE })
+      );
+    } catch {}
+
     setSidebarOpen(false);
+  };
+
+  /* ─── Suppression d'une discussion ───────────────────────────────── */
+  const handleDeleteConversation = (convId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const remaining = conversations.filter((c) => c.id !== convId);
+    setConversations(remaining);
+    try {
+      localStorage.setItem(STORAGE_CONVERSATIONS_KEY, JSON.stringify(remaining));
+      localStorage.removeItem(getStorageConvKey(convId));
+    } catch {}
+
+    if (convId === activeConvId) {
+      if (remaining.length > 0) {
+        handleSelectConversation(remaining[0].id);
+      } else {
+        handleNewChat();
+      }
+    }
   };
 
   /* ─── Exporter le bilan en texte (.txt) ──────────────────────────── */
@@ -500,23 +800,14 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* 1. En-tête : Nouveau Logo (Boussole stellaire or sans bordures blanches) */}
+        {/* 1. En-tête : Nouveau Logo (Boussole stellaire Baobab) */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)]">
           <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10 shrink-0 rounded-xl overflow-hidden shadow-xs">
-              <Image
-                src="/logo.png"
-                alt="Logo SenOrientation"
-                fill
-                sizes="40px"
-                priority
-                className="object-contain"
-              />
-            </div>
+            <BrandLogo size={38} variant="auto" />
             <div className="flex flex-col">
-              <span className="font-sans font-bold text-[18px] tracking-tight leading-tight">
+              <span className="font-serif font-bold text-[18.5px] tracking-tight leading-tight">
                 <span className="text-[var(--text-main)]">Sen</span>
-                <span className="text-[var(--gold-primary)]">Orientation</span>
+                <span className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]">Orientation</span>
               </span>
               <span className="text-[10.5px] text-[var(--text-muted)] font-medium tracking-tight mt-0.5">
                 Ton avenir, notre boussole
@@ -604,19 +895,16 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           {conversations.map((conv) => {
             const isActive = conv.id === activeConvId;
             return (
-              <button
+              <div
                 key={conv.id}
-                onClick={() => {
-                  setActiveConvId(conv.id);
-                  setSidebarOpen(false);
-                }}
-                className={`w-full flex items-center justify-between px-3 py-2.5 text-[13.5px] rounded-xl text-left transition-all cursor-pointer ${
+                onClick={() => handleSelectConversation(conv.id)}
+                className={`group/conv w-full flex items-center justify-between px-3 py-2.5 text-[13.5px] rounded-xl text-left transition-all cursor-pointer ${
                   isActive
                     ? "bg-[var(--gold-light)] text-[var(--gold-primary)] font-bold border-l-[3px] border-[var(--gold-primary)] shadow-2xs"
                     : "text-[var(--text-main)] hover:bg-[var(--bg-hover)]"
                 }`}
               >
-                <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-1">
                   <MessageSquare
                     className={`w-4 h-4 shrink-0 ${
                       isActive ? "text-[var(--gold-primary)]" : "text-[var(--text-muted)]"
@@ -624,16 +912,42 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                   />
                   <span className="truncate">{conv.title}</span>
                 </div>
-                {isActive && (
-                  <ChevronRight className="w-3.5 h-3.5 text-[var(--gold-primary)] shrink-0" />
-                )}
-              </button>
+                <div className="flex items-center gap-1 shrink-0">
+                  {conversations.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeleteConversation(conv.id, e)}
+                      title="Supprimer la discussion"
+                      className="p-1 rounded-md text-[var(--text-muted)] hover:text-red-500 hover:bg-black/10 dark:hover:bg-white/10 opacity-70 sm:opacity-0 group-hover/conv:opacity-100 transition-opacity cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                  {isActive && (
+                    <ChevronRight className="w-3.5 h-3.5 text-[var(--gold-primary)] shrink-0" />
+                  )}
+                </div>
+              </div>
             );
           })}
         </div>
 
-        {/* 5. Pied de sidebar : Paramètres & Connexion */}
-        <div className="p-3 border-t border-[var(--border-main)] bg-[var(--bg-sidebar)] space-y-1">
+        {/* 5. Pied de sidebar : Installer l'application, Paramètres & Connexion */}
+        <div className="p-3 border-t border-[var(--border-main)] bg-[var(--bg-sidebar)] space-y-1.5">
+          {/* Bouton Installer PWA */}
+          <button
+            type="button"
+            onClick={promptInstallPwa}
+            className="w-full flex items-center justify-between px-3 py-2.5 text-[12.5px] font-bold text-[var(--gold-primary)] bg-[var(--gold-light)] hover:brightness-105 border border-[var(--gold-border)] rounded-xl transition-all cursor-pointer shadow-2xs"
+            title="Installer l'application progressive sur votre smartphone"
+          >
+            <div className="flex items-center gap-2.5">
+              <Smartphone className="w-4 h-4 text-[var(--gold-primary)]" />
+              <span>{isAppInstalled ? "Application installée" : "Installer l'app mobile"}</span>
+            </div>
+            {!isAppInstalled && <Download className="w-3.5 h-3.5 text-[var(--gold-primary)]" />}
+          </button>
+
           <button
             onClick={() => {}}
             className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer"
@@ -673,45 +987,57 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           ZONE CENTRALE DU CHAT
       ════════════════════════════════════════════ */}
       <main className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--bg-app)] relative">
-        {/* Motif décoratif en filigrane discret (Boussole stellaire d'or du nouveau logo) */}
+        {/* Motif décoratif en filigrane discret (Boussole stellaire Baobab) */}
         <div
-          className="pointer-events-none absolute bottom-16 right-0 w-84 h-84 opacity-[0.04] select-none z-0"
+          className="pointer-events-none absolute bottom-16 right-0 w-80 h-80 opacity-[0.035] select-none z-0"
           aria-hidden="true"
         >
-          <svg viewBox="0 0 200 200" fill="none" className="w-full h-full">
-            <circle cx="100" cy="100" r="62" stroke="currentColor" strokeWidth="4" strokeDasharray="32 16" className="text-[var(--gold-primary)]" />
-            <path
-              d="M100 18 L115 85 L182 100 L115 115 L100 182 L85 115 L18 100 L85 85 Z"
-              fill="currentColor"
-              className="text-[var(--gold-primary)]"
-            />
+          <svg viewBox="0 0 100 100" fill="none" className="w-full h-full text-[var(--brand-green)] dark:text-[var(--brand-sand)]">
+            <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
+            <path d="M50 14 L56 44 L86 50 L56 56 L50 86 L44 56 L14 50 L44 44 Z" fill="currentColor" />
           </svg>
         </div>
 
         {/* 1. Barre supérieure (Topbar) */}
-        <header className="shrink-0 h-16 border-b border-[var(--border-main)] px-4 sm:px-8 flex items-center justify-between bg-[var(--bg-app)] z-10">
-          <div className="flex items-center gap-3.5 min-w-0">
+        <header className="shrink-0 h-16 border-b border-[var(--border-main)] px-3 sm:px-8 flex items-center justify-between bg-[var(--bg-app)]/90 backdrop-blur-md z-10 sticky top-0">
+          <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label="Ouvrir le menu"
-              className="p-2 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg md:hidden shrink-0 transition-colors cursor-pointer"
+              className="p-2 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-xl md:hidden shrink-0 transition-colors cursor-pointer"
             >
               <PanelLeftOpen className="w-5 h-5" />
             </button>
 
             <div className="flex flex-col min-w-0">
-              <h1 className="font-sans font-bold text-[18px] sm:text-[20px] text-[var(--text-main)] tracking-tight truncate leading-tight">
-                {headerTitle}
-              </h1>
-              <p className="text-[12px] font-medium text-[var(--text-muted)] hidden sm:block truncate mt-0.5">
-                Des conseils personnalisés pour construire ton avenir
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" title="Conseiller en ligne" />
+                <h1 className="font-serif font-bold text-[16px] sm:text-[20px] text-[var(--text-main)] tracking-tight truncate leading-tight">
+                  {headerTitle}
+                </h1>
+              </div>
+              <p className="text-[11.5px] sm:text-[12px] font-medium text-[var(--text-muted)] truncate mt-0.5">
+                <span className="sm:hidden">Conseiller d&apos;orientation officiel</span>
+                <span className="hidden sm:inline">Des conseils personnalisés pour construire ton avenir</span>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            {/* Bouton Installer PWA mobile */}
+            <button
+              type="button"
+              onClick={promptInstallPwa}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-[12px] sm:text-[12.5px] font-bold text-[var(--gold-primary)] bg-[var(--gold-light)] hover:brightness-105 active:scale-95 border border-[var(--gold-border)] rounded-xl shadow-2xs transition-all cursor-pointer"
+              title="Installer SenOrientation sur votre téléphone"
+            >
+              <Smartphone className="w-4 h-4 text-[var(--gold-primary)]" />
+              <span className="hidden sm:inline">{isAppInstalled ? "App installée" : "Installer l'app"}</span>
+              <span className="sm:hidden">{isAppInstalled ? "Installée" : "Installer"}</span>
+            </button>
+
             {/* Badge d'étape */}
-            <div className="hidden sm:inline-flex items-center gap-2 text-[12px] text-[var(--gold-primary)] bg-[var(--gold-light)] px-3 py-1 rounded-full border border-[var(--gold-border)] font-bold">
+            <div className="hidden md:inline-flex items-center gap-2 text-[12px] text-[var(--gold-primary)] bg-[var(--gold-light)] px-3 py-1 rounded-full border border-[var(--gold-border)] font-bold">
               <span className="w-2 h-2 rounded-full bg-[var(--gold-primary)] animate-pulse" />
               <span>
                 Étape {profile.etape}/5 : {ETAPE_LABELS[profile.etape]}
@@ -721,30 +1047,30 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
             {/* Bouton Nouveau */}
             <button
               onClick={handleNewChat}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 rounded-lg shadow-xs transition-colors cursor-pointer"
+              className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-[12px] sm:text-[12.5px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 active:scale-95 rounded-xl shadow-xs transition-colors cursor-pointer"
               title="Nouvelle discussion"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Nouveau</span>
+              <span className="hidden xs:inline">Nouveau</span>
             </button>
 
-            {/* Basculeur Mode Sombre (Couleurs Logo) / Mode Clair (Couleurs Inverses) */}
+            {/* Basculeur Mode Sombre / Mode Clair (Palette Baobab) */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-xl border border-[var(--border-main)] transition-colors cursor-pointer"
-              title={theme === "dark" ? "Passer en mode clair (couleurs inverses)" : "Passer en mode sombre (couleurs du logo)"}
+              className="p-2 text-[var(--text-muted)] hover:text-[var(--brand-green)] dark:hover:text-[var(--brand-sand)] hover:bg-[var(--bg-hover)] rounded-xl border border-[var(--border-main)] transition-colors cursor-pointer"
+              title={theme === "dark" ? "Passer en mode jour (lumineux)" : "Passer en mode nuit (profond)"}
               aria-label="Changer le mode de couleur"
             >
               {theme === "dark" ? (
-                <Sun className="w-4 h-4 text-[#F5C542]" />
+                <Sun className="w-4 h-4 text-[#E9D5A1]" />
               ) : (
-                <Moon className="w-4 h-4 text-[#0F172A]" />
+                <Moon className="w-4 h-4 text-[#155E59]" />
               )}
             </button>
 
             {/* Icône Profil */}
-            <div className="w-8 h-8 rounded-full bg-[var(--gold-light)] border border-[var(--gold-border)] flex items-center justify-center text-[var(--gold-primary)] font-bold text-[12px]">
+            <div className="w-8 h-8 rounded-full bg-[var(--gold-light)] border border-[var(--gold-border)] hidden sm:flex items-center justify-center text-[var(--gold-primary)] font-bold text-[12px]">
               <User className="w-4 h-4" />
             </div>
           </div>
@@ -760,7 +1086,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <GraduationCap className="w-5 h-5 text-[var(--gold-primary)]" />
-                    <h2 className="font-sans font-bold text-[17px] text-[var(--text-main)] tracking-tight">
+                    <h2 className="font-serif font-bold text-[17px] text-[var(--text-main)] tracking-tight">
                       Fiche de Synthèse d&apos;Orientation (Étape 5/5)
                     </h2>
                   </div>
@@ -852,15 +1178,9 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
 
                 return (
                   <div key={msg.id} className="flex items-start gap-3.5 group pt-1 animate-fadeIn">
-                    {/* Avatar officiel SO (Nouveau logo sans bordures blanches) */}
-                    <div className="relative w-8 h-8 rounded-xl bg-[var(--bg-card)] border border-[var(--border-main)] shadow-xs flex items-center justify-center shrink-0 mt-0.5 overflow-hidden p-0.5">
-                      <Image
-                        src="/logo.png"
-                        alt="Logo SenOrientation"
-                        width={26}
-                        height={26}
-                        className="object-contain"
-                      />
+                    {/* Avatar officiel SO (Palette Baobab) */}
+                    <div className="shrink-0 mt-0.5">
+                      <BrandLogo size={30} variant="auto" />
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -883,13 +1203,13 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                                 disabled={isLoading}
                                 className={`text-left text-[13.5px] sm:text-[14px] font-medium px-4 py-2.5 rounded-xl border flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
                                   isSelected
-                                    ? "bg-[var(--gold-primary)] text-[#0B0F19] border-[var(--gold-primary)] shadow-sm font-semibold"
+                                    ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-[var(--btn-primary-bg)] shadow-sm font-semibold"
                                     : "bg-[var(--bg-chip)] text-[var(--text-main)] border-[var(--border-main)] hover:bg-[var(--bg-chip-hover)] hover:border-[var(--gold-primary)] hover:text-[var(--gold-primary)]"
                                 } disabled:opacity-60 disabled:cursor-not-allowed`}
                               >
                                 <SuggestionIcon
                                   className={`w-4 h-4 shrink-0 ${
-                                    isSelected ? "text-[#0B0F19]" : "text-[var(--gold-primary)]"
+                                    isSelected ? "text-[var(--btn-primary-text)]" : "text-[var(--gold-primary)]"
                                   }`}
                                 />
                                 <span>{sug}</span>
@@ -953,14 +1273,8 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
             {/* Indicateur de réflexion */}
             {isLoading && (
               <div className="flex items-center gap-3.5 pt-1 animate-fadeIn">
-                <div className="relative w-8 h-8 rounded-xl bg-[var(--bg-card)] border border-[var(--border-main)] shadow-xs flex items-center justify-center shrink-0 overflow-hidden p-0.5">
-                  <Image
-                    src="/logo.png"
-                    alt="Logo SenOrientation"
-                    width={26}
-                    height={26}
-                    className="object-contain"
-                  />
+                <div className="shrink-0">
+                  <BrandLogo size={28} variant="auto" />
                 </div>
                 <div className="bg-[var(--gold-light)] border border-[var(--gold-border)] rounded-2xl px-4 py-2.5 text-[13.5px] text-[var(--gold-primary)] flex items-center gap-2.5 shadow-2xs">
                   <span className="w-2 h-2 rounded-full bg-[var(--gold-primary)] animate-ping" />
@@ -983,19 +1297,19 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           </div>
         </div>
 
-        {/* 3. Barre de saisie flottante (780px max) */}
-        <div className="shrink-0 p-3 sm:p-5 bg-[var(--bg-app)] border-t border-[var(--border-main)] z-10">
+        {/* 3. Barre de saisie flottante moderne avec safe-area pour mobile */}
+        <div className="shrink-0 px-3 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 bg-[var(--bg-app)]/95 backdrop-blur-md border-t border-[var(--border-main)] z-10">
           <div className="max-w-[780px] mx-auto">
             <form
               onSubmit={(e) => {
                 setSelectedSuggestion(null);
                 handleSubmit(e);
               }}
-              className="flex items-center gap-2 sm:gap-3 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-2xl px-3 sm:px-4 py-2 shadow-sm focus-within:border-[var(--gold-primary)] focus-within:ring-2 focus-within:ring-[var(--gold-primary)]/20 transition-all"
+              className="flex items-center gap-2 sm:gap-3 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 shadow-xs focus-within:border-[var(--gold-primary)] focus-within:ring-2 focus-within:ring-[var(--gold-primary)]/20 transition-all"
             >
               {/* Icône d'étoile / boussole à gauche */}
               <div className="text-[var(--gold-primary)] shrink-0 p-1">
-                <Sparkles className="w-5 h-5" />
+                <Sparkles className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
               </div>
 
               {/* Champ de texte */}
@@ -1005,15 +1319,15 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Pose ta question ou choisis une réponse ci-dessus..."
+                placeholder="Pose ta question ou choisis une réponse..."
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-0 text-[14.5px] font-medium text-[var(--text-main)] placeholder:text-[var(--text-dim)] focus:outline-none resize-none leading-relaxed py-1.5 max-h-32"
+                className="flex-1 bg-transparent border-0 text-[14px] sm:text-[14.5px] font-medium text-[var(--text-main)] placeholder:text-[var(--text-dim)] focus:outline-none resize-none leading-relaxed py-1.5 max-h-32"
               />
 
               {/* Trombone / Pièce jointe optionnelle */}
               <button
                 type="button"
-                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer shrink-0"
+                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer shrink-0 hidden sm:block"
                 title="Joindre un document"
               >
                 <Paperclip className="w-4.5 h-4.5" />
@@ -1024,9 +1338,9 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="Envoyer le message"
-                className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs ${
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs ${
                   input.trim() && !isLoading
-                    ? "bg-[var(--gold-primary)] hover:brightness-110 active:scale-95 text-[#0C0D12]"
+                    ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:brightness-105 active:scale-95"
                     : "bg-[var(--border-main)] text-[var(--text-dim)] cursor-not-allowed"
                 }`}
               >
@@ -1034,7 +1348,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               </button>
             </form>
 
-            <p className="mt-2.5 text-center text-[11.5px] font-medium text-[var(--text-muted)]">
+            <p className="mt-2 text-center text-[10.5px] sm:text-[11.5px] font-medium text-[var(--text-muted)]">
               Plateforme académique certifiée avec les filières nationales de{" "}
               <a
                 href="https://campusen.sec.gouv.sn"
@@ -1048,6 +1362,84 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           </div>
         </div>
       </main>
+
+      {/* ════════════════════════════════════════════
+          MODAL D'INSTALLATION PWA (iOS & NAVIGATEURS)
+      ════════════════════════════════════════════ */}
+      {showIosInstallModal && (
+        <div
+          onClick={() => setShowIosInstallModal(false)}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4 animate-fadeIn"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[420px] bg-[var(--bg-card)] border border-[var(--gold-border)] rounded-3xl p-5 shadow-2xl space-y-4 animate-slideUp"
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-[var(--border-main)]">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-[var(--gold-light)] border border-[var(--gold-border)]">
+                  <Smartphone className="w-5 h-5 text-[var(--gold-primary)]" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-bold text-[16px] text-[var(--text-main)]">
+                    Installer SenOrientation
+                  </h3>
+                  <p className="text-[11.5px] text-[var(--text-muted)]">
+                    Application mobile rapide & hors-ligne
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowIosInstallModal(false)}
+                className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-[13px] text-[var(--text-body)]">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-[var(--bg-app)] border border-[var(--border-main)]">
+                <div className="w-6 h-6 rounded-full bg-[var(--gold-light)] text-[var(--gold-primary)] font-bold text-[12px] flex items-center justify-center shrink-0 mt-0.5">
+                  1
+                </div>
+                <div>
+                  Appuyez sur l&apos;icône <strong>Partager</strong>{" "}
+                  <Share2 className="inline w-3.5 h-3.5 text-[var(--gold-primary)] mx-1" />{" "}
+                  dans la barre de votre navigateur (Safari ou Chrome).
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-[var(--bg-app)] border border-[var(--border-main)]">
+                <div className="w-6 h-6 rounded-full bg-[var(--gold-light)] text-[var(--gold-primary)] font-bold text-[12px] flex items-center justify-center shrink-0 mt-0.5">
+                  2
+                </div>
+                <div>
+                  Faites défiler la liste vers le bas et touchez{" "}
+                  <strong>Sur l&apos;écran d&apos;accueil</strong>.
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-[var(--bg-app)] border border-[var(--border-main)]">
+                <div className="w-6 h-6 rounded-full bg-[var(--gold-light)] text-[var(--gold-primary)] font-bold text-[12px] flex items-center justify-center shrink-0 mt-0.5">
+                  3
+                </div>
+                <div>
+                  Touchez <strong>Ajouter</strong> en haut à droite. SenOrientation apparaîtra comme une vraie application sur votre écran !
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowIosInstallModal(false)}
+              className="w-full py-2.5 text-[13.5px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 active:scale-98 rounded-xl transition-all cursor-pointer shadow-xs"
+            >
+              C&apos;est compris !
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

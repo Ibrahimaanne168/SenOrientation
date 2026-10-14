@@ -168,7 +168,7 @@ async function runTests() {
     INITIAL_PROFILE
   );
   assert(prof12.statut_parcours === "avant_bac", "Statut avant-bac détecté pour élève de Seconde");
-  assert(prof12.niveau === "Lycée (Seconde / Première)", "Niveau Lycée Seconde bien identifié");
+  assert(prof12.niveau === "Lycée (Seconde)" || prof12.niveau === "Lycée (Seconde / Première)", "Niveau Lycée Seconde bien identifié");
   assert(prof12.points_forts.some((p) => p.toLowerCase().includes("math")) || prof12.matieres_aimees.some((m) => m.toLowerCase().includes("math")), "Mathématiques détectées");
 
   // --- SCÉNARIO 13 : Post-Bac - Poursuite d'études / Passerelle après BTS/DUT ---

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Loader2, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+
+import BrandLogo from "@/components/BrandLogo";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -58,39 +59,32 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-app)] relative font-sans text-[var(--text-main)] transition-colors duration-200">
-      {/* Filet or prestigieux en haut */}
+      {/* Filet décoratif Baobab en haut */}
       <div className="fixed top-0 left-0 right-0 flex h-[3px]" aria-hidden="true">
-        <div className="flex-1 bg-[var(--gold-primary)]" />
+        <div className="flex-1 bg-[var(--brand-green)] dark:bg-[var(--brand-sand)]" />
       </div>
 
-      {/* Motif décoratif boussole stellaire en arrière-plan */}
+      {/* Motif décoratif boussole stellaire Baobab en arrière-plan */}
       <div
         className="pointer-events-none absolute bottom-10 right-10 w-96 h-96 opacity-[0.035] select-none"
         aria-hidden="true"
       >
         <svg viewBox="0 0 200 200" fill="none" className="w-full h-full">
-          <circle cx="100" cy="100" r="62" stroke="currentColor" strokeWidth="4" strokeDasharray="32 16" className="text-[var(--gold-primary)]" />
-          <path d="M100 18 L115 85 L182 100 L115 115 L100 182 L85 115 L18 100 L85 85 Z" fill="currentColor" className="text-[var(--gold-primary)]" />
+          <circle cx="100" cy="100" r="60" stroke="currentColor" strokeWidth="3" strokeDasharray="16 10" className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]" />
+          <path d="M100 20 L112 88 L180 100 L112 112 L100 180 L88 112 L20 100 L88 88 Z" fill="currentColor" className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]" />
         </svg>
       </div>
 
       <div className="w-full max-w-md bg-[var(--bg-card)] rounded-2xl border border-[var(--border-main)] shadow-[var(--bot-card-shadow)] overflow-hidden z-10 animate-fadeIn">
-        {/* En-tête avec Nouveau Logo (sans bordures blanches) */}
+        {/* En-tête avec Nouveau Logo Baobab */}
         <div className="flex flex-col items-center text-center px-8 pt-9 pb-6">
-          <div className="mb-4 relative w-18 h-18 rounded-2xl bg-[var(--bg-card)] border border-[var(--gold-border)] flex items-center justify-center p-2 shadow-sm">
-            <Image
-              src="/logo.png"
-              alt="Logo SenOrientation"
-              width={56}
-              height={56}
-              priority
-              className="object-contain"
-            />
+          <div className="mb-4">
+            <BrandLogo size={60} />
           </div>
 
           <h1 className="font-serif text-2xl font-bold tracking-tight">
             <span className="text-[var(--text-main)]">Sen</span>
-            <span className="text-[var(--gold-primary)]">Orientation</span>
+            <span className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]">Orientation</span>
           </h1>
 
           <p className="text-[12px] text-[var(--text-muted)] font-medium mt-1">
@@ -98,7 +92,7 @@ export default function LoginPage() {
           </p>
 
           <div className="flex mt-3.5 gap-1.5" aria-hidden="true">
-            <div className="h-0.5 w-10 rounded-full bg-[var(--gold-primary)]" />
+            <div className="h-0.5 w-10 rounded-full bg-[var(--brand-green)] dark:bg-[var(--brand-sand)]" />
             <div className="h-0.5 w-4 rounded-full bg-[var(--border-main)]" />
           </div>
         </div>
