@@ -523,6 +523,14 @@ function generateLocalOrientationPayload(
     lowerQuery.includes("frais de scolarite") ||
     lowerQuery.includes("comment devenir") ||
     lowerQuery.includes("parle-moi de") ||
+    lowerQuery.includes("parle moi de") ||
+    lowerQuery.includes("parle de") ||
+    lowerQuery.includes("donne moi des infos") ||
+    lowerQuery.includes("donne des infos") ||
+    lowerQuery.includes("infos sur") ||
+    lowerQuery.includes("bourse") ||
+    lowerQuery.includes("c'est quoi") ||
+    lowerQuery.includes("qu'est-ce que") ||
     lowerQuery.includes("formations propose") ||
     lowerQuery.includes("difference entre") ||
     lowerQuery.includes("différence entre");
@@ -563,18 +571,39 @@ function generateLocalOrientationPayload(
       intro = "Voici les missions, compétences et parcours de formation documentés pour ce métier :";
     } else if (qMode === "comparaison") {
       intro = "Voici les éléments comparatifs documentés entre ces deux filières / parcours :";
+    } else if (qMode === "question_generale") {
+      intro = "Voici les informations officielles sur les bourses d'études et démarches nationales au Sénégal :";
+    } else if (qMode === "info_formation") {
+      intro = "Voici les détails officiels répertoriés sur cette filière et ses conditions d'accès :";
     }
 
     const reply = `${intro}\n\n${docsSummary}\n\n*Note : Pour les concours et les dates limites de session, pense à vérifier les avis officiels du Ministère et de l'organisateur pour l'année en cours.*\n\nSouhaites-tu vérifier si ce parcours correspond à ton profil et à ta série de Bac ?`;
 
+    const suggestions =
+      qMode === "info_etablissement"
+        ? [
+            "Filières et UFR de cette université",
+            "Conditions d'admission Campusen",
+            "Comparer avec une autre université",
+            "Bourses et frais d'études",
+          ]
+        : qMode === "question_generale"
+        ? [
+            "Critères d'attribution des bourses",
+            "Montant de la bourse entière",
+            "Démarches sur bourses.sec.gouv.sn",
+            "Choisir mon orientation",
+          ]
+        : [
+            "Vérifier mon profil pour ce parcours",
+            "Conditions d'admission détaillées",
+            "Voir d'autres filières similaires",
+            "Je ne sais pas",
+          ];
+
     return {
       reply,
-      suggestions: [
-        "Vérifier mon profil pour ce parcours",
-        "Conditions d'admission détaillées",
-        "Voir d'autres filières similaires",
-        "Je ne sais pas",
-      ],
+      suggestions,
       dossier: profile,
       indices: [{ texte: `Recherche factuelle : ${query.slice(0, 50)}`, statut: "certain" }],
       hypotheses: [],

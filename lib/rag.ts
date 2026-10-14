@@ -152,11 +152,22 @@ export type AssistantMode =
   | "question_generale";
 
 export function detectQueryMode(message: string): AssistantMode {
-  const clean = message
+  let clean = message
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .trim();
+
+  // Normalisation des coquilles de saisie fréquentes (ex: uaù -> uam)
+  clean = clean
+    .replace(/\bl['’]?ua[uù]\b/gi, "uam")
+    .replace(/\bua[uù]\b/gi, "uam")
+    .replace(/\bl['’]?uam\b/gi, "uam")
+    .replace(/\bl['’]?ucad\b/gi, "ucad")
+    .replace(/\bl['’]?ugb\b/gi, "ugb")
+    .replace(/\bl['’]?ept\b/gi, "ept")
+    .replace(/\bl['’]?esp\b/gi, "esp")
+    .replace(/\bbourse(?:s|es)?\b/gi, "bourse");
 
   // 1. Mode Comparaison
   if (
@@ -217,41 +228,41 @@ export function detectQueryMode(message: string): AssistantMode {
     return "metier";
   }
 
-  // 4. Établissement
+  // 4. Bourses nationales et démarches administratives Campusen
+  if (
+    clean.includes("bourse") ||
+    clean.includes("dges") ||
+    clean.includes("forclusion") ||
+    clean.includes("comment s'inscrire") ||
+    clean.includes("comment sinscrire") ||
+    clean.includes("inscription universitaire") ||
+    (clean.includes("campusen") && !clean.includes("uam") && !clean.includes("ucad") && !clean.includes("ugb"))
+  ) {
+    return "question_generale";
+  }
+
+  // 5. Établissement (Universités publiques, Grandes Écoles, Instituts)
   const etablissementsKeywords = [
     "ucad", "ugb", "gaston berger", "cheikh anta diop", "ept", "esp",
     "ensae", "esmt", "uidt", "uadb", "uam", "ussein", "uasz", "unchk", "un-chk",
-    "fastef", "cesti", "enam", "isep", "polytechnique de thies", "fann"
+    "fastef", "cesti", "enam", "isep", "polytechnique de thies", "fann",
+    "amadou mahtar mbow", "diamniadio", "alioune diop", "iba der thiam",
+    "assane seck", "sine saloum", "cheikh hamidou kane"
   ];
   const hasEtablissement = etablissementsKeywords.some((k) => clean.includes(k));
-  if (
-    hasEtablissement &&
-    (clean.includes("formation") ||
-      clean.includes("parle") ||
-      clean.includes("presente") ||
-      clean.includes("universite") ||
-      clean.includes("ecole") ||
-      clean.includes("institut") ||
-      clean.includes("propose") ||
-      clean.includes("integrer") ||
-      clean.includes("admission") ||
-      clean.includes("composante") ||
-      clean.includes("faculte") ||
-      clean.includes("ufr") ||
-      clean.includes("departement") ||
-      clean.includes("filiere") ||
-      clean.includes("etudier a"))
-  ) {
+  if (hasEtablissement) {
     return "info_etablissement";
   }
 
-  // 5. Information sur une formation
+  // 6. Information sur une formation / filière
   if (
     clean.includes("licence en ") ||
     clean.includes("licence ") ||
     clean.includes("master en ") ||
     clean.includes("bts ") ||
     clean.includes("dut ") ||
+    clean.includes("filiere") ||
+    clean.includes("filieres") ||
     clean.includes("formation en ") ||
     clean.includes("etudes pour ") ||
     clean.includes("conditions d'admission de cette formation") ||
@@ -260,22 +271,6 @@ export function detectQueryMode(message: string): AssistantMode {
     clean.includes("programme de")
   ) {
     return "info_formation";
-  }
-
-  // 6. Question générale (Campusen, bourses DGES, démarches)
-  if (
-    clean.includes("campusen") ||
-    clean.includes("bourse") ||
-    clean.includes("dges") ||
-    clean.includes("frais de scolarite") ||
-    clean.includes("forclusion") ||
-    clean.includes("orientation nationale") ||
-    clean.includes("demarche") ||
-    clean.includes("comment s'inscrire") ||
-    clean.includes("comment sinscrire") ||
-    clean.includes("inscription universitaire")
-  ) {
-    return "question_generale";
   }
 
   return "orientation";
@@ -326,6 +321,27 @@ export function reformulateQuery(
         else if (text.includes("agronomie") || text.includes("agriculture")) detectedInterest = "agronomie et agriculture";
       }
     }
+  }
+
+  // Si la requête est directement factuelle (université, concours, métier, bourse, filière spécifique),
+  // NE PAS ajouter de préfixe général d'orientation ("filières après Bac S2...") qui dilue et fausse la recherche RAG
+  const qMode = detectQueryMode(current);
+  if (qMode !== "orientation") {
+    let cleanTarget = current;
+    cleanTarget = cleanTarget.replace(/\bl['’]?ua[uù]\b/gi, "Université Amadou Mahtar Mbow UAM Diamniadio");
+    cleanTarget = cleanTarget.replace(/\bua[uù]\b/gi, "Université Amadou Mahtar Mbow UAM Diamniadio");
+    cleanTarget = cleanTarget.replace(/\bl['’]?uam\b/gi, "Université Amadou Mahtar Mbow UAM Diamniadio");
+    cleanTarget = cleanTarget.replace(/\bl['’]?ucad\b/gi, "Université Cheikh Anta Diop UCAD Dakar");
+    cleanTarget = cleanTarget.replace(/\bl['’]?ugb\b/gi, "Université Gaston Berger UGB Saint-Louis");
+    cleanTarget = cleanTarget.replace(/\bl['’]?uidt\b/gi, "Université Iba Der Thiam UIDT Thiès");
+    cleanTarget = cleanTarget.replace(/\bl['’]?uadb\b/gi, "Université Alioune Diop UADB Bambey");
+    cleanTarget = cleanTarget.replace(/\bl['’]?uasz\b/gi, "Université Assane Seck UASZ Ziguinchor");
+    cleanTarget = cleanTarget.replace(/\bl['’]?unchk\b/gi, "Université Numérique Cheikh Hamidou Kane UN-CHK");
+    cleanTarget = cleanTarget.replace(/\bl['’]?ussein\b/gi, "Université du Sine Saloum El Hadji Ibrahima NIASS USSEIN Kaolack");
+    cleanTarget = cleanTarget.replace(/\bl['’]?ept\b/gi, "École Polytechnique de Thiès EPT");
+    cleanTarget = cleanTarget.replace(/\bl['’]?esp\b/gi, "École Supérieure Polytechnique ESP Dakar");
+    cleanTarget = cleanTarget.replace(/\bbourse(?:s|es)?\b/gi, "bourses nationales DGES critères montants");
+    return cleanTarget;
   }
 
   if (lowerCurrent.match(/^(?:je suis en\s+|bac\s+)?(s[1-3]|l[1-2]|l'|g|steg|t[1-2])$/i)) {
@@ -387,15 +403,23 @@ const STOP_WORDS = new Set([
   "comment", "pourquoi", "quand", "combien", "tout", "tous", "toute", "toutes",
   "leur", "leurs", "auxquels", "auxquelles", "lesquels", "lesquelles", "vers", "sans",
   "proposent", "propose", "offrent", "offre", "trouver", "chercher", "veut", "voudrais",
-  "peut", "peux", "peuvent", "suivre", "donner"
+  "peut", "peux", "peuvent", "suivre", "donner",
+  "parle", "parlez", "parles", "moi", "dis", "dis-moi", "donne", "donnes", "donnez",
+  "infos", "info", "information", "informations", "renseignement", "renseignements",
+  "savoir", "connaitre", "connaître", "dit", "dire"
 ]);
 
 export function normalizeToken(word: string): string {
-  return word
+  let w = word
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/(?:es|s|x)$/i, "");
+
+  if (w === "uau" || w === "uaù") w = "uam";
+  if (w.startsWith("bourse")) w = "bours";
+
+  return w;
 }
 
 export function tokenize(text: string): string[] {
@@ -430,11 +454,13 @@ const CORE_DOCUMENTS = [
     id: "bourses_dges_nationales",
     source: "bourses_dges",
     content: `BOURSES NATIONALES DE L'ÉTAT DU SÉNÉGAL (DGES / Direction des Bourses) :
-- Demi-bourse : 20 000 FCFA par mois.
+- Demi-bourse : 20 000 FCFA par mois (attribuée sur critères pédagogiques et sociaux).
 - Bourse entière : 40 000 FCFA par mois en Licence, revalorisée à 60 000 FCFA par mois en Master.
 - Bourse d'excellence : Réservée aux lauréats du Concours Général et bacheliers avec mention Très Bien ou Bien dans les séries scientifiques prioritaires.
 - Aides sociales : Allocation annuelle de 60 000 FCFA pour les étudiants non boursiers en situation de précarité.
-- Paiement : Mensuel via Wave, Orange Money ou virement bancaire.`,
+- Critères d'attribution : Moyenne obtenue au Baccalauréat, série de Bac (priorité absolue aux séries scientifiques S et techniques T/G), âge (moins de 23 ans pour les bacheliers) et situation sociale de la famille.
+- Démarches & Candidature : Demande en ligne après la confirmation d'orientation Campusen sur le portail de la Direction des Bourses (bourses.sec.gouv.sn ou dges.sn).
+- Modalités de paiement : Mensuel par transfert mobile money (Wave, Orange Money) ou virement bancaire.`,
     entity_type: "regle_officielle" as const,
     validity_status: "officiel" as const,
   },
@@ -456,14 +482,34 @@ if (Array.isArray(etablissementsData)) {
   for (const rawEt of etablissementsData) {
     const et = rawEt as Record<string, any>;
     const isPublic = (et.statut || et.statut_etablissement || et.type_etablissement || et.type || "").toLowerCase().includes("public");
+    const ufrs = Array.isArray(et.facultes_ou_ufr) && et.facultes_ou_ufr.length > 0
+      ? `\n- Facultés, UFR et Écoles : ${et.facultes_ou_ufr.join(", ")}`
+      : "";
+    const filieres = Array.isArray(et.filieres_proposees) && et.filieres_proposees.length > 0
+      ? `\n- Filières et offres de formation : ${et.filieres_proposees.join(", ")}`
+      : "";
+    const conditions = et.conditions_admission
+      ? `\n- Conditions d'admission : ${et.conditions_admission}`
+      : "";
+    const duree = et.duree_formations
+      ? `\n- Durée des formations : ${et.duree_formations}`
+      : "";
+    const debouches = Array.isArray(et.debouches_principaux) && et.debouches_principaux.length > 0
+      ? `\n- Débouchés principaux : ${et.debouches_principaux.join(", ")}`
+      : "";
+    const coordonnees = et.coordonnees
+      ? `\n- Contact & Localisation : ${et.coordonnees}`
+      : "";
+    const site = et.site_web || et.site_officiel
+      ? `\n- Site officiel : ${et.site_web || et.site_officiel}`
+      : "";
+    const frais = et.frais_scolarite || et.frais_scolarite_indicatifs || "Droits nationaux publics (25 000 FCFA/an pour les bacheliers orientés)";
+
     const content = `[ÉTABLISSEMENT ${isPublic ? "PUBLIC" : "PRIVÉ"}] ${et.nom} (${et.sigle || et.id}) à ${et.ville} :
-- Statut officiel : ${et.statut || et.statut_etablissement || et.type || "Officiel"}
-- Région : ${et.region || "Sénégal"}
-- Site officiel : ${et.site_officiel || "Non renseigné"}
-- Composantes rattachées : ${(et.composantes_ids || []).length} facultés/écoles
-- Frais indicatifs : ${et.frais_scolarite_indicatifs || "25 000 FCFA/an"}
-- Habilitation institutionnelle : ${et.habilitation_institutionnelle || "Reconnu"}
-- Date de vérification : ${et.date_verification || "2026-2027"}`;
+- Statut officiel : ${et.statut || et.statut_etablissement || et.type || (isPublic ? "Université Publique" : "Établissement Privé")}
+- Région : ${et.region || "Sénégal"}${site}
+- Frais de scolarité : ${frais}
+- Habilitation institutionnelle : ${et.habilitation_institutionnelle || "Reconnu par le MESRI / ANAQ-Sup"}${ufrs}${filieres}${conditions}${duree}${debouches}${coordonnees}`;
 
     KNOWLEDGE_CORPUS.push({
       id: `etablissement_${et.id}`,
@@ -474,7 +520,7 @@ if (Array.isArray(etablissementsData)) {
       validity_status: isPublic ? "officiel" : "a_verifier",
       metadata: {
         location: et.ville,
-        fees: et.frais_scolarite_indicatifs,
+        fees: frais,
       },
     });
   }
@@ -668,7 +714,11 @@ export async function searchKnowledge(
     }
 
     // Protection anti faux-positif : si la requête comporte 3 mots ou plus, exiger au moins 2 termes ou une couverture >= 34%
-    if (queryVec.size >= 3 && matchingTerms.length < 2 && (matchingTerms.length / queryVec.size) < 0.34) {
+    // SAUF si le document matche un mot fort (sigle d'université, "bourse", "concour")
+    const hasStrongKeyword = matchingTerms.some((t) =>
+      ["uam", "ucad", "ugb", "uidt", "uadb", "uasz", "unchk", "ussein", "ept", "esp", "cesti", "ensae", "esmt", "bours", "bourse"].includes(t)
+    );
+    if (!hasStrongKeyword && queryVec.size >= 3 && matchingTerms.length < 2 && (matchingTerms.length / queryVec.size) < 0.34) {
       continue;
     }
 
@@ -682,12 +732,12 @@ export async function searchKnowledge(
     }
 
     const docNorm = Math.sqrt(doc.tokens.length) || 1;
-    let similarity = Math.min(1.0, dotProduct / (docNorm * 0.70));
+    let score = dotProduct / (docNorm * 0.70);
 
     // Boost par couverture de mots clés de la requête
     const coverage = matchingTerms.length / queryVec.size;
     if (coverage >= 0.5) {
-      similarity = Math.min(1.0, similarity * (1 + coverage * 0.5));
+      score *= (1 + coverage * 0.5);
     }
 
     // Boost par série de Bac si filtre spécifié
@@ -695,39 +745,65 @@ export async function searchKnowledge(
       const matchSerie = doc.metadata.bac_series.some((s) =>
         options.serieFilter!.toUpperCase().includes(s.toUpperCase())
       );
-      if (matchSerie) similarity = Math.min(1.0, similarity * 1.25);
+      if (matchSerie) score *= 1.25;
     }
 
     // Boost majeur pour les concours officiels si la requête demande un concours
     if (queryTokens.includes("concour")) {
       if (doc.entity_type === "concours") {
-        similarity = Math.min(1.0, similarity * 2.5);
+        score *= 3.0;
       } else {
-        similarity = similarity * 0.4;
+        score *= 0.3;
       }
     }
 
-    // Boost si le sigle officiel demandé figure dans le document (ex: ept, esp, cesti)
-    const acronymMatches = ["ept", "esp", "cesti", "ucad", "ugb", "uidt", "uam", "ussein", "uadb", "uasz"].filter(
+    // Boost si le sigle officiel demandé figure dans le document (ex: ept, esp, cesti, uam, ucad, ugb...)
+    const acronymMatches = ["ept", "esp", "cesti", "ucad", "ugb", "uidt", "uam", "ussein", "uadb", "uasz", "unchk", "ensae", "esmt"].filter(
       (acr) => queryTokens.includes(acr) && doc.tokens.includes(acr)
     );
     if (acronymMatches.length > 0) {
-      similarity = Math.min(1.0, similarity * 1.6);
+      const isDirectEtablissementDoc = acronymMatches.some((acr) => doc.id === `etablissement_${acr}`);
+      if (isDirectEtablissementDoc) {
+        score += 25.0; // Pousse immédiatement l'établissement concerné en tête absolue
+      } else if (doc.entity_type === "etablissement") {
+        score *= 4.0;
+      } else if (doc.entity_type === "composante") {
+        score *= 2.5;
+      } else {
+        // Document de procédure générique qui liste les sigles (ex: campusen_procedure_officielle)
+        score *= 0.2;
+      }
     }
 
-    if (similarity >= similarityThreshold) {
+    // Boost spécifique pour les bourses si la requête demande les bourses
+    if (queryTokens.includes("bours") || queryTokens.includes("bourse")) {
+      if (doc.id === "bourses_dges_nationales" || doc.source === "bourses_dges") {
+        score += 25.0; // Pousse immédiatement le document officiel des bourses en tête absolue
+      }
+    }
+
+    // Boost pour les formations / filières si la requête demande une filière
+    if (queryTokens.includes("filier") || queryTokens.includes("format") || queryTokens.includes("licenc") || queryTokens.includes("master")) {
+      if (doc.entity_type === "formation") {
+        score *= 2.5;
+      }
+    }
+
+    const similarity = Math.min(1.0, score);
+    if (score >= similarityThreshold) {
       scoredResults.push({
         id: doc.id,
         source: doc.source,
         content: doc.content,
         similarity,
+        score,
         entity_type: doc.entity_type,
         validity_status: doc.validity_status,
-      });
+      } as KnowledgeMatch & { score: number });
     }
   }
 
-  scoredResults.sort((a, b) => b.similarity - a.similarity);
+  (scoredResults as Array<KnowledgeMatch & { score: number }>).sort((a, b) => b.score - a.score);
   return scoredResults.slice(0, maxResults);
 }
 
