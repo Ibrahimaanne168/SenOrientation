@@ -1472,7 +1472,19 @@ export function heuristicUpdateProfile(
     arabe: "Langues & Civilisations Arabes",
   };
 
+  const isAptitudeChoice =
+    latestLower.includes("calcul, logique") ||
+    latestLower.includes("rédaction, langues") ||
+    latestLower.includes("redaction, langues") ||
+    latestLower.includes("pratique, manipulation") ||
+    profile.questions_asked[profile.questions_asked.length - 1] === "intent_matieres_preferees" ||
+    profile.current_question_id === "intent_matieres_preferees";
+
   for (const [key, domain] of Object.entries(DOMAIN_EXPLICIT_MAP)) {
+    // Si l'utilisateur répond à la question générale d'aptitudes, ne pas figer prématurément un domaine de carrière
+    if (isAptitudeChoice && (key === "langues" || key === "lettres" || key === "chimie" || key === "gestion" || key === "biologie")) {
+      continue;
+    }
     // Si l'élève a expressément rejeté ce domaine, ne JAMAIS le réassigner
     if (profile.rejected_or_corrected_hypotheses.includes(domain)) {
       continue;
@@ -1541,6 +1553,82 @@ export function heuristicUpdateProfile(
   }
 
   // 8. Matières aimées et compétences déclarées (Partie 5 — Phase 4)
+  // 8.a Détection directe des choix d'aptitudes / façons d'agir (intent_matieres_preferees)
+  const isCalcul =
+    text.includes("calcul") ||
+    text.includes("logique") ||
+    text.includes("rigueur") ||
+    text.includes("résoudre") ||
+    text.includes("resoudre") ||
+    text.includes("problèmes de calcul") ||
+    text.includes("maths & sciences") ||
+    text.includes("sciences exactes");
+
+  const isRedaction =
+    text.includes("rédaction") ||
+    text.includes("redaction") ||
+    text.includes("rédiger") ||
+    text.includes("rediger") ||
+    text.includes("argumenter") ||
+    text.includes("argumentation") ||
+    text.includes("langues") ||
+    text.includes("lettres classiques") ||
+    text.includes("philosophie") ||
+    text.includes("littéraire");
+
+  const isPratique =
+    text.includes("pratique") ||
+    text.includes("manipulation") ||
+    text.includes("terrain") ||
+    text.includes("manipuler") ||
+    text.includes("technique") ||
+    text.includes("expérimentation") ||
+    text.includes("experimentation") ||
+    text.includes("laboratoire") ||
+    text.includes("concret");
+
+  const lastQuestionWasAptitudes =
+    profile.questions_asked[profile.questions_asked.length - 1] === "intent_matieres_preferees" ||
+    profile.current_question_id === "intent_matieres_preferees";
+
+  if (isCalcul) {
+    if (!profile.points_forts.includes("Calcul, logique et rigueur")) {
+      profile.points_forts.push("Calcul, logique et rigueur");
+    }
+    if (!profile.matieres_aimees.includes("Mathématiques")) {
+      profile.matieres_aimees.push("Mathématiques");
+    }
+    if (!profile.matieres_aimees.includes("Sciences Physiques")) {
+      profile.matieres_aimees.push("Sciences Physiques");
+    }
+    profile.questions_answered["intent_matieres_preferees"] = "Calcul, logique et rigueur";
+  } else if (isRedaction) {
+    if (!profile.points_forts.includes("Rédaction, langues et argumentation")) {
+      profile.points_forts.push("Rédaction, langues et argumentation");
+    }
+    if (!profile.matieres_aimees.includes("Français")) {
+      profile.matieres_aimees.push("Français");
+    }
+    if (!profile.matieres_aimees.includes("Histoire-Géographie")) {
+      profile.matieres_aimees.push("Histoire-Géographie");
+    }
+    profile.questions_answered["intent_matieres_preferees"] = "Rédaction, langues et argumentation";
+  } else if (isPratique) {
+    if (!profile.points_forts.includes("Pratique, manipulation et terrain")) {
+      profile.points_forts.push("Pratique, manipulation et terrain");
+    }
+    if (!profile.matieres_aimees.includes("Sciences Appliquées / Expérimentation")) {
+      profile.matieres_aimees.push("Sciences Appliquées / Expérimentation");
+    }
+    profile.questions_answered["intent_matieres_preferees"] = "Pratique, manipulation et terrain";
+  } else if (lastQuestionWasAptitudes) {
+    const cleanAnswer = latestMessage.trim();
+    profile.questions_answered["intent_matieres_preferees"] = cleanAnswer;
+    if (!profile.points_forts.includes(cleanAnswer)) {
+      profile.points_forts.push(cleanAnswer);
+    }
+  }
+
   const MATIERES_MAP: Record<string, string> = {
     math: "Mathématiques",
     physique: "Sciences Physiques",
@@ -1685,6 +1773,12 @@ export function heuristicUpdateProfile(
     profile.questions_answered["intent_demander_serie"] = profile.serie;
   }
 
+  // 12. Enregistrement systématique de la réponse pour la dernière question posée (Anti-boucle universel)
+  const lastAsked = profile.questions_asked[profile.questions_asked.length - 1];
+  if (lastAsked && !profile.questions_answered[lastAsked] && latestMessage.trim().length > 0) {
+    profile.questions_answered[lastAsked] = latestMessage.trim();
+  }
+
   profile.profile_completeness = calculateCompleteness(profile);
 
   // Synchronisation avec l'étape UI (1 à 5)
@@ -1729,9 +1823,9 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
   const nameGreet = namePart ? `${namePart}, ` : "";
   const lastAskedIntent = profile.questions_asked[profile.questions_asked.length - 1];
 
-  // RÈGLE ANTI-BOUCLE : Ne jamais poser deux fois consécutivement la même intention
+  // RÈGLE ANTI-BOUCLE : Ne jamais poser deux fois une question déjà posée ou enregistrée
   const isAsked = (intent: IntentId) =>
-    profile.questions_asked.includes(intent) && Boolean(profile.questions_answered[intent]);
+    profile.questions_asked.includes(intent) || Boolean(profile.questions_answered[intent]);
 
   // ── PRIORITÉ 0 : PHASE F (INSATISFACTION & RECHERCHE ALTERNATIVE) ──
   if (profile.phase_actuelle === "F" && lastAskedIntent !== "intent_phase_f_insatisfaction") {
@@ -2107,6 +2201,30 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
+  // ── PHASE 2 : APTITUDES & FAÇONS D'AGIR (Posée tôt pour éclairer les univers si non encore confirmé) ───
+  if (
+    profile.confirmed_interests.length === 0 &&
+    profile.matieres_aimees.length === 0 &&
+    profile.points_forts.length === 0 &&
+    !isAsked("intent_matieres_preferees") &&
+    lastAskedIntent !== "intent_matieres_preferees"
+  ) {
+    return {
+      type: "question",
+      intent_id: "intent_matieres_preferees",
+      question: "Dans quelles matières ou façons d'agir te sens-tu le plus à l'aise : résoudre des problèmes de calcul, rédiger et argumenter, ou manipuler et pratiquer ?",
+      suggestions: [
+        "Calcul, logique et rigueur",
+        "Rédaction, langues et argumentation",
+        "Pratique, manipulation et terrain",
+        "Je ne sais pas",
+      ],
+      vise: "Identifier les aptitudes et matières fortes dès le départ pour orienter naturellement l'exploration des filières",
+      phase: 2,
+      etape: 2,
+    };
+  }
+
   // ── PHASE 2 : DÉCOUVERTE DES GRANDS CENTRES D'INTÉRÊT (Partie 5 & CNOSP) ───
   // Propose des univers pertinents liés à la série réelle, avec option d'ouverture en dernier
   if (profile.confirmed_interests.length === 0 && profile.interets_principaux.length === 0 && !isAsked("intent_decouvrir_interets") && lastAskedIntent !== "intent_decouvrir_interets") {
@@ -2345,7 +2463,7 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     }
   }
 
-  // ── PHASE 4 : MATIÈRES ET APTITUDES (Partie 5) ───────────────────────────
+  // ── PHASE 4 : MATIÈRES ET APTITUDES (Rappel si non encore exploré) ──────────
   if (profile.matieres_aimees.length === 0 && profile.points_forts.length === 0 && !isAsked("intent_matieres_preferees") && lastAskedIntent !== "intent_matieres_preferees") {
     return {
       type: "question",

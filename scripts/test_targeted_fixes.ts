@@ -19,6 +19,8 @@ import {
   INITIAL_PROFILE,
   heuristicUpdateProfile,
   mergeProfileUpdate,
+  getNextOrientationQuestion,
+  ConversationProfile,
 } from "../lib/profile";
 
 async function runTests() {
@@ -164,6 +166,26 @@ async function runTests() {
 
   const compScore = calculateProfileCompleteness(dummyUser as any);
   assert(compScore >= 60, `Calcul de complétion du profil progressif (${compScore}%)`);
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 6. QUESTION APTITUDES (Posée tôt et non-bouclante)
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n--- 6. Question aptitudes / matières fortes (Timing & Anti-boucle) ---");
+  let profApt: ConversationProfile = { ...INITIAL_PROFILE, prenom: "Modou", serie: "S2", niveau: "Terminale", statut_parcours: "bac" as const };
+  const qApt1 = getNextOrientationQuestion(profApt);
+  assert(qApt1.intent_id === "intent_matieres_preferees", "La question des matières/façons d'agir est posée tôt (dès que la série est connue)");
+  assert(qApt1.phase === 2 && qApt1.etape === 2, "La question est en Phase 2 / Étape 2 (très tôt dans l'échange)");
+
+  // Simulation réponse clic utilisateur : "Rédaction, langues et argumentation"
+  profApt.questions_asked.push("intent_matieres_preferees");
+  profApt = heuristicUpdateProfile(profApt, [{ role: "assistant", content: qApt1.question }], "Rédaction, langues et argumentation");
+  assert(profApt.points_forts.includes("Rédaction, langues et argumentation"), "Prise en compte du point fort 'Rédaction, langues et argumentation'");
+  assert(profApt.questions_answered["intent_matieres_preferees"] === "Rédaction, langues et argumentation", "Enregistrement de la réponse dans questions_answered");
+
+  // Prochaine question
+  const qApt2 = getNextOrientationQuestion(profApt);
+  assert(qApt2.intent_id !== "intent_matieres_preferees", "La question ne revient JAMAIS en boucle après la réponse");
+  assert(qApt2.intent_id === "intent_decouvrir_interets", "Progression naturelle vers la découverte des univers d'orientation");
 
   console.log("\n=================================================================");
   console.log(` RÉSULTATS : ${passed} TESTS RÉUSSIS, ${failed} ÉCHECS`);
