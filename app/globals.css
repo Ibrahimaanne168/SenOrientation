@@ -59,10 +59,10 @@
   --border-subtle: #E8EFEA;
   --border-focus: #155E59;
 
-  --text-main: #183B38;
-  --text-body: #244643;
-  --text-muted: #586C67;
-  --text-dim: #7E938E;
+  --text-main: #112624;
+  --text-body: #163833;
+  --text-muted: #3D5752;
+  --text-dim: #54706A;
 
   /* Teintes dorées & signatures */
   --gold-primary: #155E59;
@@ -139,6 +139,10 @@ body {
   color: var(--text-main);
   font-weight: 450;
   letter-spacing: -0.01em;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

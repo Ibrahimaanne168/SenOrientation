@@ -293,36 +293,36 @@ function BotMessageMarkdown({ content }: { content: string }) {
             </h3>
           ),
           p: ({ children }) => (
-            <p className="mb-3 text-[var(--text-body)] font-medium leading-relaxed last:mb-0">
+            <p className="mb-2.5 text-[#163833] dark:text-[#E1EBE6] font-medium leading-[1.62] last:mb-0">
               {children}
             </p>
           ),
           ul: ({ children }) => (
-            <ul className="list-disc pl-5 mb-3 space-y-1 text-[var(--text-body)] font-medium">
+            <ul className="list-disc pl-5 mb-2.5 space-y-1 text-[#163833] dark:text-[#E1EBE6] font-medium leading-[1.6]">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="list-decimal pl-5 mb-3 space-y-1 text-[var(--text-body)] font-medium">
+            <ol className="list-decimal pl-5 mb-2.5 space-y-1 text-[#163833] dark:text-[#E1EBE6] font-medium leading-[1.6]">
               {children}
             </ol>
           ),
-          li: ({ children }) => <li className="mb-1 leading-normal">{children}</li>,
+          li: ({ children }) => <li className="mb-1 leading-normal text-[#163833] dark:text-[#E1EBE6]">{children}</li>,
           strong: ({ children }) => (
-            <strong className="font-bold text-[var(--gold-primary)]">{children}</strong>
+            <strong className="font-bold text-[#0E4743] dark:text-[#E9D5A1]">{children}</strong>
           ),
           a: ({ href, children }) => (
             <a
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--gold-primary)] hover:underline font-semibold"
+              className="text-[#155E59] dark:text-[#E9D5A1] hover:underline font-bold underline-offset-2"
             >
               {children}
             </a>
           ),
           blockquote: ({ children }) => (
-            <blockquote className="border-l-4 border-[var(--gold-primary)] pl-3 my-2 text-[var(--text-muted)] italic">
+            <blockquote className="border-l-4 border-[#155E59] dark:border-[var(--gold-primary)] pl-3 my-2 text-[#244643] dark:text-[var(--text-muted)] italic bg-[#EBF3EF]/60 dark:bg-transparent py-1 rounded-r-md">
               {children}
             </blockquote>
           ),
@@ -815,7 +815,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
   const headerTitle = currentConversation?.title || "Orientation Bac Sénégal";
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[var(--bg-app)] text-[var(--text-main)] font-sans antialiased">
+    <div className="fixed inset-0 flex h-full h-[100dvh] w-full overflow-hidden bg-[var(--bg-app)] text-[var(--text-main)] font-sans antialiased">
       {/* ════════════════════════════════════════════
           PANNEAU LATÉRAL (TIROIR 326PX SUR MOBILE)
       ════════════════════════════════════════════ */}
@@ -1049,7 +1049,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
       {/* ════════════════════════════════════════════
           ZONE CENTRALE DU CHAT
       ════════════════════════════════════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--bg-app)] relative">
+      <main className="flex-1 flex flex-col h-full h-[100dvh] overflow-hidden bg-[var(--bg-app)] relative">
         {/* Motif décoratif en filigrane discret (Jangora Baobab) */}
         <div
           className="pointer-events-none absolute bottom-16 right-0 w-80 h-80 opacity-[0.035] select-none z-0 flex items-center justify-center overflow-hidden"
@@ -1067,8 +1067,8 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           />
         </div>
 
-        {/* 1. Barre supérieure (Topbar épurée : 3 éléments sur mobile) */}
-        <header className="shrink-0 h-16 border-b border-[var(--border-main)] px-3 sm:px-8 flex items-center justify-between bg-[var(--bg-app)]/90 backdrop-blur-md z-10 sticky top-0">
+        {/* 1. Barre supérieure (Topbar strictement FIXE en haut) */}
+        <header className="shrink-0 h-14 md:h-16 border-b border-[var(--border-main)] px-3 sm:px-6 flex items-center justify-between bg-[var(--bg-app)]/98 backdrop-blur-md z-20 sticky top-0">
           {/* 1. Bouton Menu gauche (44×44px sur mobile, 14px rounded) */}
           <button
             onClick={() => setSidebarOpen(true)}
@@ -1079,14 +1079,14 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           </button>
 
           {/* 2. Titre + Sous-titre au centre sur mobile, aligné à gauche sur desktop */}
-          <div className="flex flex-col items-center md:items-start min-w-0 flex-1 px-2 md:px-3 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2 w-full max-w-[280px] md:max-w-none">
+          <div className="flex flex-col items-center md:items-start min-w-0 flex-1 px-1 sm:px-2 md:px-3 text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-1.5 sm:gap-2 w-full max-w-[280px] md:max-w-none">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" title="Conseiller en ligne" />
-              <h1 className="font-serif font-bold text-[18px] sm:text-[19px] md:text-[20px] text-[var(--text-main)] tracking-tight truncate leading-tight">
+              <h1 className="font-serif font-bold text-[16px] sm:text-[18px] md:text-[20px] text-[#112624] dark:text-[#F7F5EF] tracking-tight truncate leading-tight">
                 {headerTitle}
               </h1>
             </div>
-            <p className="text-[12.5px] sm:text-[13px] font-medium text-[var(--text-muted)] truncate max-w-[240px] sm:max-w-none mt-0.5">
+            <p className="text-[11.5px] sm:text-[12.5px] font-medium text-[#3D5752] dark:text-[#C8D7D0] truncate max-w-[220px] sm:max-w-none mt-0.5">
               <span className="md:hidden">Conseiller d&apos;orientation officiel</span>
               <span className="hidden md:inline">Des conseils personnalisés pour construire ton avenir</span>
             </p>
@@ -1098,7 +1098,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
             <button
               onClick={handleNewChat}
               aria-label="Nouvelle discussion"
-              className="w-11 h-11 flex items-center justify-center rounded-[14px] bg-[#1B5E57] text-white hover:brightness-105 active:scale-95 dark:bg-[#E9D5A1] dark:text-[#0D2928] shadow-xs md:hidden transition-all cursor-pointer shrink-0"
+              className="w-11 h-11 flex items-center justify-center rounded-[14px] bg-[#155E59] text-white hover:brightness-105 active:scale-95 dark:bg-[#E9D5A1] dark:text-[#0D2928] shadow-xs md:hidden transition-all cursor-pointer shrink-0"
               title="Nouvelle discussion"
             >
               <Plus className="w-5 h-5 stroke-[2]" />
@@ -1151,28 +1151,28 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           </div>
         </header>
 
-        {/* Carte de Progression Mobile compacte (Écrans ≤ 480px / md:hidden) */}
-        <div className="block md:hidden px-3 pt-2.5 pb-1 shrink-0 z-10">
-          <div className="bg-[#E6F0EC] dark:bg-[#133532] border border-[#C5D9D3]/70 dark:border-[#2B514B] rounded-[16px] px-3.5 py-2.5 shadow-2xs">
+        {/* Carte de Progression Mobile compacte (fixée sous l'en-tête) */}
+        <div className="block md:hidden px-3 py-1.5 shrink-0 bg-[var(--bg-app)] border-b border-[var(--border-main)]/60 z-20">
+          <div className="bg-[#E6F0EC] dark:bg-[#133532] border border-[#C5D9D3]/70 dark:border-[#2B514B] rounded-xl px-3 py-1.5 shadow-2xs">
             <div className="flex items-center justify-between gap-2">
-              <span className="font-bold text-[13px] text-[#1B5E57] dark:text-[#E9D5A1] shrink-0">
+              <span className="font-bold text-[12px] text-[#14403B] dark:text-[#E9D5A1] shrink-0">
                 Étape {profile.etape} sur 5
               </span>
-              <span className="text-[12px] font-medium text-[#46615B] dark:text-[#C8D7D0] truncate text-right">
+              <span className="text-[11.5px] font-semibold text-[#244643] dark:text-[#C8D7D0] truncate text-right">
                 {ETAPE_LABELS[profile.etape] || "Orientation en cours"}
               </span>
             </div>
-            {/* 5 segments de 6px de haut */}
-            <div className="flex items-center gap-1.5 pt-2" aria-label={`Progression : Étape ${profile.etape} sur 5`}>
+            {/* 5 segments de 5px de haut */}
+            <div className="flex items-center gap-1.5 pt-1.5" aria-label={`Progression : Étape ${profile.etape} sur 5`}>
               {[1, 2, 3, 4, 5].map((step) => {
                 const isPassed = step <= profile.etape;
                 return (
                   <div
                     key={step}
-                    className={`h-[6px] flex-1 rounded-full transition-all duration-300 ${
+                    className={`h-[5px] flex-1 rounded-full transition-all duration-300 ${
                       isPassed
-                        ? "bg-[#1B5E57] dark:bg-[#E9D5A1]"
-                        : "bg-[#C5D9D3] dark:border dark:bg-[#2B514B]"
+                        ? "bg-[#155E59] dark:bg-[#E9D5A1]"
+                        : "bg-[#C5D9D3] dark:bg-[#2B514B]"
                     }`}
                   />
                 );
@@ -1181,9 +1181,9 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           </div>
         </div>
 
-        {/* 2. Zone de discussion défilante (Conteneur max 780px) */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 md:py-8 bg-[var(--bg-app)] z-10">
-          <div className="max-w-[780px] mx-auto space-y-6">
+        {/* 2. Zone de discussion défilante (SEULE zone qui défile) */}
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 sm:px-8 py-3 md:py-6 bg-[var(--bg-app)] z-10">
+          <div className="max-w-[780px] mx-auto space-y-4 sm:space-y-6">
 
             {/* Fiche Bilan Finale si Étape 5 */}
             {profile.etape === 5 && (
@@ -1410,27 +1410,27 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           </div>
         </div>
 
-        {/* 3. Barre de saisie pilule blanche 56px avec safe-area pour mobile */}
-        <div className="shrink-0 px-3 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] sm:p-5 bg-[var(--bg-app)]/95 backdrop-blur-md border-t border-[var(--border-main)] z-10">
+        {/* 3. Barre de saisie inférieure (Strictement FIXE en bas) */}
+        <div className="shrink-0 px-3 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] sm:p-4 bg-[var(--bg-app)]/98 backdrop-blur-md border-t border-[var(--border-main)] z-20">
           <div className="max-w-[780px] mx-auto">
             <form
               onSubmit={(e) => {
                 setSelectedSuggestion(null);
                 handleSubmit(e);
               }}
-              className="flex items-center gap-1.5 sm:gap-2 bg-white dark:bg-[#143735] border-[1.5px] border-[#D9D5C8] dark:border-[#2B514B] rounded-[28px] h-14 min-h-[56px] px-2 shadow-xs focus-within:border-[#1B5E57] dark:focus-within:border-[#E9D5A1] transition-all"
+              className="flex items-center gap-1.5 sm:gap-2 bg-white dark:bg-[#143735] border-[1.5px] border-[#D9D5C8] dark:border-[#2B514B] rounded-[28px] h-13 min-h-[52px] sm:h-14 sm:min-h-[56px] px-2 shadow-xs focus-within:border-[#155E59] dark:focus-within:border-[#E9D5A1] transition-all"
             >
-              {/* Bouton trombone / pièce jointe (44px tactile, visible sur mobile !) */}
+              {/* Bouton trombone / pièce jointe (40×40px mobile, 44×44px sm) */}
               <button
                 type="button"
                 aria-label="Joindre un document"
-                className="w-11 h-11 flex items-center justify-center text-[var(--text-muted)] hover:text-[#1B5E57] dark:hover:text-[#E9D5A1] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer shrink-0"
+                className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-[#3D5752] hover:text-[#155E59] dark:text-[#C8D7D0] dark:hover:text-[#E9D5A1] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer shrink-0"
                 title="Joindre un document"
               >
-                <Paperclip className="w-5 h-5 stroke-[2]" />
+                <Paperclip className="w-4.5 h-4.5 sm:w-5 sm:h-5 stroke-[2]" />
               </button>
 
-              {/* Champ texte avec police 16px (évite le zoom sur iOS) */}
+              {/* Champ texte avec police 16px (évite le zoom sur iOS) et contraste élevé */}
               <textarea
                 ref={textareaRef}
                 rows={1}
@@ -1439,32 +1439,32 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 onKeyDown={handleKeyDown}
                 placeholder={getPlaceholderForEtape(profile.etape, profile.prenom)}
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-0 text-[16px] font-medium text-[var(--text-main)] placeholder:text-[var(--text-dim)] focus:outline-none resize-none leading-normal py-2 max-h-28"
+                className="flex-1 bg-transparent border-0 text-[16px] font-medium text-[#112624] dark:text-[#F7F5EF] placeholder:text-[#54706A] dark:placeholder:text-[#8EAAA1] focus:outline-none resize-none leading-normal py-2 max-h-28"
               />
 
-              {/* Bouton d'envoi rond 44px en vert #1B5E57 (ou doré en nuit) */}
+              {/* Bouton d'envoi rond en vert #155E59 (ou doré en nuit) */}
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="Envoyer le message"
-                className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs ${
+                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs ${
                   input.trim() && !isLoading
-                    ? "bg-[#1B5E57] text-white hover:brightness-105 active:scale-95 dark:bg-[#E9D5A1] dark:text-[#0D2928]"
+                    ? "bg-[#155E59] text-white hover:brightness-105 active:scale-95 dark:bg-[#E9D5A1] dark:text-[#0D2928]"
                     : "bg-[#DDE6DF] text-[#7E938E] dark:bg-[#2B514B] dark:text-[#55645F] cursor-not-allowed"
                 }`}
               >
-                <Send className="w-4.5 h-4.5 stroke-[2]" />
+                <Send className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2]" />
               </button>
             </form>
 
-            {/* Pied de page sur UNE SEULE ligne, 12px, contraste suffisant */}
-            <p className="mt-2 text-center text-[12px] font-medium text-[var(--text-muted)] truncate px-2">
+            {/* Pied de page sur UNE SEULE ligne, contraste lisible en mode clair */}
+            <p className="mt-1.5 text-center text-[11px] sm:text-[12px] font-medium text-[#3D5752] dark:text-[#C8D7D0] truncate px-2">
               Filières officielles ·{" "}
               <a
                 href="https://campusen.sec.gouv.sn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#1B5E57] dark:text-[#E9D5A1] hover:underline font-semibold"
+                className="text-[#155E59] dark:text-[#E9D5A1] hover:underline font-bold"
               >
                 campusen.sec.gouv.sn
               </a>
