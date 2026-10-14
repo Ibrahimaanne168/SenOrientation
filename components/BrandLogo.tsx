@@ -44,7 +44,7 @@ export function BrandLogo({
       />
       {/* Symbole Vert Baobab pour le mode jour */}
       <img
-        src="/jangora-symbol-green.png"
+        src="/jangora-tree-hd.png"
         alt="Jangora"
         className={`${
           variant === "night"
@@ -52,7 +52,7 @@ export function BrandLogo({
             : variant === "day"
             ? "block"
             : "block dark:hidden"
-        } w-[80%] h-[80%] object-contain select-none`}
+        } w-[84%] h-[84%] object-contain select-none`}
       />
     </div>
   );
