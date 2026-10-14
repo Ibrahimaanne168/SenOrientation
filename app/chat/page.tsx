@@ -118,6 +118,38 @@ function formatText(text: string): string {
 }
 
 /**
+ * Placeholder court et adaptatif pour mobile selon l'étape d'orientation
+ */
+function getPlaceholderForEtape(etape: number, prenom?: string | null): string {
+  if (etape === 1 && (!prenom || prenom === "l'ami")) {
+    return "Écris ton prénom…";
+  }
+  if (etape === 1) {
+    return "Écris ton niveau ou ta série…";
+  }
+  if (etape === 2) {
+    return "Écris tes centres d'intérêt…";
+  }
+  if (etape === 3) {
+    return "Écris la filière ciblée…";
+  }
+  if (etape === 4) {
+    return "Pose ta question sur une école…";
+  }
+  return "Écris ta réponse…";
+}
+
+/**
+ * Texte d'aide sous les chips pour guider l'élève sur mobile
+ */
+function getSubChipHelpText(etape: number, prenom?: string | null): string {
+  if (etape === 1 && (!prenom || prenom === "l'ami")) {
+    return "Ou écris simplement ton prénom ci-dessous.";
+  }
+  return "Ou écris librement ta réponse ci-dessous.";
+}
+
+/**
  * Découpe et extrait le contenu proprement même pendant le streaming (élimine les signes bizarres JSON)
  */
 function parseAssistantMessage(content: string): {
@@ -785,29 +817,29 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[var(--bg-app)] text-[var(--text-main)] font-sans antialiased">
       {/* ════════════════════════════════════════════
-          PANNEAU LATÉRAL (SIDEBAR)
+          PANNEAU LATÉRAL (TIROIR 326PX SUR MOBILE)
       ════════════════════════════════════════════ */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs md:hidden transition-opacity"
           aria-hidden="true"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-[var(--bg-sidebar)] border-r border-[var(--border-main)] shadow-sm transition-transform duration-200 ease-out md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[326px] max-w-[88vw] md:w-[280px] bg-[var(--bg-sidebar)] border-r border-[var(--border-main)] shadow-2xl md:shadow-sm transition-transform duration-200 ease-out md:static md:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* 1. En-tête : Nouveau Logo (JANGORA Baobab) */}
+        {/* 1. En-tête : Nouveau Logo (JANGORA avec GORA en doré #A8812F) */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)]">
           <div className="flex items-center gap-3">
             <BrandLogo size={40} variant="auto" />
             <div className="flex flex-col">
               <span className="font-serif font-bold text-[19px] tracking-widest uppercase leading-tight">
                 <span className="text-[var(--text-main)]">JAN</span>
-                <span className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]">GORA</span>
+                <span className="text-[#A8812F] dark:text-[#E9D5A1]">GORA</span>
               </span>
               <span className="text-[10.5px] text-[var(--text-muted)] font-medium tracking-tight mt-0.5">
                 L&apos;orientation vers le savoir
@@ -817,23 +849,23 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Fermer le menu"
-            className="p-1.5 text-[var(--text-muted)] hover:text-[var(--gold-primary)] rounded-md hover:bg-[var(--bg-hover)] md:hidden transition-colors"
+            className="w-11 h-11 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded-xl md:hidden transition-colors cursor-pointer"
           >
-            <PanelLeftOpen className="w-4 h-4 rotate-180" />
+            <X className="w-5 h-5 stroke-[2]" />
           </button>
         </div>
 
-        {/* 2. Bouton Nouvelle discussion */}
+        {/* 2. Bouton « Nouvelle discussion » pleine largeur (52px de haut) */}
         <div className="p-4 border-b border-[var(--border-main)]">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-between py-2.5 px-4 text-[14px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 active:scale-[0.99] rounded-xl shadow-[0_2px_12px_rgba(245,197,66,0.18)] transition-all duration-150 cursor-pointer group"
+            className="w-full h-[52px] flex items-center justify-between px-4 text-[14.5px] font-bold text-white bg-[#1B5E57] hover:brightness-105 active:scale-[0.99] dark:bg-[#E9D5A1] dark:text-[#0D2928] rounded-[14px] shadow-sm transition-all duration-150 cursor-pointer group"
           >
-            <div className="flex items-center gap-2.5">
-              <MessageSquare className="w-4 h-4" />
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-5 h-5 stroke-[2]" />
               <span>Nouvelle discussion</span>
             </div>
-            <ChevronRight className="w-4 h-4 opacity-75 group-hover:translate-x-0.5 transition-transform" />
+            <ChevronRight className="w-4.5 h-4.5 opacity-80 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
 
@@ -932,33 +964,64 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           })}
         </div>
 
-        {/* 5. Pied de sidebar : Installer l'application, Paramètres & Connexion */}
-        <div className="p-3 border-t border-[var(--border-main)] bg-[var(--bg-sidebar)] space-y-1.5">
+        {/* 5. Pied de sidebar : Installer l'app, Paramètres, Mode sombre switch, Connexion */}
+        <div className="p-3 border-t border-[var(--border-main)] bg-[var(--bg-sidebar)] space-y-2">
           {/* Bouton Installer PWA */}
           <button
             type="button"
             onClick={promptInstallPwa}
-            className="w-full flex items-center justify-between px-3 py-2.5 text-[12.5px] font-bold text-[var(--gold-primary)] bg-[var(--gold-light)] hover:brightness-105 border border-[var(--gold-border)] rounded-xl transition-all cursor-pointer shadow-2xs"
+            className="w-full flex items-center justify-between px-3 py-2.5 text-[13px] font-bold text-[#1B5E57] dark:text-[#E9D5A1] bg-[var(--gold-light)] hover:brightness-105 border border-[var(--gold-border)] rounded-xl transition-all cursor-pointer shadow-2xs"
             title="Installer l'application progressive sur votre smartphone"
           >
             <div className="flex items-center gap-2.5">
-              <Smartphone className="w-4 h-4 text-[var(--gold-primary)]" />
+              <Smartphone className="w-4.5 h-4.5 text-[#1B5E57] dark:text-[#E9D5A1] stroke-[2]" />
               <span>{isAppInstalled ? "Application installée" : "Installer l'app mobile"}</span>
             </div>
-            {!isAppInstalled && <Download className="w-3.5 h-3.5 text-[var(--gold-primary)]" />}
+            {!isAppInstalled && <Download className="w-4 h-4 text-[#1B5E57] dark:text-[#E9D5A1] stroke-[2]" />}
           </button>
 
+          {/* Bouton Paramètres */}
           <button
             onClick={() => {}}
-            className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer"
+            className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[var(--text-muted)] hover:text-[#1B5E57] dark:hover:text-[#E9D5A1] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer"
           >
-            <Settings className="w-4 h-4" />
+            <Settings className="w-4 h-4 stroke-[2]" />
             <span>Paramètres</span>
           </button>
 
+          {/* Interrupteur « Mode sombre » avec role="switch" */}
+          <div
+            onClick={toggleTheme}
+            role="switch"
+            aria-checked={theme === "dark"}
+            aria-label="Basculer le mode sombre"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-[var(--bg-hover)] transition-colors cursor-pointer select-none"
+          >
+            <div className="flex items-center gap-2.5 text-[13px] text-[var(--text-muted)] font-medium">
+              {theme === "dark" ? (
+                <Moon className="w-4 h-4 text-[#E9D5A1] stroke-[2]" />
+              ) : (
+                <Sun className="w-4 h-4 text-[#1B5E57] stroke-[2]" />
+              )}
+              <span>Mode sombre</span>
+            </div>
+            <div
+              className={`w-11 h-6 flex items-center rounded-full p-0.5 transition-colors duration-200 ${
+                theme === "dark" ? "bg-[#1B5E57]" : "bg-[#DDE6DF]"
+              }`}
+            >
+              <div
+                className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform duration-200 ${
+                  theme === "dark" ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Connexion / Déconnexion */}
           {userEmail ? (
             <div className="flex items-center justify-between px-3 py-2 text-[13px] text-[var(--text-main)] rounded-lg bg-[var(--bg-card)] border border-[var(--border-main)]">
-              <span className="truncate max-w-[170px]">{userEmail}</span>
+              <span className="truncate max-w-[190px]">{userEmail}</span>
               <button
                 onClick={async () => {
                   const supabase = createClient();
@@ -966,17 +1029,17 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                   setUserEmail(null);
                 }}
                 title="Se déconnecter"
-                className="text-[var(--text-muted)] hover:text-red-500 p-1 rounded-md transition-colors"
+                className="text-[var(--text-muted)] hover:text-red-500 p-1.5 rounded-md transition-colors"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors"
+              className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-[var(--text-muted)] hover:text-[#1B5E57] dark:hover:text-[#E9D5A1] hover:bg-[var(--bg-hover)] rounded-lg transition-colors"
             >
-              <User className="w-4 h-4 text-[var(--gold-primary)]" />
+              <User className="w-4 h-4 text-[#1B5E57] dark:text-[#E9D5A1] stroke-[2]" />
               <span>Connexion élève</span>
             </Link>
           )}
@@ -1004,45 +1067,54 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           />
         </div>
 
-        {/* 1. Barre supérieure (Topbar) */}
+        {/* 1. Barre supérieure (Topbar épurée : 3 éléments sur mobile) */}
         <header className="shrink-0 h-16 border-b border-[var(--border-main)] px-3 sm:px-8 flex items-center justify-between bg-[var(--bg-app)]/90 backdrop-blur-md z-10 sticky top-0">
-          <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Ouvrir le menu"
-              className="p-2 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-xl md:hidden shrink-0 transition-colors cursor-pointer"
-            >
-              <PanelLeftOpen className="w-5 h-5" />
-            </button>
+          {/* 1. Bouton Menu gauche (44×44px sur mobile, 14px rounded) */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Ouvrir le menu"
+            className="w-11 h-11 flex items-center justify-center text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded-[14px] border border-[var(--border-main)] md:border-0 md:rounded-xl md:w-auto md:h-auto md:p-2 shrink-0 transition-colors cursor-pointer"
+          >
+            <PanelLeftOpen className="w-5 h-5 stroke-[2]" />
+          </button>
 
-            <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" title="Conseiller en ligne" />
-                <h1 className="font-serif font-bold text-[16px] sm:text-[20px] text-[var(--text-main)] tracking-tight truncate leading-tight">
-                  {headerTitle}
-                </h1>
-              </div>
-              <p className="text-[11.5px] sm:text-[12px] font-medium text-[var(--text-muted)] truncate mt-0.5">
-                <span className="sm:hidden">Conseiller d&apos;orientation officiel</span>
-                <span className="hidden sm:inline">Des conseils personnalisés pour construire ton avenir</span>
-              </p>
+          {/* 2. Titre + Sous-titre au centre sur mobile, aligné à gauche sur desktop */}
+          <div className="flex flex-col items-center md:items-start min-w-0 flex-1 px-2 md:px-3 text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-2 w-full max-w-[280px] md:max-w-none">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" title="Conseiller en ligne" />
+              <h1 className="font-serif font-bold text-[18px] sm:text-[19px] md:text-[20px] text-[var(--text-main)] tracking-tight truncate leading-tight">
+                {headerTitle}
+              </h1>
             </div>
+            <p className="text-[12.5px] sm:text-[13px] font-medium text-[var(--text-muted)] truncate max-w-[240px] sm:max-w-none mt-0.5">
+              <span className="md:hidden">Conseiller d&apos;orientation officiel</span>
+              <span className="hidden md:inline">Des conseils personnalisés pour construire ton avenir</span>
+            </p>
           </div>
 
+          {/* 3. Côté droit : sur mobile (≤480px), SEULEMENT le bouton "+" 44×44px ! */}
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            {/* Bouton Installer PWA mobile */}
+            {/* Bouton "+" mobile 44×44px */}
+            <button
+              onClick={handleNewChat}
+              aria-label="Nouvelle discussion"
+              className="w-11 h-11 flex items-center justify-center rounded-[14px] bg-[#1B5E57] text-white hover:brightness-105 active:scale-95 dark:bg-[#E9D5A1] dark:text-[#0D2928] shadow-xs md:hidden transition-all cursor-pointer shrink-0"
+              title="Nouvelle discussion"
+            >
+              <Plus className="w-5 h-5 stroke-[2]" />
+            </button>
+
+            {/* Éléments conservés pour Desktop (md:flex) */}
             <button
               type="button"
               onClick={promptInstallPwa}
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-[12px] sm:text-[12.5px] font-bold text-[var(--gold-primary)] bg-[var(--gold-light)] hover:brightness-105 active:scale-95 border border-[var(--gold-border)] rounded-xl shadow-2xs transition-all cursor-pointer"
-              title="Installer Jangora sur votre téléphone"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-bold text-[var(--gold-primary)] bg-[var(--gold-light)] hover:brightness-105 active:scale-95 border border-[var(--gold-border)] rounded-xl shadow-2xs transition-all cursor-pointer"
+              title="Installer Jangora sur votre ordinateur ou téléphone"
             >
               <Smartphone className="w-4 h-4 text-[var(--gold-primary)]" />
-              <span className="hidden sm:inline">{isAppInstalled ? "App installée" : "Installer l'app"}</span>
-              <span className="sm:hidden">{isAppInstalled ? "Installée" : "Installer"}</span>
+              <span>{isAppInstalled ? "App installée" : "Installer l'app"}</span>
             </button>
 
-            {/* Badge d'étape */}
             <div className="hidden md:inline-flex items-center gap-2 text-[12px] text-[var(--gold-primary)] bg-[var(--gold-light)] px-3 py-1 rounded-full border border-[var(--gold-border)] font-bold">
               <span className="w-2 h-2 rounded-full bg-[var(--gold-primary)] animate-pulse" />
               <span>
@@ -1050,21 +1122,19 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               </span>
             </div>
 
-            {/* Bouton Nouveau */}
             <button
               onClick={handleNewChat}
-              className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-[12px] sm:text-[12.5px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 active:scale-95 rounded-xl shadow-xs transition-colors cursor-pointer"
+              className="hidden md:flex items-center gap-1 px-3 py-1.5 text-[12.5px] font-bold text-[var(--btn-primary-text)] bg-[var(--btn-primary-bg)] hover:brightness-110 active:scale-95 rounded-xl shadow-xs transition-colors cursor-pointer"
               title="Nouvelle discussion"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span className="hidden xs:inline">Nouveau</span>
+              <span>Nouveau</span>
             </button>
 
-            {/* Basculeur Mode Sombre / Mode Clair (Palette Baobab) */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 text-[var(--text-muted)] hover:text-[var(--brand-green)] dark:hover:text-[var(--brand-sand)] hover:bg-[var(--bg-hover)] rounded-xl border border-[var(--border-main)] transition-colors cursor-pointer"
+              className="hidden md:flex p-2 text-[var(--text-muted)] hover:text-[var(--brand-green)] dark:hover:text-[var(--brand-sand)] hover:bg-[var(--bg-hover)] rounded-xl border border-[var(--border-main)] transition-colors cursor-pointer"
               title={theme === "dark" ? "Passer en mode jour (lumineux)" : "Passer en mode nuit (profond)"}
               aria-label="Changer le mode de couleur"
             >
@@ -1075,12 +1145,41 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               )}
             </button>
 
-            {/* Icône Profil */}
-            <div className="w-8 h-8 rounded-full bg-[var(--gold-light)] border border-[var(--gold-border)] hidden sm:flex items-center justify-center text-[var(--gold-primary)] font-bold text-[12px]">
+            <div className="w-8 h-8 rounded-full bg-[var(--gold-light)] border border-[var(--gold-border)] hidden md:flex items-center justify-center text-[var(--gold-primary)] font-bold text-[12px]">
               <User className="w-4 h-4" />
             </div>
           </div>
         </header>
+
+        {/* Carte de Progression Mobile compacte (Écrans ≤ 480px / md:hidden) */}
+        <div className="block md:hidden px-3 pt-2.5 pb-1 shrink-0 z-10">
+          <div className="bg-[#E6F0EC] dark:bg-[#133532] border border-[#C5D9D3]/70 dark:border-[#2B514B] rounded-[16px] px-3.5 py-2.5 shadow-2xs">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-bold text-[13px] text-[#1B5E57] dark:text-[#E9D5A1] shrink-0">
+                Étape {profile.etape} sur 5
+              </span>
+              <span className="text-[12px] font-medium text-[#46615B] dark:text-[#C8D7D0] truncate text-right">
+                {ETAPE_LABELS[profile.etape] || "Orientation en cours"}
+              </span>
+            </div>
+            {/* 5 segments de 6px de haut */}
+            <div className="flex items-center gap-1.5 pt-2" aria-label={`Progression : Étape ${profile.etape} sur 5`}>
+              {[1, 2, 3, 4, 5].map((step) => {
+                const isPassed = step <= profile.etape;
+                return (
+                  <div
+                    key={step}
+                    className={`h-[6px] flex-1 rounded-full transition-all duration-300 ${
+                      isPassed
+                        ? "bg-[#1B5E57] dark:bg-[#E9D5A1]"
+                        : "bg-[#C5D9D3] dark:border dark:bg-[#2B514B]"
+                    }`}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
 
         {/* 2. Zone de discussion défilante (Conteneur max 780px) */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 md:py-8 bg-[var(--bg-app)] z-10">
@@ -1183,45 +1282,53 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 const parsed = parseAssistantMessage(msg.content);
 
                 return (
-                  <div key={msg.id} className="flex items-start gap-3.5 group pt-1 animate-fadeIn">
-                    {/* Avatar officiel SO (Palette Baobab) */}
-                    <div className="shrink-0 mt-0.5">
-                      <BrandLogo size={30} variant="auto" />
+                  <div key={msg.id} className="flex items-start gap-3 group pt-1 animate-fadeIn">
+                    {/* Avatar officiel rond de 36px (Palette Baobab Jangora) */}
+                    <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 mt-0.5 bg-[var(--bg-card)] border border-[var(--border-main)] flex items-center justify-center p-0.5 shadow-xs">
+                      <BrandLogo size={32} variant="auto" />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      {/* Carte du message assistant */}
-                      <div className="bg-[var(--bot-card-bg)] border border-[var(--bot-card-border)] rounded-2xl p-4 sm:p-5 shadow-[var(--bot-card-shadow)]">
+                      {/* Carte du message assistant : bulle blanche 16px / interligne 1.55, coin haut gauche peu arrondi 6px, autres 20px */}
+                      <div className="bg-white dark:bg-[#143735] text-[15px] sm:text-[16px] leading-[1.55] border border-[#DDE6DF] dark:border-[#2B514B] rounded-[20px] rounded-tl-[6px] p-4 sm:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
                         <BotMessageMarkdown content={parsed.reply || msg.content} />
                       </div>
 
-                      {/* Choix de réponses interactifs (Chips) */}
+                      {/* Choix de réponses interactifs (Chips 48px avec bordure verte claire + texte d'aide) */}
                       {parsed.suggestions && parsed.suggestions.length > 0 && (
-                        <div className="mt-3.5 flex flex-wrap gap-2.5">
-                          {parsed.suggestions.map((sug, sIdx) => {
-                            const SuggestionIcon = getSuggestionIcon(sug);
-                            const isSelected = selectedSuggestion === sug;
+                        <div className="mt-3 flex flex-col items-start gap-2">
+                          <div className="flex flex-wrap gap-2">
+                            {parsed.suggestions.map((sug, sIdx) => {
+                              const SuggestionIcon = getSuggestionIcon(sug);
+                              const isSelected = selectedSuggestion === sug;
 
-                            return (
-                              <button
-                                key={sIdx}
-                                onClick={() => handleSuggestionClick(sug)}
-                                disabled={isLoading}
-                                className={`text-left text-[13.5px] sm:text-[14px] font-medium px-4 py-2.5 rounded-xl border flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
-                                  isSelected
-                                    ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-[var(--btn-primary-bg)] shadow-sm font-semibold"
-                                    : "bg-[var(--bg-chip)] text-[var(--text-main)] border-[var(--border-main)] hover:bg-[var(--bg-chip-hover)] hover:border-[var(--gold-primary)] hover:text-[var(--gold-primary)]"
-                                } disabled:opacity-60 disabled:cursor-not-allowed`}
-                              >
-                                <SuggestionIcon
-                                  className={`w-4 h-4 shrink-0 ${
-                                    isSelected ? "text-[var(--btn-primary-text)]" : "text-[var(--gold-primary)]"
-                                  }`}
-                                />
-                                <span>{sug}</span>
-                              </button>
-                            );
-                          })}
+                              return (
+                                <button
+                                  key={sIdx}
+                                  onClick={() => handleSuggestionClick(sug)}
+                                  disabled={isLoading}
+                                  className={`h-12 min-h-[48px] text-left text-[14px] font-medium px-4 rounded-[14px] border-[1.5px] flex items-center gap-2.5 transition-all duration-150 cursor-pointer shadow-2xs ${
+                                    isSelected
+                                      ? "bg-[#1B5E57] text-white border-[#1B5E57] dark:bg-[#E9D5A1] dark:text-[#0D2928] dark:border-[#E9D5A1] shadow-xs font-semibold"
+                                      : "bg-white dark:bg-[#143735] text-[var(--text-main)] border-[#C8DED5] dark:border-[#2B514B] hover:border-[#1B5E57] dark:hover:border-[#E9D5A1]"
+                                  } disabled:opacity-60 disabled:cursor-not-allowed`}
+                                >
+                                  <SuggestionIcon
+                                    className={`w-4 h-4 shrink-0 stroke-[2] ${
+                                      isSelected
+                                        ? "text-white dark:text-[#0D2928]"
+                                        : "text-[#1B5E57] dark:text-[#E9D5A1]"
+                                    }`}
+                                  />
+                                  <span>{sug}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {/* Aide sous le chip */}
+                          <p className="text-[12px] text-[var(--text-muted)] italic pl-1 flex items-center gap-1.5 pt-0.5">
+                            <span>{getSubChipHelpText(profile.etape, profile.prenom)}</span>
+                          </p>
                         </div>
                       )}
 
@@ -1303,64 +1410,61 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           </div>
         </div>
 
-        {/* 3. Barre de saisie flottante moderne avec safe-area pour mobile */}
-        <div className="shrink-0 px-3 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 bg-[var(--bg-app)]/95 backdrop-blur-md border-t border-[var(--border-main)] z-10">
+        {/* 3. Barre de saisie pilule blanche 56px avec safe-area pour mobile */}
+        <div className="shrink-0 px-3 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] sm:p-5 bg-[var(--bg-app)]/95 backdrop-blur-md border-t border-[var(--border-main)] z-10">
           <div className="max-w-[780px] mx-auto">
             <form
               onSubmit={(e) => {
                 setSelectedSuggestion(null);
                 handleSubmit(e);
               }}
-              className="flex items-center gap-2 sm:gap-3 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 shadow-xs focus-within:border-[var(--gold-primary)] focus-within:ring-2 focus-within:ring-[var(--gold-primary)]/20 transition-all"
+              className="flex items-center gap-1.5 sm:gap-2 bg-white dark:bg-[#143735] border-[1.5px] border-[#D9D5C8] dark:border-[#2B514B] rounded-[28px] h-14 min-h-[56px] px-2 shadow-xs focus-within:border-[#1B5E57] dark:focus-within:border-[#E9D5A1] transition-all"
             >
-              {/* Icône d'étoile / boussole à gauche */}
-              <div className="text-[var(--gold-primary)] shrink-0 p-1">
-                <Sparkles className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
-              </div>
+              {/* Bouton trombone / pièce jointe (44px tactile, visible sur mobile !) */}
+              <button
+                type="button"
+                aria-label="Joindre un document"
+                className="w-11 h-11 flex items-center justify-center text-[var(--text-muted)] hover:text-[#1B5E57] dark:hover:text-[#E9D5A1] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer shrink-0"
+                title="Joindre un document"
+              >
+                <Paperclip className="w-5 h-5 stroke-[2]" />
+              </button>
 
-              {/* Champ de texte */}
+              {/* Champ texte avec police 16px (évite le zoom sur iOS) */}
               <textarea
                 ref={textareaRef}
                 rows={1}
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Pose ta question ou choisis une réponse..."
+                placeholder={getPlaceholderForEtape(profile.etape, profile.prenom)}
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-0 text-[14px] sm:text-[14.5px] font-medium text-[var(--text-main)] placeholder:text-[var(--text-dim)] focus:outline-none resize-none leading-relaxed py-1.5 max-h-32"
+                className="flex-1 bg-transparent border-0 text-[16px] font-medium text-[var(--text-main)] placeholder:text-[var(--text-dim)] focus:outline-none resize-none leading-normal py-2 max-h-28"
               />
 
-              {/* Trombone / Pièce jointe optionnelle */}
-              <button
-                type="button"
-                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--gold-primary)] hover:bg-[var(--bg-hover)] rounded-lg transition-colors cursor-pointer shrink-0 hidden sm:block"
-                title="Joindre un document"
-              >
-                <Paperclip className="w-4.5 h-4.5" />
-              </button>
-
-              {/* Bouton d'envoi circulaire */}
+              {/* Bouton d'envoi rond 44px en vert #1B5E57 (ou doré en nuit) */}
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 aria-label="Envoyer le message"
-                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs ${
+                className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs ${
                   input.trim() && !isLoading
-                    ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:brightness-105 active:scale-95"
-                    : "bg-[var(--border-main)] text-[var(--text-dim)] cursor-not-allowed"
+                    ? "bg-[#1B5E57] text-white hover:brightness-105 active:scale-95 dark:bg-[#E9D5A1] dark:text-[#0D2928]"
+                    : "bg-[#DDE6DF] text-[#7E938E] dark:bg-[#2B514B] dark:text-[#55645F] cursor-not-allowed"
                 }`}
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-4.5 h-4.5 stroke-[2]" />
               </button>
             </form>
 
-            <p className="mt-2 text-center text-[10.5px] sm:text-[11.5px] font-medium text-[var(--text-muted)]">
-              Plateforme académique certifiée avec les filières nationales de{" "}
+            {/* Pied de page sur UNE SEULE ligne, 12px, contraste suffisant */}
+            <p className="mt-2 text-center text-[12px] font-medium text-[var(--text-muted)] truncate px-2">
+              Filières officielles ·{" "}
               <a
                 href="https://campusen.sec.gouv.sn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--gold-primary)] hover:underline font-semibold"
+                className="text-[#1B5E57] dark:text-[#E9D5A1] hover:underline font-semibold"
               >
                 campusen.sec.gouv.sn
               </a>

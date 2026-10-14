@@ -320,3 +320,27 @@ select {
 .animate-slideUp {
   animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   OPTIMISATIONS MOBILES DÉDIÉES (Écrans ≤ 480px)
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* Évite le zoom automatique indésirable de Safari iOS */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  /* Cibles tactiles confortables (min 44px) */
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Rendu typographique ultra-net sur mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
