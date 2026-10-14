@@ -1,5 +1,5 @@
-// Service Worker pour SenOrientation PWA
-const CACHE_NAME = "senorientation-v2";
+// Service Worker pour Jangora PWA
+const CACHE_NAME = "jangora-v1";
 const STATIC_ASSETS = [
   "/",
   "/chat",

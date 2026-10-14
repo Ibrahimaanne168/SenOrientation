@@ -17,9 +17,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SenOrientation — Guide d'orientation post-Bac au Sénégal",
+  title: "Jangora — Guide d'orientation scolaire & universitaire au Sénégal",
   description:
-    "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles.",
+    "Trouve ta filière après le Bac au Sénégal : universités publiques, Campusen, bourses et grandes écoles avec Jangora.",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "SenOrientation",
+    title: "Jangora",
   },
 };
 

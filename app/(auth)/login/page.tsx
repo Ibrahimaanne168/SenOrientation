@@ -82,13 +82,13 @@ export default function LoginPage() {
             <BrandLogo size={60} />
           </div>
 
-          <h1 className="font-serif text-2xl font-bold tracking-tight">
-            <span className="text-[var(--text-main)]">Sen</span>
-            <span className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]">Orientation</span>
+          <h1 className="font-serif text-2xl font-bold tracking-widest uppercase">
+            <span className="text-[var(--text-main)]">JAN</span>
+            <span className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]">GORA</span>
           </h1>
 
           <p className="text-[12px] text-[var(--text-muted)] font-medium mt-1">
-            Ton avenir, notre boussole • Accès Élève
+            L&apos;orientation vers le savoir • Accès Élève
           </p>
 
           <div className="flex mt-3.5 gap-1.5" aria-hidden="true">

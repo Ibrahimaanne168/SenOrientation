@@ -1,6 +1,6 @@
 {
-  "name": "SenOrientation — Guide d'orientation post-Bac au Sénégal",
-  "short_name": "SenOrientation",
+  "name": "Jangora — Plateforme d'orientation scolaire & universitaire au Sénégal",
+  "short_name": "Jangora",
   "description": "Plateforme nationale d'orientation académique et universitaire du Sénégal.",
   "start_url": "/chat",
   "display": "standalone",

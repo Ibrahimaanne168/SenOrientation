@@ -243,7 +243,7 @@ export async function POST(req: NextRequest) {
       if (!updatedProfile.prenom) {
         const payload: TechnicalOutput = {
           reply:
-            "Bonjour ! Bienvenue sur SenOrientation. Pour commencer et faire connaissance, comment tu t'appelles ?",
+            "Bonjour ! Bienvenue sur Jangora. Pour commencer et faire connaissance, comment tu t'appelles ?",
           suggestions: [
             "Je préfère ne pas le dire",
           ],

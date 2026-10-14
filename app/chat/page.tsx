@@ -308,7 +308,7 @@ const getStorageConvKey = (id: string) => `senorientation_chat_conv_v4_${id}`;
 
 const INITIAL_WELCOME_PAYLOAD = {
   reply:
-    "Bonjour ! Bienvenue sur SenOrientation, ta plateforme d'orientation académique et universitaire. Pour commencer et faire connaissance, comment puis-je t'appeler ?",
+    "Bonjour ! Bienvenue sur Jangora, ta plateforme d'orientation scolaire et universitaire. Pour commencer et faire connaissance, comment puis-je t'appeler ?",
   suggestions: [
     "Je préfère ne pas le dire",
   ],
@@ -317,7 +317,7 @@ const INITIAL_WELCOME_PAYLOAD = {
 
 const NEW_CHAT_WELCOME_PAYLOAD = {
   reply:
-    "Bonjour ! Je suis ton conseiller d'orientation SenOrientation. Où en es-tu actuellement dans tes études ?",
+    "Bonjour ! Je suis ton conseiller d'orientation Jangora. Où en es-tu actuellement dans tes études ?",
   suggestions: [
     "Collège (3e / BFEM)",
     "Lycée (Seconde)",
@@ -429,7 +429,7 @@ export default function ChatPage() {
     }
 
     if (isAppInstalled) {
-      alert("SenOrientation est déjà installée sur cet appareil !");
+      alert("Jangora est déjà installée sur cet appareil !");
     } else {
       setShowIosInstallModal(true);
     }
@@ -715,7 +715,7 @@ export default function ChatPage() {
   /* ─── Exporter le bilan en texte (.txt) ──────────────────────────── */
   const exportSummary = () => {
     const recap = `========================================================
-FICHE OFFICIELLE D'ORIENTATION - SENORIENTATION
+FICHE OFFICIELLE D'ORIENTATION - JANGORA
 Plateforme nationale d'orientation académique du Sénégal
 ========================================================
 
@@ -739,7 +739,7 @@ Plateforme nationale d'orientation académique du Sénégal
 - Type d'établissement     : ${profile.budget || "Public Campusen (25 000 FCFA/an)"}
 - Durée souhaitée          : ${profile.duree_souhaitee || "2 à 5 ans"}
 
-Document généré automatiquement sur SenOrientation
+Document généré automatiquement sur Jangora
 Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
 
     const blob = new Blob([recap], { type: "text/plain;charset=utf-8" });
@@ -753,7 +753,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
 
   /* ─── Copier la synthèse dans le presse-papier ───────────────────── */
   const copyRecap = () => {
-    const txt = `Bilan SenOrientation :
+    const txt = `Bilan Jangora :
 - Élève : ${profile.prenom || "Élève"}
 - Série : ${profile.serie || "Non précisée"}
 - Intérêts : ${profile.interets_principaux.join(", ")}
@@ -800,17 +800,17 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* 1. En-tête : Nouveau Logo (Boussole stellaire Baobab) */}
+        {/* 1. En-tête : Nouveau Logo (JANGORA Baobab) */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)]">
           <div className="flex items-center gap-3">
-            <BrandLogo size={38} variant="auto" />
+            <BrandLogo size={40} variant="auto" />
             <div className="flex flex-col">
-              <span className="font-serif font-bold text-[18.5px] tracking-tight leading-tight">
-                <span className="text-[var(--text-main)]">Sen</span>
-                <span className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]">Orientation</span>
+              <span className="font-serif font-bold text-[19px] tracking-widest uppercase leading-tight">
+                <span className="text-[var(--text-main)]">JAN</span>
+                <span className="text-[var(--brand-green)] dark:text-[var(--brand-sand)]">GORA</span>
               </span>
               <span className="text-[10.5px] text-[var(--text-muted)] font-medium tracking-tight mt-0.5">
-                Ton avenir, notre boussole
+                L&apos;orientation vers le savoir
               </span>
             </div>
           </div>
@@ -987,15 +987,21 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
           ZONE CENTRALE DU CHAT
       ════════════════════════════════════════════ */}
       <main className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--bg-app)] relative">
-        {/* Motif décoratif en filigrane discret (Boussole stellaire Baobab) */}
+        {/* Motif décoratif en filigrane discret (Jangora Baobab) */}
         <div
-          className="pointer-events-none absolute bottom-16 right-0 w-80 h-80 opacity-[0.035] select-none z-0"
+          className="pointer-events-none absolute bottom-16 right-0 w-80 h-80 opacity-[0.035] select-none z-0 flex items-center justify-center overflow-hidden"
           aria-hidden="true"
         >
-          <svg viewBox="0 0 100 100" fill="none" className="w-full h-full text-[var(--brand-green)] dark:text-[var(--brand-sand)]">
-            <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
-            <path d="M50 14 L56 44 L86 50 L56 56 L50 86 L44 56 L14 50 L44 44 Z" fill="currentColor" />
-          </svg>
+          <img
+            src="/jangora-symbol-gold.png"
+            alt=""
+            className="w-full h-full object-contain hidden dark:block"
+          />
+          <img
+            src="/jangora-symbol-green.png"
+            alt=""
+            className="w-full h-full object-contain block dark:hidden"
+          />
         </div>
 
         {/* 1. Barre supérieure (Topbar) */}
@@ -1029,7 +1035,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
               type="button"
               onClick={promptInstallPwa}
               className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-[12px] sm:text-[12.5px] font-bold text-[var(--gold-primary)] bg-[var(--gold-light)] hover:brightness-105 active:scale-95 border border-[var(--gold-border)] rounded-xl shadow-2xs transition-all cursor-pointer"
-              title="Installer SenOrientation sur votre téléphone"
+              title="Installer Jangora sur votre téléphone"
             >
               <Smartphone className="w-4 h-4 text-[var(--gold-primary)]" />
               <span className="hidden sm:inline">{isAppInstalled ? "App installée" : "Installer l'app"}</span>
@@ -1278,7 +1284,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 </div>
                 <div className="bg-[var(--gold-light)] border border-[var(--gold-border)] rounded-2xl px-4 py-2.5 text-[13.5px] text-[var(--gold-primary)] flex items-center gap-2.5 shadow-2xs">
                   <span className="w-2 h-2 rounded-full bg-[var(--gold-primary)] animate-ping" />
-                  <span className="font-semibold">SenOrientation analyse tes informations...</span>
+                  <span className="font-semibold">Jangora analyse tes informations...</span>
                 </div>
               </div>
             )}
@@ -1382,7 +1388,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                 </div>
                 <div>
                   <h3 className="font-serif font-bold text-[16px] text-[var(--text-main)]">
-                    Installer SenOrientation
+                    Installer Jangora
                   </h3>
                   <p className="text-[11.5px] text-[var(--text-muted)]">
                     Application mobile rapide & hors-ligne
@@ -1425,7 +1431,7 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
                   3
                 </div>
                 <div>
-                  Touchez <strong>Ajouter</strong> en haut à droite. SenOrientation apparaîtra comme une vraie application sur votre écran !
+                  Touchez <strong>Ajouter</strong> en haut à droite. Jangora apparaîtra comme une vraie application sur votre écran !
                 </div>
               </div>
             </div>
