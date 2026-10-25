@@ -37,6 +37,8 @@ export type IntentId =
   | "intent_ambitions_pro"
   | "intent_contraintes_duree_ville"
   | "intent_presenter_bilan"
+  | "intent_post_bilan_exploration"
+  | "intent_post_bilan_assistance"
   | "intent_phase_f_insatisfaction"
   | "intent_phase_f_nouvelle_recherche";
 
@@ -1978,6 +1980,41 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
+  // ── PHASE 8b : SUIVI POST-BILAN (Règle anti-boucle absolue) ───────────────
+  if (isAsked("intent_presenter_bilan") || lastAskedIntent === "intent_presenter_bilan") {
+    if (!isAsked("intent_post_bilan_exploration")) {
+      return {
+        type: "question",
+        intent_id: "intent_post_bilan_exploration",
+        question: "Souhaites-tu explorer les concours d'entrée, localiser où ces filières sont enseignées au Sénégal, ou voir les démarches Campusen ?",
+        suggestions: [
+          "Où trouver ces filières au Sénégal ?",
+          "Voir les concours d'entrée disponibles",
+          "Voir les démarches Campusen",
+          "Poser une question spécifique",
+        ],
+        vise: "Accompagner l'étudiant dans l'exploration post-bilan et les démarches concrètes",
+        phase: 8,
+        etape: 6,
+      };
+    }
+
+    return {
+      type: "question",
+      intent_id: "intent_post_bilan_assistance",
+      question: "Y a-t-il une autre filière, une université ou une démarche sur laquelle tu souhaites des informations officielles ?",
+      suggestions: [
+        "Poser une question sur une université",
+        "Voir les bourses disponibles",
+        "Ajuster mon profil",
+        "C'est tout clair, merci !",
+      ],
+      vise: "Offrir une assistance ouverte et répondre à toute question spécifique de l'étudiant",
+      phase: 8,
+      etape: 6,
+    };
+  }
+
   // ── PHASE 1 : IDENTITÉ & SITUATION SCOLAIRE (Prénom, niveau, série) ─────
   const hasAcademicContext = Boolean(
     profile.serie ||
@@ -2202,7 +2239,21 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
   }
 
   // ── PHASE 2 : APTITUDES & FAÇONS D'AGIR (Posée tôt pour éclairer les univers si non encore confirmé) ───
+  // Si l'élève est déjà dans une série à spécialisation nette (L1, L2, S1, G, T1, T2...), sa série qualifie déjà
+  // ses matières fondamentales. Ne pas lui poser une question générique "calcul vs rédaction", passer directement aux univers d'intérêt.
+  const hasSpecificSerieFocus = Boolean(
+    profile.serie &&
+    (profile.serie.toUpperCase().startsWith("L") ||
+     profile.serie.toUpperCase().startsWith("G") ||
+     profile.serie.toUpperCase().startsWith("T") ||
+     profile.serie.toUpperCase() === "S1" ||
+     profile.serie.toUpperCase().startsWith("S3") ||
+     profile.serie.toUpperCase().startsWith("S4") ||
+     profile.serie.toUpperCase().startsWith("S5"))
+  );
+
   if (
+    !hasSpecificSerieFocus &&
     profile.confirmed_interests.length === 0 &&
     profile.matieres_aimees.length === 0 &&
     profile.points_forts.length === 0 &&

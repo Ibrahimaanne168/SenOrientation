@@ -241,21 +241,44 @@ export function detectQueryMode(message: string): AssistantMode {
     return "question_generale";
   }
 
-  // 5. Établissement (Universités publiques, Grandes Écoles, Instituts)
+  // 5. Recherche d'établissement ou de ses formations (Universités publiques, Grandes Écoles, Instituts)
   const etablissementsKeywords = [
     "ucad", "ugb", "gaston berger", "cheikh anta diop", "ept", "esp",
     "ensae", "esmt", "uidt", "uadb", "uam", "ussein", "uasz", "unchk", "un-chk",
     "fastef", "cesti", "enam", "isep", "polytechnique de thies", "fann",
     "amadou mahtar mbow", "diamniadio", "alioune diop", "iba der thiam",
-    "assane seck", "sine saloum", "cheikh hamidou kane"
+    "assane seck", "sine saloum", "cheikh hamidou kane", "cesag"
   ];
   const hasEtablissement = etablissementsKeywords.some((k) => clean.includes(k));
-  if (hasEtablissement) {
+  if (
+    hasEtablissement &&
+    (clean.includes("infos sur") ||
+      clean.includes("parle-moi de") ||
+      clean.includes("parle moi de") ||
+      clean.includes("formations propose") ||
+      clean.includes("ufr") ||
+      clean.includes("faculte") ||
+      clean.includes("departement") ||
+      clean.includes("frais") ||
+      clean.includes("situee") ||
+      clean.includes("ou se trouve") ||
+      clean.includes("presentation de") ||
+      !clean.includes("orientation"))
+  ) {
     return "info_etablissement";
   }
 
-  // 6. Information sur une formation / filière
+  // 6. Information sur une formation / où trouver une filière
   if (
+    clean.includes("ou trouver") ||
+    clean.includes("ou etudier") ||
+    clean.includes("ou peut-on etudier") ||
+    clean.includes("ou peut on etudier") ||
+    clean.includes("quelles universites proposent") ||
+    clean.includes("quelles sont les universites") ||
+    clean.includes("quelles ecoles proposent") ||
+    clean.includes("dans quelle universite") ||
+    clean.includes("dans quel etablissement") ||
     clean.includes("licence en ") ||
     clean.includes("licence ") ||
     clean.includes("master en ") ||
@@ -271,6 +294,10 @@ export function detectQueryMode(message: string): AssistantMode {
     clean.includes("programme de")
   ) {
     return "info_formation";
+  }
+
+  if (hasEtablissement) {
+    return "info_etablissement";
   }
 
   return "orientation";
@@ -481,7 +508,13 @@ for (const doc of CORE_DOCUMENTS) {
 if (Array.isArray(etablissementsData)) {
   for (const rawEt of etablissementsData) {
     const et = rawEt as Record<string, any>;
-    const isPublic = (et.statut || et.statut_etablissement || et.type_etablissement || et.type || "").toLowerCase().includes("public");
+    const rawType = (et.statut || et.statut_etablissement || et.type_etablissement || et.type || "").toLowerCase();
+    const isPublic =
+      rawType.includes("publi") ||
+      rawType.includes("etat") ||
+      rawType.includes("d'etat") ||
+      rawType.includes("national") ||
+      ["ucad", "ugb", "uidt", "uadb", "uasz", "uam", "unchk", "ussein", "ept", "esp", "ensae", "esea", "cesti", "ebad", "endss", "fastef"].includes((et.id || "").toLowerCase());
     const ufrs = Array.isArray(et.facultes_ou_ufr) && et.facultes_ou_ufr.length > 0
       ? `\n- Facultés, UFR et Écoles : ${et.facultes_ou_ufr.join(", ")}`
       : "";
@@ -749,26 +782,31 @@ export async function searchKnowledge(
     }
 
     // Boost majeur pour les concours officiels si la requête demande un concours
-    if (queryTokens.includes("concour")) {
+    const isConcoursQuery = queryTokens.includes("concour") || options?.entityTypeFilter === "concours";
+    if (isConcoursQuery) {
       if (doc.entity_type === "concours") {
-        score *= 3.0;
+        score *= 4.0;
+        score += 35.0;
       } else {
-        score *= 0.3;
+        score *= 0.2;
       }
     }
 
     // Boost si le sigle officiel demandé figure dans le document (ex: ept, esp, cesti, uam, ucad, ugb...)
-    const acronymMatches = ["ept", "esp", "cesti", "ucad", "ugb", "uidt", "uam", "ussein", "uadb", "uasz", "unchk", "ensae", "esmt"].filter(
+    const acronymMatches = ["ept", "esp", "cesti", "ucad", "ugb", "uidt", "uam", "ussein", "uadb", "uasz", "unchk", "ensae", "esmt", "cesag"].filter(
       (acr) => queryTokens.includes(acr) && doc.tokens.includes(acr)
     );
     if (acronymMatches.length > 0) {
-      const isDirectEtablissementDoc = acronymMatches.some((acr) => doc.id === `etablissement_${acr}`);
-      if (isDirectEtablissementDoc) {
+      if (isConcoursQuery && doc.entity_type === "concours") {
+        score += 50.0; // Pousse immédiatement le concours de l'école ciblée en tête absolue
+      } else if (!isConcoursQuery && acronymMatches.some((acr) => doc.id === `etablissement_${acr}`)) {
         score += 25.0; // Pousse immédiatement l'établissement concerné en tête absolue
+      } else if (doc.entity_type === "concours") {
+        score *= isConcoursQuery ? 4.0 : 0.5;
       } else if (doc.entity_type === "etablissement") {
-        score *= 4.0;
+        score *= isConcoursQuery ? 0.3 : 4.0;
       } else if (doc.entity_type === "composante") {
-        score *= 2.5;
+        score *= isConcoursQuery ? 0.4 : 2.5;
       } else {
         // Document de procédure générique qui liste les sigles (ex: campusen_procedure_officielle)
         score *= 0.2;
@@ -1125,4 +1163,362 @@ export function findMatchingFormations(
 
 function fDiplome(f: any): string {
   return f.diplome_prepare || "";
+}
+
+/**
+ * Recherche détaillée des universités et écoles proposant une filière donnée au Sénégal
+ */
+export function getFiliereLocationsReport(query: string, profile?: any): { report: string; found: boolean } {
+  const clean = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+  const keywords = [
+    "informatique", "medecine", "sante", "droit", "gestion", "comptabilite",
+    "genie civil", "mecanique", "electrique", "telecommunication", "agronomie",
+    "agriculture", "journalisme", "communication", "langue", "anglais",
+    "lettres", "mathematiques", "physique", "chimie", "economie", "statistique",
+    "logistique", "transport", "architecture", "mines", "petrole", "environnement"
+  ];
+
+  let target = "";
+  for (const kw of keywords) {
+    if (clean.includes(kw)) {
+      target = kw;
+      break;
+    }
+  }
+
+  if (!target) {
+    const match = clean.match(/(?:filiere|etudier|licence|formation en|master en)\s+(?:en\s+|de\s+|d['’]\s*)?([a-z0-9\s-]{3,25})/i);
+    if (match) target = match[1].trim();
+  }
+
+  // Si l'utilisateur clique sur "Où trouver ces filières au Sénégal ?" sans nommer la filière,
+  // déduire la discipline depuis le profil (première formation recommandée ou intérêt confirmé)
+  if (!target && profile) {
+    const rec1 = profile.formations_recommandees?.[0] || "";
+    const dom1 = profile.confirmed_interests?.[0] || profile.interets_principaux?.[0] || "";
+    const pProj = profile.projet || "";
+    const candidateText = `${rec1} ${dom1} ${pProj}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    for (const kw of keywords) {
+      if (candidateText.includes(kw)) {
+        target = kw;
+        break;
+      }
+    }
+    if (!target && (candidateText.includes("tech") || candidateText.includes("logiciel") || candidateText.includes("dev"))) {
+      target = "informatique";
+    }
+  }
+
+  if (!target) {
+    // Si la demande est générale sur les filières disponibles au Sénégal
+    const publicEtabs = ["UCAD (Dakar)", "UGB (Saint-Louis)", "UIDT (Thiès)", "UAM (Diamniadio)", "UADB (Bambey)", "UASZ (Ziguinchor)", "USSEIN (Kaolack)", "UN-CHK (Réseau ENO national)"];
+    let report = `### 📚 Où trouver les principales filières d'études au Sénégal ?\n\n`;
+    report += `Les universités publiques d'État réparties sur le territoire national couvrent l'ensemble des grands domaines :\n\n`;
+    report += `- 💻 **Informatique & Technologies** : UCAD (FST & ESP), UGB, UIDT, UAM, UADB, UN-CHK\n`;
+    report += `- ⚕️ **Santé & Médecine** : UCAD (FMPO), UGB (2S), UIDT (UFR Santé), UASZ (UFR Santé)\n`;
+    report += `- ⚖️ **Droit & Sciences Politiques** : UCAD (FSJP), UGB (SJP), UIDT, UASZ\n`;
+    report += `- 📊 **Économie, Gestion & Commerce** : UCAD (FASEG & ESP), UGB (SEG), CESAG, UIDT\n`;
+    report += `- ⚙️ **Ingénierie & BTP** : EPT (Thiès), ESP (Dakar), UAM (Diamniadio), IPSL (Saint-Louis)\n`;
+    report += `- 🌱 **Agronomie & Élevage** : USSEIN (Kaolack), ENSA (Thiès), UGB (UFR S2ATA)\n\n`;
+    report += `> **Frais nationaux d'inscription** : **25 000 FCFA/an** dans toutes les universités publiques via **Campusen** (campusen.sec.gouv.sn).\n\n`;
+    report += `Précise-moi la filière ou le métier qui t'intéresse pour obtenir la liste détaillée des établissements avec leurs conditions d'admission !`;
+    return { report, found: true };
+  }
+
+  const matches = (formationsData as any[]).filter((f) => {
+    const fNom = (f.nom_officiel || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const fDom = (f.domaine_id || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const fVar = (f.variantes_nom || []).map((v: string) => v.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+    return fNom.includes(target) || fDom.includes(target) || fVar.some((v: string) => v.includes(target));
+  });
+
+  if (matches.length === 0) return { report: "", found: false };
+
+  const etabsMap = new Map<string, any[]>();
+  for (const m of matches) {
+    const etab = m.etablissement_nom || "Université Publique";
+    if (!etabsMap.has(etab)) etabsMap.set(etab, []);
+    etabsMap.get(etab)!.push(m);
+  }
+
+  const disciplineLabels: Record<string, string> = {
+    medecine: "Médecine & Santé",
+    sante: "Sciences de la Santé & Médecine",
+    informatique: "Informatique & Numérique",
+    droit: "Droit & Sciences Politiques",
+    gestion: "Gestion, Économie & Commerce",
+    comptabilite: "Comptabilité & Finance",
+    "genie civil": "Génie Civil & BTP",
+    mecanique: "Génie Mécanique & Électromécanique",
+    electrique: "Génie Électrique & Énergétique",
+    telecommunication: "Télécommunications & Réseaux",
+    agronomie: "Sciences Agronomiques & Développement Rural",
+    agriculture: "Agriculture & Agroalimentaire",
+    journalisme: "Journalisme & Communication",
+    communication: "Communication & Médias",
+    langue: "Langues & Traduction",
+    anglais: "Études Anglophones & Traduction",
+    lettres: "Lettres Modernes & Sciences Humaines",
+    mathematiques: "Mathématiques & Modélisation",
+    physique: "Sciences Physiques & Chimie",
+    chimie: "Chimie appliquée & Biologie",
+    economie: "Sciences Économiques & Gestion",
+    statistique: "Statistique & Démographie",
+    logistique: "Logistique & Transport",
+    transport: "Transport & Mobilité",
+    architecture: "Architecture & Urbanisme",
+    mines: "Mines & Géologie",
+    petrole: "Pétrole, Gaz & Énergies Renouvelables",
+    environnement: "Environnement & Développement Durable",
+  };
+
+  const titleDiscipline = disciplineLabels[target] || (target.charAt(0).toUpperCase() + target.slice(1));
+  let report = `### Où étudier la filière **${titleDiscipline}** au Sénégal ?\n\n`;
+  report += `Voici les universités et établissements d'enseignement supérieur officiellement répertoriés dispensant cette filière :\n\n`;
+
+  for (const [etabNom, forms] of etabsMap.entries()) {
+    const isPublic = !etabNom.includes("Privé") && !etabNom.includes("ISM") && !etabNom.includes("BEM") && !etabNom.includes("HEC");
+    report += `#### 🏛️ **${etabNom}** (${isPublic ? "Établissement Public d'État" : "Établissement Privé Agréé"})\n`;
+    const uniqueForms = Array.from(new Set(forms.map((f) => f.nom_officiel)));
+    for (const uf of uniqueForms.slice(0, 3)) {
+      const formObj = forms.find((f) => f.nom_officiel === uf);
+      report += `- **${uf}** : ${formObj?.diplome_prepare || "Licence (Bac+3)"} (${formObj?.duree || "3 ans"})\n`;
+      report += `  - *Accès* : ${formObj?.conditions_admission || "Via la plateforme Campusen (campusen.sec.gouv.sn)"}\n`;
+      report += `  - *Séries de Bac admissibles* : ${(formObj?.series_bac_admissibles || ["S1", "S2", "L"]).join(", ")}\n`;
+    }
+    report += `\n`;
+  }
+
+  report += `> **Frais nationaux d'inscription** : Les universités publiques appliquent le tarif fixé par l'État de **25 000 FCFA/an** pour les bacheliers orientés par Campusen.`;
+
+  return { report, found: true };
+}
+
+/**
+ * Fiche détaillée sur un établissement d'enseignement supérieur au Sénégal
+ */
+export function getEtablissementOverviewReport(query: string): { report: string; found: boolean } {
+  const clean = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+  const etabsList = [
+    { code: "ucad", noms: ["ucad", "cheikh anta diop", "dakar", "fann"] },
+    { code: "ugb", noms: ["ugb", "gaston berger", "saint-louis", "sanar"] },
+    { code: "uam", noms: ["uam", "amadou mahtar mbow", "diamniadio"] },
+    { code: "uidt", noms: ["uidt", "iba der thiam", "thies", "thiès"] },
+    { code: "uadb", noms: ["uadb", "alioune diop", "bambey"] },
+    { code: "uasz", noms: ["uasz", "assane seck", "ziguinchor"] },
+    { code: "ussein", noms: ["ussein", "sine saloum", "kaolack"] },
+    { code: "unchk", noms: ["unchk", "un-chk", "cheikh hamidou kane", "virtuelle", "uvs"] },
+    { code: "ept", noms: ["ept", "polytechnique de thies", "polytechnique de thiès", "ecole polytechnique de thies"] },
+    { code: "esp", noms: ["esp", "superieure polytechnique", "ecole superieure polytechnique"] },
+    { code: "ensae", noms: ["ensae", "statistique", "statistique et de l'analyse"] },
+    { code: "cesti", noms: ["cesti", "journalisme"] },
+    { code: "cesag", noms: ["cesag", "africain d'etudes superieures en gestion"] },
+    { code: "esmt", noms: ["esmt", "telecommunications"] },
+    { code: "endss", noms: ["endss", "developpement sanitaire"] },
+    { code: "ebad", noms: ["ebad", "bibliothecaires"] },
+    { code: "fastef", noms: ["fastef", "education et de la formation"] },
+  ];
+
+  let foundCode = "";
+  for (const item of etabsList) {
+    if (item.noms.some((n) => clean.includes(n))) {
+      foundCode = item.code;
+      break;
+    }
+  }
+
+  if (!foundCode) {
+    const publicUniversities = [
+      { sigle: "UCAD", nom: "Université Cheikh Anta Diop", ville: "Dakar" },
+      { sigle: "UGB", nom: "Université Gaston Berger", ville: "Saint-Louis" },
+      { sigle: "UAM", nom: "Université Amadou Mahtar Mbow", ville: "Diamniadio" },
+      { sigle: "UIDT", nom: "Université Iba Der Thiam", ville: "Thiès" },
+      { sigle: "UADB", nom: "Université Alioune Diop", ville: "Bambey" },
+      { sigle: "UASZ", nom: "Université Assane Seck", ville: "Ziguinchor" },
+      { sigle: "USSEIN", nom: "Université du Sine Saloum El-Hadj Ibrahima NIASS", ville: "Kaolack" },
+      { sigle: "UN-CHK", nom: "Université Numérique Cheikh Hamidou Kane (ex-UVS)", ville: "Réseau national d'ENO" },
+      { sigle: "EPT", nom: "École Polytechnique de Thiès", ville: "Thiès" },
+      { sigle: "ESP", nom: "École Supérieure Polytechnique", ville: "Dakar" },
+    ];
+
+    let report = `### 🏛️ Les Universités Publiques d'État au Sénégal\n\n`;
+    report += `Le Sénégal compte **8 universités publiques d'État** et de grandes écoles d'excellence réparties sur le territoire national :\n\n`;
+    for (const u of publicUniversities) {
+      report += `- **${u.sigle}** : ${u.nom} (${u.ville})\n`;
+    }
+    report += `\n> **Droits nationaux d'inscription** : **25 000 FCFA/an** via la plateforme nationale **Campusen** (campusen.sec.gouv.sn).\n\n`;
+    report += `De quelle université ou école souhaites-tu découvrir les filières, UFR et modalités d'admission ?`;
+    return { report, found: true };
+  }
+
+  const etab = (etablissementsData as any[]).find((e) =>
+    (e.id || "").toLowerCase() === foundCode ||
+    (e.sigle || "").toLowerCase() === foundCode ||
+    (e.nom || "").toLowerCase().includes(foundCode)
+  );
+
+  if (!etab) return { report: "", found: false };
+
+  const comps = (composantesData as any[]).filter((c) =>
+    (c.etablissement_id || "").toLowerCase() === (etab.id || "").toLowerCase() ||
+    (c.etablissement_nom || "").toLowerCase().includes(etab.sigle?.toLowerCase() || etab.nom.toLowerCase())
+  );
+
+  const forms = (formationsData as any[]).filter((f) =>
+    (f.etablissement_id || "").toLowerCase() === (etab.id || "").toLowerCase() ||
+    (f.etablissement_nom || "").toLowerCase().includes(etab.sigle?.toLowerCase() || etab.nom.toLowerCase())
+  );
+
+  const rawStatut = (etab.statut || etab.statut_etablissement || etab.type_etablissement || etab.type || "").toLowerCase();
+  const isPublic = rawStatut.includes("publi") || rawStatut.includes("etat") || rawStatut.includes("national") || ["ucad", "ugb", "uidt", "uadb", "uasz", "uam", "unchk", "ussein", "ept", "esp", "ensae", "cesti", "ebad", "endss"].includes(etab.id.toLowerCase());
+
+  let report = `### Fiche officielle : **${etab.nom}** (${etab.sigle || etab.id.toUpperCase()})\n\n`;
+  report += `- **Statut officiel** : ${isPublic ? "Établissement Public d'État" : "Établissement Privé Agréé par le MESRI / ANAQ-Sup"}\n`;
+  report += `- **Localisation** : ${etab.ville || "Sénégal"} (${etab.region || "Sénégal"})\n`;
+  report += `- **Droits d'inscription / Frais** : ${isPublic ? "25 000 FCFA/an (droits nationaux fixés par l'État via Campusen)" : etab.frais_scolarite || "Tarification privée variable"}\n`;
+  report += `- **Modalité d'admission** : ${isPublic ? "Plateforme nationale Campusen (campusen.sec.gouv.sn) ou Concours officiel d'entrée" : "Sélection sur dossier et entretien"}\n`;
+  if (etab.site_web || etab.site_officiel) {
+    report += `- **Site officiel** : [${etab.site_web || etab.site_officiel}](${etab.site_web || etab.site_officiel})\n`;
+  }
+
+  if (comps.length > 0) {
+    report += `\n#### 🏛️ Facultés, UFR et Instituts rattachés :\n`;
+    for (const c of comps.slice(0, 6)) {
+      report += `- **${c.nom}** ${c.sigle ? `(${c.sigle})` : ""}\n`;
+    }
+  }
+
+  if (forms.length > 0) {
+    report += `\n#### 🎓 Formations phares proposées :\n`;
+    const uniqueForms = Array.from(new Set(forms.map((f: any) => f.nom_officiel))).slice(0, 6);
+    for (const uf of uniqueForms) {
+      report += `- ${uf}\n`;
+    }
+  }
+
+  return { report, found: true };
+}
+
+/**
+ * Guide et fiches officielles des concours d'entrée de l'enseignement supérieur au Sénégal
+ */
+export function getConcoursOverviewReport(query: string, profile?: any): { report: string; found: boolean } {
+  const clean = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+  const concoursKeywords = [
+    { code: "ept", mots: ["ept", "polytechnique de thies", "polytechnique de thies"] },
+    { code: "esp", mots: ["esp", "superieure polytechnique", "dut esp"] },
+    { code: "cesti", mots: ["cesti", "journalisme"] },
+    { code: "esea", mots: ["esea", "amenagement", "developpement communautaire"] },
+    { code: "ensae", mots: ["ensae", "statistique", "analyste statisticien"] },
+    { code: "cesag", mots: ["cesag", "management", "gestion"] },
+    { code: "ena", mots: ["ena", "administration"] },
+    { code: "cfpt", mots: ["cfpt", "senegal-japon", "senegal japon"] },
+    { code: "esmt", mots: ["esmt", "telecommunications"] },
+    { code: "ipsl", mots: ["ipsl", "polytechnique de saint-louis"] },
+    { code: "fastef", mots: ["fastef", "professeur"] },
+    { code: "endss", mots: ["endss", "sante et developpement social"] },
+  ];
+
+  let targetCode = "";
+  for (const item of concoursKeywords) {
+    if (item.mots.some((m) => clean.includes(m))) {
+      targetCode = item.code;
+      break;
+    }
+  }
+
+  // 1. Cas d'un concours spécifique demandé
+  if (targetCode) {
+    const conc = (concoursData as any[]).find((c) =>
+      (c.id || "").toLowerCase().includes(targetCode) ||
+      (c.nom_concours || "").toLowerCase().includes(targetCode) ||
+      (c.organisme_organisateur || "").toLowerCase().includes(targetCode)
+    );
+
+    if (conc) {
+      let report = `### 🏆 Fiche Officielle : **${conc.nom_concours}**\n\n`;
+      report += `- **Organisateur** : ${conc.organisme_organisateur}\n`;
+      report += `- **Domaine** : ${conc.domaine || "Enseignement Supérieur Technique"}\n`;
+      report += `- **Niveau requis** : ${conc.niveau_requis || "Terminale / Baccalauréat"}\n`;
+      report += `- **Conditions d'admission** : ${conc.conditions_admission || "Ouvert aux bacheliers sénégalais et étrangers selon quota"}\n`;
+      if (conc.limite_age) report += `- **Limite d'âge** : ${conc.limite_age}\n`;
+      report += `- **Frais de dossier officiels** : **${conc.frais_inscription || "Variables"}**\n`;
+      report += `- **Période des dépôts** : ${conc.date_ouverture_cloture || "Entre février et mai"}\n`;
+      report += `- **Date des épreuves** : ${conc.date_epreuves || "Selon communiqué annuel"}\n`;
+      if (conc.lieu_epreuves) report += `- **Centres d'examen** : ${conc.lieu_epreuves}\n`;
+      const mats = Array.isArray(conc.matieres_concours) ? conc.matieres_concours.join(", ") : conc.matieres_concours;
+      if (mats) report += `- **Matières au concours** : ${mats}\n`;
+      if (conc.debouches) report += `- **Débouchés clés** : ${conc.debouches}\n`;
+      report += `\n> *Rappel : Les dépôts de dossiers et fiches de candidature s'effectuent directement auprès de l'école ou sur leur plateforme officielle.*`;
+      return { report, found: true };
+    }
+  }
+
+  // 2. Cas d'une demande générale ("quels concours", "concours disponibles", etc.)
+  const userSerie = (profile?.serie || "").toUpperCase();
+  let filtered = (concoursData as any[]) || [];
+
+  if (userSerie.includes("S") || userSerie.includes("T")) {
+    filtered = filtered.filter((c) =>
+      (c.conditions_admission || "").includes("S") ||
+      (c.niveau_requis || "").includes("scientifique") ||
+      (c.domaine || "").includes("Ingénierie") ||
+      (c.domaine || "").includes("Sciences") ||
+      c.id === "ept_concours" || c.id === "esp_dut_concours" || c.id === "ensae_concours"
+    );
+  } else if (userSerie.includes("L")) {
+    filtered = filtered.filter((c) =>
+      (c.conditions_admission || "").includes("L") ||
+      (c.domaine || "").includes("Lettres") ||
+      (c.domaine || "").includes("Communication") ||
+      c.id === "cesti_concours" || c.id === "esea_concours" || c.id === "ena_concours"
+    );
+  } else if (userSerie === "G" || userSerie.includes("STEG")) {
+    filtered = filtered.filter((c) =>
+      (c.conditions_admission || "").includes("G") ||
+      (c.conditions_admission || "").includes("STEG") ||
+      (c.domaine || "").includes("Gestion") ||
+      c.id === "cesag_concours" || c.id === "esp_dut_concours" || c.id === "esea_concours"
+    );
+  }
+
+  const listToShow = filtered.slice(0, 4);
+  let report = `### 🏆 Concours d'Entrée aux Grandes Écoles du Sénégal\n\n`;
+  report += `Voici les concours d'excellence officiellement documentés${userSerie ? ` accessibles pour la série **${userSerie}**` : ""} :\n\n`;
+
+  for (const c of listToShow) {
+    report += `#### 📌 **${c.nom_concours}** (${c.organisme_organisateur})\n`;
+    report += `- **Niveau / Séries** : ${c.conditions_admission || c.niveau_requis}\n`;
+    report += `- **Période de candidature** : ${c.date_ouverture_cloture || "Généralement entre février et mai"}\n`;
+    report += `- **Frais de dossier** : ${c.frais_inscription || "Selon session"}\n`;
+    report += `- **Débouchés** : ${c.debouches || "Cadres et ingénieurs"}\n\n`;
+  }
+
+  report += `> **Important** : Contrairement aux orientations Campusen, les concours d'entrée nécessitent une inscription séparée et autonome auprès de chaque établissement organisateur.`;
+
+  return { report, found: true };
+}
+
+/**
+ * Guide officiel Campusen et bourses d'études nationales
+ */
+export function getCampusenProcedureSummary(): string {
+  return `### 📋 Procédure officielle d'orientation Campusen au Sénégal
+
+La plateforme nationale **Campusen** (campusen.sec.gouv.sn), gérée par le Ministère de l'Enseignement Supérieur (MESRI), est la voie unique d'orientation pour les bacheliers sénégalais dans le public :
+
+1. **Création du compte** : Dès l'ouverture de la campagne (après les résultats du Bac), munis-toi de ton numéro de table au Baccalauréat et de ta date de naissance.
+2. **Choix des filières** :
+   - Jusqu'à **3 choix** dans les universités publiques d'État (UCAD, UGB, UIDT, UAM, UADB, UASZ, USSEIN, UN-CHK).
+   - Jusqu'à **3 choix** dans les établissements privés partenaires subventionnés.
+3. **Paiement des droits nationaux d'inscription** :
+   - Montant fixé par l'État : **25 000 FCFA** pour les bacheliers orientés dans le public.
+   - Payable via les solutions mobiles : Wave, Orange Money ou Free Money.
+4. **Validation et résultats** : Le Ministère publie les listes d'admission par vagues successives. Une fois orienté, valide impérativement ta proposition avant la date de forclusion.
+5. **Bourses de l'État (DGES)** :
+   - Démarche en ligne sur **bourses.sec.gouv.sn** : demi-bourse (20 000 FCFA/mois) ou bourse entière (40 000 FCFA/mois).
+   - Bourses nationales d'excellence pour les mentions Bien et Très Bien.`;
 }

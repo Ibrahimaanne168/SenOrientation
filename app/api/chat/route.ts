@@ -12,6 +12,10 @@ import {
   formatKnowledgeForPrompt,
   KnowledgeMatch,
   findMatchingFormations,
+  getFiliereLocationsReport,
+  getEtablissementOverviewReport,
+  getConcoursOverviewReport,
+  getCampusenProcedureSummary,
 } from "@/lib/rag";
 import { SYSTEM_PROMPT_TEMPLATE, getAIModel } from "@/lib/ai";
 import { createClient } from "@/lib/supabase/server";
@@ -505,15 +509,220 @@ function generateLocalOrientationPayload(
   profile: ConversationProfile
 ): TechnicalOutput {
   const lowerQuery = query.toLowerCase().trim();
-
-  // 1. CAS D'UNE DEMANDE DIRECTE FACTUELLE (Établissement, Formation, Concours, Métier, Comparaison)
   const qMode = detectQueryMode(query);
+
+  // 1. CAS D'UNE ACTION POST-BILAN (Approfondissement d'option, Campusen, Comparaison)
+  const isDeepDiveFirst =
+    lowerQuery.includes("approfondir la premiere option") ||
+    lowerQuery.includes("approfondir la première option") ||
+    lowerQuery.includes("approfondir cette option") ||
+    lowerQuery.includes("premiere option") ||
+    lowerQuery.includes("première option");
+
+  if (isDeepDiveFirst) {
+    const matched = findMatchingFormations(profile, 5);
+    const targetForm = (profile.formations_recommandees && profile.formations_recommandees.length > 0)
+      ? profile.formations_recommandees[0]
+      : matched[0]?.nom || "Licence Informatique";
+    const formDetails = matched.find((m) => m.nom.toLowerCase() === targetForm.toLowerCase()) || matched[0];
+
+    const reply = `### 🔍 Focus détaillé : **${formDetails?.nom || targetForm}**\n\n` +
+      `- **Établissement(s)** : ${formDetails?.etablissement || "Universités publiques du Sénégal"}\n` +
+      `- **Diplôme préparé** : ${formDetails?.diplome || "Licence (Bac+3)"} — Durée : ${formDetails?.duree || "3 ans"}\n` +
+      `- **Modalités d'admission** : ${formDetails?.conditions || "Orientation officielle via la plateforme Campusen (campusen.sec.gouv.sn)"}\n` +
+      `- **Pourquoi cette formation te correspond** : ${formDetails?.pourquoi || "En parfaite adéquation avec tes aptitudes et ton profil"}\n` +
+      `- **Frais de scolarité annuels** : Droits nationaux fixés par l'État de **25 000 FCFA/an**\n` +
+      `- **Débouchés professionnels clés** : ${(formDetails?.debouches || []).slice(0, 5).join(", ") || "Cadres techniques, spécialistes de branche et poursuite en Master"}\n\n` +
+      `*Conseil d'orientation : Pour maximiser tes chances d'attribution lors des choix Campusen, classe cette formation parmi tes premiers vœux dans les universités publiques correspondantes.*`;
+
+    return {
+      reply,
+      suggestions: [
+        "Voir les démarches Campusen",
+        "Découvrir la deuxième option",
+        "Comparer les débouchés",
+        "Ajuster mon profil",
+      ],
+      dossier: profile,
+      indices: [{ texte: `Approfondissement : ${formDetails?.nom || targetForm}`, statut: "certain" }],
+      hypotheses: [],
+      prochaine_question_vise: "Détailler la première formation recommandée et orienter vers les démarches",
+      pistes: [],
+      etablissements: [formDetails?.etablissement || ""].filter(Boolean),
+      etape: 5,
+    };
+  }
+
+  const isCampusenGuide =
+    lowerQuery.includes("démarches campusen") ||
+    lowerQuery.includes("demarches campusen") ||
+    lowerQuery.includes("voir les démarches") ||
+    lowerQuery.includes("comment postuler") ||
+    lowerQuery.includes("inscription campusen") ||
+    lowerQuery.includes("procedure campusen") ||
+    lowerQuery.includes("procédure campusen");
+
+  if (isCampusenGuide) {
+    const reply = getCampusenProcedureSummary();
+    return {
+      reply,
+      suggestions: [
+        "Bourses nationales DGES",
+        "Approfondir la première option",
+        "Poser une question sur une université",
+        "Reprendre mon orientation",
+      ],
+      dossier: profile,
+      indices: [{ texte: "Consultation démarches Campusen", statut: "certain" }],
+      hypotheses: [],
+      prochaine_question_vise: "Expliquer la procédure officielle Campusen étape par étape",
+      pistes: [],
+      etablissements: [],
+      etape: 5,
+    };
+  }
+
+  const isComparingCareers =
+    lowerQuery.includes("comparer les débouchés") ||
+    lowerQuery.includes("comparer les debouches") ||
+    lowerQuery.includes("comparer debouches");
+
+  if (isComparingCareers) {
+    const matched = findMatchingFormations(profile, 5);
+    let reply = "### ⚖️ Comparatif des Débouchés Professionnels\n\n";
+    for (const m of matched.slice(0, 3)) {
+      reply += `#### 🎓 **${m.nom}** (${m.diplome})\n`;
+      reply += `- **Débouchés principaux** : ${(m.debouches || []).join(", ") || "Cadres et spécialistes du secteur"}\n`;
+      reply += `- **Secteur d'insertion** : Entreprises publiques, secteur privé national/international et entrepreneuriat\n`;
+      reply += `- **Type d'études** : ${m.duree || "3 ans"} (${m.diplome.includes("Doctorat") ? "Cursus long d'excellence" : m.diplome.includes("Ingénieur") ? "Titre d'ingénieur d'État" : "Licence professionnelle ou générale"})\n\n`;
+    }
+    reply += `*Conseil : Choisis en fonction de ton envie de t'insérer rapidement dans l'emploi (après 2 ou 3 ans) ou de poursuivre des études longues jusqu'au Master ou Doctorat.*`;
+
+    return {
+      reply,
+      suggestions: [
+        "Approfondir la première option",
+        "Voir les démarches Campusen",
+        "Bourses et frais d'études",
+        "Ajuster mon profil",
+      ],
+      dossier: profile,
+      indices: [{ texte: "Comparaison des débouchés", statut: "certain" }],
+      hypotheses: [],
+      prochaine_question_vise: "Comparer les perspectives professionnelles des formations recommandées",
+      pistes: [],
+      etablissements: [],
+      etape: 5,
+    };
+  }
+
+  // 2. CAS D'UNE QUESTION "OÙ TROUVER UNE FILIÈRE" OU "INFOS SUR UNE UNIVERSITÉ"
+  const isWhereToStudy =
+    lowerQuery.includes("ou trouver") ||
+    lowerQuery.includes("où trouver") ||
+    lowerQuery.includes("ou etudier") ||
+    lowerQuery.includes("où étudier") ||
+    lowerQuery.includes("ou peut-on etudier") ||
+    lowerQuery.includes("où peut-on étudier") ||
+    lowerQuery.includes("ou peut on etudier") ||
+    lowerQuery.includes("où peut on étudier") ||
+    lowerQuery.includes("quelles universités proposent") ||
+    lowerQuery.includes("quelles universites proposent") ||
+    lowerQuery.includes("quelles ecoles proposent") ||
+    lowerQuery.includes("quelles écoles proposent") ||
+    lowerQuery.includes("dans quelle université") ||
+    lowerQuery.includes("dans quelle universite") ||
+    lowerQuery.includes("dans quelles universités") ||
+    lowerQuery.includes("dans quelles universites");
+
+  if (isWhereToStudy) {
+    const locReport = getFiliereLocationsReport(query, profile);
+    if (locReport.found) {
+      return {
+        reply: locReport.report,
+        suggestions: [
+          "Conditions d'admission pour cette filière",
+          "Débouchés professionnels",
+          "Est-ce compatible avec ma série ?",
+          "Poser une question sur une université",
+        ],
+        dossier: profile,
+        indices: [{ texte: `Localisation filière : ${query.slice(0, 40)}`, statut: "certain" }],
+        hypotheses: [],
+        prochaine_question_vise: "Présenter la liste officielle des universités et écoles proposant cette filière",
+        pistes: [],
+        etablissements: [],
+        etape: profile.etape || 4,
+      };
+    }
+  }
+
+  const isConcoursRequest =
+    qMode === "concours" ||
+    lowerQuery.includes("concours") ||
+    lowerQuery.includes("voir les concours");
+
+  if (isConcoursRequest) {
+    const concReport = getConcoursOverviewReport(query, profile);
+    if (concReport.found) {
+      return {
+        reply: concReport.report,
+        suggestions: [
+          "Conditions du concours EPT Thiès",
+          "Concours DUT de l'ESP Dakar",
+          "Voir les démarches Campusen",
+          "Reprendre mon orientation",
+        ],
+        dossier: profile,
+        indices: [{ texte: `Recherche concours : ${query.slice(0, 40)}`, statut: "certain" }],
+        hypotheses: [],
+        prochaine_question_vise: "Détailler les concours d'excellence et modalités d'inscription",
+        pistes: [],
+        etablissements: [],
+        etape: profile.etape || 4,
+      };
+    }
+  }
+
+  const isEtablissementDetail =
+    qMode === "info_etablissement" ||
+    lowerQuery.includes("infos sur") ||
+    lowerQuery.includes("parle-moi de") ||
+    lowerQuery.includes("parle moi de") ||
+    lowerQuery.includes("formations propose") ||
+    lowerQuery.includes("quelles formations à") ||
+    lowerQuery.includes("quelles formations a") ||
+    lowerQuery.includes("question sur une université") ||
+    lowerQuery.includes("poser une question sur une université");
+
+  if (isEtablissementDetail) {
+    const etabReport = getEtablissementOverviewReport(query);
+    if (etabReport.found) {
+      return {
+        reply: etabReport.report,
+        suggestions: [
+          "Formations proposées par cette université",
+          "Conditions d'admission Campusen",
+          "Bourses et frais d'études",
+          "Reprendre mon orientation",
+        ],
+        dossier: profile,
+        indices: [{ texte: `Fiche établissement : ${query.slice(0, 40)}`, statut: "certain" }],
+        hypotheses: [],
+        prochaine_question_vise: "Fournir la fiche officielle de l'établissement et son offre de formation",
+        pistes: [],
+        etablissements: [],
+        etape: profile.etape || 4,
+      };
+    }
+  }
+
+  // 3. CAS D'UNE DEMANDE DIRECTE FACTUELLE GÉNÉRALE (Concours, Métier, Comparaison, etc.)
   const isDirectRequest =
     qMode !== "orientation" ||
     lowerQuery.includes("quelles universités") ||
     lowerQuery.includes("quelles sont les universités") ||
     lowerQuery.includes("quelles écoles") ||
-    lowerQuery.includes("où peut-on étudier") ||
     lowerQuery.includes("conditions du concours") ||
     lowerQuery.includes("conditions d'accès") ||
     lowerQuery.includes("conditions dacces") ||
@@ -522,22 +731,16 @@ function generateLocalOrientationPayload(
     lowerQuery.includes("frais de scolarité") ||
     lowerQuery.includes("frais de scolarite") ||
     lowerQuery.includes("comment devenir") ||
-    lowerQuery.includes("parle-moi de") ||
-    lowerQuery.includes("parle moi de") ||
-    lowerQuery.includes("parle de") ||
     lowerQuery.includes("donne moi des infos") ||
     lowerQuery.includes("donne des infos") ||
-    lowerQuery.includes("infos sur") ||
     lowerQuery.includes("bourse") ||
     lowerQuery.includes("c'est quoi") ||
     lowerQuery.includes("qu'est-ce que") ||
-    lowerQuery.includes("formations propose") ||
     lowerQuery.includes("difference entre") ||
     lowerQuery.includes("différence entre");
 
   if (isDirectRequest) {
     if (!knowledge || knowledge.length === 0) {
-      // Information inexistante dans les données officielles
       return {
         reply: "Je ne dispose pas d'informations officielles documentées à ce sujet dans mes bases actuelles. Les formations et parcours accrédités au Sénégal sont recensés sur la plateforme officielle Campusen (campusen.sec.gouv.sn). Souhaites-tu explorer les filières disponibles dans un autre domaine ?",
         suggestions: [
@@ -556,7 +759,6 @@ function generateLocalOrientationPayload(
       };
     }
 
-    // Synthèse documentée à partir des sources officielles
     const docsSummary = knowledge
       .slice(0, 3)
       .map((k) => k.content.trim())
