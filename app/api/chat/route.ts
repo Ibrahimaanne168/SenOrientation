@@ -54,25 +54,32 @@ export interface TechnicalOutput {
 function streamJsonResponse(
   payload: TechnicalOutput,
   updatedProfile: ConversationProfile,
-  remainingRateLimit = 19
+  remainingRateLimit = 59
 ) {
   const jsonString = JSON.stringify(payload);
   return createDataStreamResponse({
     execute: async (dataStream) => {
-      dataStream.writeMessageAnnotation({
-        profile: updatedProfile,
-        dossier: payload.dossier,
-        indices: payload.indices,
-        hypotheses: payload.hypotheses,
-        prochaine_question_vise: payload.prochaine_question_vise,
-        pistes: payload.pistes,
-        etablissements: payload.etablissements,
-        etape: payload.etape,
-      } as any);
-      const chunks = jsonString.split(" ");
-      for (const chunk of chunks) {
-        dataStream.write(formatDataStreamPart("text", chunk + " "));
-        await new Promise((resolve) => setTimeout(resolve, 15));
+      try {
+        dataStream.writeMessageAnnotation({
+          profile: updatedProfile,
+          dossier: payload.dossier,
+          indices: payload.indices,
+          hypotheses: payload.hypotheses,
+          prochaine_question_vise: payload.prochaine_question_vise,
+          pistes: payload.pistes,
+          etablissements: payload.etablissements,
+          etape: payload.etape,
+        } as any);
+        const words = jsonString.split(" ");
+        const chunkSize = 6;
+        for (let i = 0; i < words.length; i += chunkSize) {
+          const slice = words.slice(i, i + chunkSize).join(" ") + " ";
+          dataStream.write(formatDataStreamPart("text", slice));
+          await new Promise((resolve) => setTimeout(resolve, 8));
+        }
+      } catch (streamErr) {
+        // eslint-disable-next-line no-console
+        console.error("[streamJsonResponse error]", streamErr);
       }
     },
     headers: {
@@ -83,14 +90,14 @@ function streamJsonResponse(
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Rate limiting par adresse IP
+    // 1. Rate limiting par adresse IP (60 requêtes / minute pour fluidité maximale)
     const ip =
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       req.headers.get("x-real-ip") ||
       "127.0.0.1";
 
     const rateLimit = checkRateLimit(`chat_${ip}`, {
-      limit: 20,
+      limit: 60,
       windowMs: 60 * 1000,
     });
 
@@ -247,47 +254,29 @@ export async function POST(req: NextRequest) {
 
     if (intent === "greeting") {
       // eslint-disable-next-line no-console
-      console.log("[RAG Pipeline] Routage : Salutation détectée -> Accueil et demande du prénom.");
-      if (!updatedProfile.prenom) {
-        const payload: TechnicalOutput = {
-          reply:
-            "Bonjour ! Bienvenue sur Jangora. Pour commencer et faire connaissance, comment tu t'appelles ?",
-          suggestions: [
-            "Je préfère ne pas le dire",
-          ],
-          dossier: updatedProfile,
-          indices: [],
-          hypotheses: [],
-          prochaine_question_vise: "Faire connaissance en demandant le prénom",
-          pistes: [],
-          etablissements: [],
-          etape: 1,
-        };
-        return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
-      } else {
-        const displayName = updatedProfile.prenom !== "l'ami" ? ` ${updatedProfile.prenom}` : "";
-        const payload: TechnicalOutput = {
-          reply:
-            `Ravi de te revoir${displayName} ! Pour qu'on avance ensemble, où en es-tu actuellement dans tes études ?`,
-          suggestions: [
-            "Collège (3e / BFEM)",
-            "Lycée (Seconde)",
-            "Lycée (Première)",
-            "Terminale",
-            "Nouveau bachelier",
-            "Étudiant (Supérieur)",
-            "En réorientation",
-          ],
-          dossier: updatedProfile,
-          indices: [],
-          hypotheses: [],
-          prochaine_question_vise: "Connaître le niveau scolaire (avant-bac, bac ou post-bac)",
-          pistes: [],
-          etablissements: [],
-          etape: 1,
-        };
-        return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
-      }
+      console.log("[RAG Pipeline] Routage : Salutation détectée -> Accueil et orientation directe.");
+      const displayName = updatedProfile.prenom && updatedProfile.prenom !== "l'ami" ? ` ${updatedProfile.prenom}` : "";
+      const payload: TechnicalOutput = {
+        reply:
+          `Bonjour${displayName} ! Bienvenue sur Jangora, ton conseiller d'orientation. Dis-moi : où en es-tu dans tes études ou quelle information recherches-tu aujourd'hui ?`,
+        suggestions: [
+          "Terminale (Bac cette année)",
+          "Nouveau bachelier",
+          "Lycée (Seconde / Première)",
+          "Collège (3e / BFEM)",
+          "Étudiant / Réorientation",
+          "Où trouver une filière ?",
+          "Infos sur une université",
+        ],
+        dossier: updatedProfile,
+        indices: [],
+        hypotheses: [],
+        prochaine_question_vise: "Connaître le niveau scolaire ou l'objectif d'orientation",
+        pistes: [],
+        etablissements: [],
+        etape: 1,
+      };
+      return streamJsonResponse(payload, updatedProfile, rateLimit.remaining);
     }
 
     if (intent === "gratitude") {
@@ -440,9 +429,9 @@ export async function POST(req: NextRequest) {
     const model = getAIModel();
 
     if (!model) {
-      // Mode local respectant scrupuleusement le ton de détective et les règles d'or de la section 3
+      // Mode local respectant scrupuleusement le dialogue d'orientation et la décision adaptative
       const localPayload = generateLocalOrientationPayload(
-        reformulatedQuery,
+        sanitized.cleanText,
         knowledgeMatches,
         updatedProfile
       );
@@ -463,11 +452,16 @@ export async function POST(req: NextRequest) {
 
       return createDataStreamResponse({
         execute: async (dataStream) => {
-          dataStream.writeMessageAnnotation({
-            profile: updatedProfile,
-            etape: updatedProfile.etape,
-          } as any);
-          await result.mergeIntoDataStream(dataStream);
+          try {
+            dataStream.writeMessageAnnotation({
+              profile: updatedProfile,
+              etape: updatedProfile.etape,
+            } as any);
+            await result.mergeIntoDataStream(dataStream);
+          } catch (streamError) {
+            // eslint-disable-next-line no-console
+            console.error("[streamText merge error]", streamError);
+          }
         },
         headers: {
           "X-RateLimit-Remaining": String(rateLimit.remaining),
@@ -476,7 +470,7 @@ export async function POST(req: NextRequest) {
     } catch {
       // Fallback local transparent si OpenAI renvoie une erreur
       const localPayload = generateLocalOrientationPayload(
-        reformulatedQuery,
+        sanitized.cleanText,
         knowledgeMatches,
         updatedProfile
       );
@@ -591,10 +585,10 @@ function generateLocalOrientationPayload(
     const matched = findMatchingFormations(profile, 5);
     let reply = "### ⚖️ Comparatif des Débouchés Professionnels\n\n";
     for (const m of matched.slice(0, 3)) {
-      reply += `#### 🎓 **${m.nom}** (${m.diplome})\n`;
+      reply += `#### 🎓 **${m.nom}** (${m.diplome || "Diplôme d'État"})\n`;
       reply += `- **Débouchés principaux** : ${(m.debouches || []).join(", ") || "Cadres et spécialistes du secteur"}\n`;
       reply += `- **Secteur d'insertion** : Entreprises publiques, secteur privé national/international et entrepreneuriat\n`;
-      reply += `- **Type d'études** : ${m.duree || "3 ans"} (${m.diplome.includes("Doctorat") ? "Cursus long d'excellence" : m.diplome.includes("Ingénieur") ? "Titre d'ingénieur d'État" : "Licence professionnelle ou générale"})\n\n`;
+      reply += `- **Type d'études** : ${m.duree || "3 ans"} (${(m.diplome || "").includes("Doctorat") ? "Cursus long d'excellence" : (m.diplome || "").includes("Ingénieur") ? "Titre d'ingénieur d'État" : "Licence professionnelle ou générale"})\n\n`;
     }
     reply += `*Conseil : Choisis en fonction de ton envie de t'insérer rapidement dans l'emploi (après 2 ou 3 ans) ou de poursuivre des études longues jusqu'au Master ou Doctorat.*`;
 
@@ -718,11 +712,45 @@ function generateLocalOrientationPayload(
   }
 
   // 3. CAS D'UNE DEMANDE DIRECTE FACTUELLE GÉNÉRALE (Concours, Métier, Comparaison, etc.)
-  const isDirectRequest =
-    qMode !== "orientation" ||
-    lowerQuery.includes("quelles universités") ||
-    lowerQuery.includes("quelles sont les universités") ||
-    lowerQuery.includes("quelles écoles") ||
+  const isOrientationFlowInput =
+    lowerQuery.includes("terminale") ||
+    lowerQuery.includes("bachelier") ||
+    lowerQuery.includes("lycée") ||
+    lowerQuery.includes("lycee") ||
+    lowerQuery.includes("collège") ||
+    lowerQuery.includes("college") ||
+    lowerQuery.includes("seconde") ||
+    lowerQuery.includes("première") ||
+    lowerQuery.includes("premiere") ||
+    lowerQuery.includes("réorientation") ||
+    lowerQuery.includes("reorientation") ||
+    lowerQuery.includes("supérieur") ||
+    lowerQuery.includes("superieur") ||
+    /^(s1|s2|s3|s4|s5|l1|l2|l'|l-ar|g|t1|t2|stg)\b/i.test(lowerQuery) ||
+    lowerQuery.includes("bac ") ||
+    lowerQuery.includes("série") ||
+    lowerQuery.includes("serie") ||
+    lowerQuery.includes("calcul") ||
+    lowerQuery.includes("redaction") ||
+    lowerQuery.includes("rédaction") ||
+    lowerQuery.includes("terrain") ||
+    lowerQuery.includes("santé") ||
+    lowerQuery.includes("sante") ||
+    lowerQuery.includes("ingénierie") ||
+    lowerQuery.includes("ingenierie") ||
+    lowerQuery.includes("technologie") ||
+    lowerQuery.includes("informatique") ||
+    lowerQuery.includes("gestion") ||
+    lowerQuery.includes("droit") ||
+    lowerQuery.includes("court") ||
+    lowerQuery.includes("long") ||
+    lowerQuery.includes("dakar") ||
+    lowerQuery.includes("saint-louis") ||
+    lowerQuery.includes("thiès") ||
+    lowerQuery.includes("thies");
+
+  // 3. CAS D'UNE DEMANDE DIRECTE FACTUELLE GÉNÉRALE (Concours, Métier, Comparaison, etc.)
+  const isExplicitFactualQuery =
     lowerQuery.includes("conditions du concours") ||
     lowerQuery.includes("conditions d'accès") ||
     lowerQuery.includes("conditions dacces") ||
@@ -731,13 +759,19 @@ function generateLocalOrientationPayload(
     lowerQuery.includes("frais de scolarité") ||
     lowerQuery.includes("frais de scolarite") ||
     lowerQuery.includes("comment devenir") ||
+    lowerQuery.includes("missions de ") ||
+    lowerQuery.includes("missions du ") ||
+    lowerQuery.includes("donne-moi des infos") ||
     lowerQuery.includes("donne moi des infos") ||
     lowerQuery.includes("donne des infos") ||
-    lowerQuery.includes("bourse") ||
     lowerQuery.includes("c'est quoi") ||
     lowerQuery.includes("qu'est-ce que") ||
     lowerQuery.includes("difference entre") ||
-    lowerQuery.includes("différence entre");
+    lowerQuery.includes("différence entre") ||
+    lowerQuery.startsWith("bourse") ||
+    lowerQuery.includes("critères de bourse");
+
+  const isDirectRequest = isExplicitFactualQuery && !isOrientationFlowInput;
 
   if (isDirectRequest) {
     if (!knowledge || knowledge.length === 0) {

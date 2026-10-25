@@ -340,9 +340,15 @@ const getStorageConvKey = (id: string) => `senorientation_chat_conv_v4_${id}`;
 
 const INITIAL_WELCOME_PAYLOAD = {
   reply:
-    "Bonjour ! Bienvenue sur Jangora, ta plateforme d'orientation scolaire et universitaire. Pour commencer et faire connaissance, comment puis-je t'appeler ?",
+    "Bonjour et bienvenue sur Jangora ! Je suis ton conseiller d'orientation scolaire et universitaire au Sénégal. Dis-moi : où en es-tu actuellement dans tes études ?",
   suggestions: [
-    "Je préfère ne pas le dire",
+    "Terminale (Bac cette année)",
+    "Nouveau bachelier",
+    "Lycée (Seconde / Première)",
+    "Collège (3e / BFEM)",
+    "Étudiant / Réorientation",
+    "Où trouver une filière ?",
+    "Infos sur une université",
   ],
   etape: 1,
 };
@@ -351,13 +357,13 @@ const NEW_CHAT_WELCOME_PAYLOAD = {
   reply:
     "Bonjour ! Je suis ton conseiller d'orientation Jangora. Où en es-tu actuellement dans tes études ?",
   suggestions: [
-    "Collège (3e / BFEM)",
-    "Lycée (Seconde)",
-    "Lycée (Première)",
-    "Terminale",
+    "Terminale (Bac cette année)",
     "Nouveau bachelier",
-    "Étudiant (Supérieur)",
-    "En réorientation",
+    "Lycée (Seconde / Première)",
+    "Collège (3e / BFEM)",
+    "Étudiant / Réorientation",
+    "Où trouver une filière ?",
+    "Infos sur une université",
   ],
   etape: 1,
 };
@@ -1461,11 +1467,21 @@ Conforme aux arrêtés du Ministère de l'Enseignement Supérieur (MESRI).`;
 
             {/* Alerte d'erreur */}
             {error && (
-              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-[13.5px] flex items-start gap-2.5">
-                <AlertCircle className="w-4.5 h-4.5 text-red-500 shrink-0 mt-0.5" />
-                <p>
-                  Une erreur temporaire est survenue lors de l&apos;envoi. Merci de vérifier votre connexion et de réessayer.
-                </p>
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-[13.5px] flex items-center justify-between gap-3">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="w-4.5 h-4.5 text-red-500 shrink-0 mt-0.5" />
+                  <p>
+                    Une erreur temporaire est survenue lors de l&apos;envoi. Merci de vérifier votre connexion et de réessayer.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => reload()}
+                  disabled={isLoading}
+                  className="px-3 py-1.5 text-xs font-semibold bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shrink-0 disabled:opacity-50 cursor-pointer"
+                >
+                  Réessayer
+                </button>
               </div>
             )}
 

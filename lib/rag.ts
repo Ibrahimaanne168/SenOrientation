@@ -269,31 +269,46 @@ export function detectQueryMode(message: string): AssistantMode {
   }
 
   // 6. Information sur une formation / où trouver une filière
-  if (
-    clean.includes("ou trouver") ||
-    clean.includes("ou etudier") ||
-    clean.includes("ou peut-on etudier") ||
-    clean.includes("ou peut on etudier") ||
-    clean.includes("quelles universites proposent") ||
-    clean.includes("quelles sont les universites") ||
-    clean.includes("quelles ecoles proposent") ||
-    clean.includes("dans quelle universite") ||
-    clean.includes("dans quel etablissement") ||
-    clean.includes("licence en ") ||
-    clean.includes("licence ") ||
-    clean.includes("master en ") ||
-    clean.includes("bts ") ||
-    clean.includes("dut ") ||
-    clean.includes("filiere") ||
-    clean.includes("filieres") ||
-    clean.includes("formation en ") ||
-    clean.includes("etudes pour ") ||
-    clean.includes("conditions d'admission de cette formation") ||
-    clean.includes("prerequis") ||
-    clean.includes("duree de la formation") ||
-    clean.includes("programme de")
-  ) {
-    return "info_formation";
+  const isOrientationInquiry =
+    clean.includes("choisir") ||
+    clean.includes("orientation") ||
+    clean.includes("mon orientation") ||
+    clean.includes("apres bac") ||
+    clean.includes("après bac") ||
+    clean.includes("apres le bac") ||
+    clean.includes("après le bac") ||
+    clean.includes("selon mon profil") ||
+    clean.includes("que me conseilles") ||
+    clean.includes("conseil") ||
+    clean.includes("conseiller");
+
+  if (!isOrientationInquiry) {
+    if (
+      clean.includes("ou trouver") ||
+      clean.includes("ou etudier") ||
+      clean.includes("ou peut-on etudier") ||
+      clean.includes("ou peut on etudier") ||
+      clean.includes("quelles universites proposent") ||
+      clean.includes("quelles sont les universites") ||
+      clean.includes("quelles ecoles proposent") ||
+      clean.includes("dans quelle universite") ||
+      clean.includes("dans quel etablissement") ||
+      clean.includes("licence en ") ||
+      clean.includes("licence ") ||
+      clean.includes("master en ") ||
+      clean.includes("bts ") ||
+      clean.includes("dut ") ||
+      ((clean.includes("filiere") || clean.includes("filieres")) &&
+        (clean.includes("trouver") || clean.includes("proposent") || clean.includes("offre") || clean.includes("dispensee") || clean.includes("dispensée"))) ||
+      clean.includes("formation en ") ||
+      clean.includes("etudes pour ") ||
+      clean.includes("conditions d'admission de cette formation") ||
+      clean.includes("prerequis") ||
+      clean.includes("duree de la formation") ||
+      clean.includes("programme de")
+    ) {
+      return "info_formation";
+    }
   }
 
   if (hasEtablissement) {
@@ -327,17 +342,18 @@ export function reformulateQuery(
   if (history && history.length > 0) {
     const recentHistory = history.slice(-6);
     for (const msg of recentHistory) {
+      if (msg.role !== "user") continue;
       const text = msg.content.toLowerCase();
       if (!detectedSerie) {
-        if (text.includes("s1")) detectedSerie = "Bac S1";
-        else if (text.includes("s2")) detectedSerie = "Bac S2";
-        else if (text.includes("s3")) detectedSerie = "Bac S3";
-        else if (text.includes("l1")) detectedSerie = "Bac L1";
-        else if (text.includes("l2") || text.includes("littéraire")) detectedSerie = "Bac L2";
-        else if (text.includes("l'")) detectedSerie = "Bac L'";
-        else if (text.includes("bac g") || text.includes("steg")) detectedSerie = "Bac G";
-        else if (text.includes("t1")) detectedSerie = "Bac T1";
-        else if (text.includes("t2")) detectedSerie = "Bac T2";
+        if (/\bs1\b/i.test(text)) detectedSerie = "Bac S1";
+        else if (/\bs2\b/i.test(text)) detectedSerie = "Bac S2";
+        else if (/\bs3\b/i.test(text)) detectedSerie = "Bac S3";
+        else if (/\bl1\b/i.test(text)) detectedSerie = "Bac L1";
+        else if (/\bl2\b/i.test(text) || text.includes("littéraire")) detectedSerie = "Bac L2";
+        else if (/\bl['’]\b/i.test(text)) detectedSerie = "Bac L'";
+        else if (/\bbac g\b|\bsteg\b/i.test(text)) detectedSerie = "Bac G";
+        else if (/\bt1\b/i.test(text)) detectedSerie = "Bac T1";
+        else if (/\bt2\b/i.test(text)) detectedSerie = "Bac T2";
       }
 
       if (!detectedInterest) {

@@ -566,7 +566,7 @@ export const INITIAL_PROFILE: ConversationProfile = {
   formations_recommandees: [],
   etape: 1,
   current_phase: 1,
-  current_question_id: "intent_demander_prenom",
+  current_question_id: "intent_demander_situation_scolaire",
   questions_asked: [],
   questions_answered: {},
   known_facts: {},
@@ -758,7 +758,7 @@ export function mergeProfileUpdate(
     preference_generale: update.preference_generale !== undefined ? update.preference_generale : current.preference_generale,
     nb_je_ne_sais_pas: update.nb_je_ne_sais_pas !== undefined ? update.nb_je_ne_sais_pas : current.nb_je_ne_sais_pas,
     current_phase: update.current_phase || current.current_phase || 1,
-    current_question_id: update.current_question_id || current.current_question_id || "intent_demander_prenom",
+    current_question_id: update.current_question_id || current.current_question_id || "intent_demander_situation_scolaire",
     conversation_status: update.conversation_status || current.conversation_status || "en_cours",
   };
 
@@ -2015,33 +2015,23 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
     };
   }
 
-  // ── PHASE 1 : IDENTITÉ & SITUATION SCOLAIRE (Prénom, niveau, série) ─────
-  const hasAcademicContext = Boolean(
-    profile.serie ||
-    profile.niveau ||
-    profile.statut_parcours ||
-    profile.type_post_bac ||
-    (profile.questions_answered && (
-      profile.questions_answered["intent_demander_serie"] ||
-      profile.questions_answered["intent_demander_situation_scolaire"] ||
-      profile.questions_answered["intent_clarifier_s1_s2"] ||
-      profile.questions_answered["intent_clarifier_l1_l2"]
-    )) ||
-    profile.confirmed_interests.length > 0 ||
-    profile.matieres_aimees.length > 0 ||
-    profile.points_forts.length > 0
-  );
-
-  const alreadyAskedPrenom = profile.questions_asked.includes("intent_demander_prenom");
-
-  // 1. Demande du prénom si inconnu (uniquement à l'ouverture à blanc quand aucun contexte n'est encore fourni)
-  if (!profile.prenom && !hasAcademicContext && !alreadyAskedPrenom && lastAskedIntent !== "intent_demander_prenom") {
+  // ── PHASE 1 : IDENTITÉ & SITUATION SCOLAIRE (Niveau, série) ─────
+  // 1. Demande de la situation scolaire / niveau si inconnu
+  if (!profile.serie && !profile.niveau && !profile.statut_parcours && lastAskedIntent !== "intent_demander_situation_scolaire") {
     return {
       type: "question",
-      intent_id: "intent_demander_prenom",
-      question: "Bonjour ! Je suis ton conseiller d'orientation SenOrientation. Pour faire connaissance et personnaliser notre échange, comment puis-je t'appeler ?",
-      suggestions: ["Je préfère ne pas le dire"],
-      vise: "Faire connaissance en demandant le prénom",
+      intent_id: "intent_demander_situation_scolaire",
+      question: `Bonjour${namePart ? " " + namePart : ""} ! Où en es-tu actuellement dans tes études pour qu'on construise ensemble ton orientation ?`,
+      suggestions: [
+        "Terminale (Bac cette année)",
+        "Nouveau bachelier",
+        "Lycée (Seconde / Première)",
+        "Collège (3e / BFEM)",
+        "Étudiant / Réorientation",
+        "Où trouver une filière ?",
+        "Infos sur une université",
+      ],
+      vise: "Identifier le niveau scolaire (avant-bac, bac ou post-bac) et la situation",
       phase: 1,
       etape: 1,
     };
@@ -2132,27 +2122,6 @@ export function getNextOrientationQuestion(profile: ConversationProfile): Orient
         "Je ne sais pas",
       ],
       vise: "Départager l'hésitation L1 vs L2 par les matières dominantes",
-      phase: 1,
-      etape: 1,
-    };
-  }
-
-  // 6. Demande de la situation scolaire / niveau si inconnu
-  if (!profile.serie && !profile.niveau && !profile.statut_parcours && lastAskedIntent !== "intent_demander_situation_scolaire") {
-    return {
-      type: "question",
-      intent_id: "intent_demander_situation_scolaire",
-      question: `Ravi de faire ta connaissance${namePart ? " " + namePart : ""} ! Où en es-tu actuellement dans tes études (collège, lycée en seconde/première, classe de Terminale, nouveau bachelier, ou déjà étudiant) ?`,
-      suggestions: [
-        "Collège (3e / BFEM)",
-        "Lycée (Seconde)",
-        "Lycée (Première)",
-        "Terminale",
-        "Nouveau bachelier",
-        "Étudiant (Supérieur)",
-        "En réorientation",
-      ],
-      vise: "Identifier le niveau scolaire (avant-bac, bac ou post-bac) et la situation",
       phase: 1,
       etape: 1,
     };
